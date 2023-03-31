@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Application\Clicco.Application\Clicco.Application.csproj" />
     <ProjectReference Include="..\..\Core\Domain\Clicco.Domain.Model\Clicco.Domain.Model.csproj" />
   </ItemGroup>
 
