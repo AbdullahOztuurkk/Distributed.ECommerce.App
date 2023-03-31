@@ -13,6 +13,8 @@ namespace Clicco.Domain.Model
         public bool IsSA { get; set; } = false;
 
         //Relationship
-        
+        public ICollection<Transaction> Transactions { get; set; }
+        public ICollection<Address> Addresses { get; set; }
+        public ICollection<Review>  Reviews { get; set; }
     }
 }

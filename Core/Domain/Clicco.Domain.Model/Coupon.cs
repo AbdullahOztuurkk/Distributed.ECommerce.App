@@ -11,4 +11,8 @@ namespace Clicco.Domain.Model
         public DateTime ExpirationDate { get; set; }
         public DiscountType DiscountType { get; set; }
         public int DiscountAmount { get; set; }
+
+        //Relationship
+
+        public Transaction Transaction { get; set; }
     }}

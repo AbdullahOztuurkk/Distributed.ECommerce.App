@@ -12,6 +12,7 @@ namespace Clicco.Domain.Model
         public string SlugUrl { get; set; }
 
         //Relationship
+        public ICollection<Review> Reviews { get; set; }
         public Category Category { get; set; }
         public int CategoryId { get; set; }
     }
