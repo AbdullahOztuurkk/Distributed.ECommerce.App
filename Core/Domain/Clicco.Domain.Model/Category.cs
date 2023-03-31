@@ -11,7 +11,7 @@ namespace Clicco.Domain.Model
         public Category Parent { get; set; }
         public int? ParentId { get; set; }
         public Menu Menu { get; set; }
-        public int MenuId { get; set; }
+        public int? MenuId { get; set; }
         public ICollection<Product> Products { get; set; }
     }
 }
