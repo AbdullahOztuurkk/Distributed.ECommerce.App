@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{BC540803-0F3B-4D11-9D0B-78033A8E5C99}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{428C23AB-E530-4B19-A5DD-0147543E8D9D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{A8978276-97DC-4248-BC63-5FC95AE30650}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{02386F85-62C4-4B81-89E9-26FA3D8ACB9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clicco.Domain.Core", "Core\Domain\Clicco.Domain.Core\Clicco.Domain.Core.csproj", "{D5549BB0-5298-4DEA-B197-60E8AB91A3D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clicco.Domain.Model", "Core\Domain\Clicco.Domain.Model\Clicco.Domain.Model.csproj", "{A58233C6-235D-461B-BA48-195E3D9B81E8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5549BB0-5298-4DEA-B197-60E8AB91A3D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5549BB0-5298-4DEA-B197-60E8AB91A3D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5549BB0-5298-4DEA-B197-60E8AB91A3D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5549BB0-5298-4DEA-B197-60E8AB91A3D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A58233C6-235D-461B-BA48-195E3D9B81E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A58233C6-235D-461B-BA48-195E3D9B81E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A58233C6-235D-461B-BA48-195E3D9B81E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A58233C6-235D-461B-BA48-195E3D9B81E8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BC540803-0F3B-4D11-9D0B-78033A8E5C99} = {A8978276-97DC-4248-BC63-5FC95AE30650}
+		{428C23AB-E530-4B19-A5DD-0147543E8D9D} = {A8978276-97DC-4248-BC63-5FC95AE30650}
+		{D5549BB0-5298-4DEA-B197-60E8AB91A3D6} = {BC540803-0F3B-4D11-9D0B-78033A8E5C99}
+		{A58233C6-235D-461B-BA48-195E3D9B81E8} = {BC540803-0F3B-4D11-9D0B-78033A8E5C99}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5ED189FF-6738-48AA-BACA-CB01FD6FD628}
+	EndGlobalSection
+EndGlobal
