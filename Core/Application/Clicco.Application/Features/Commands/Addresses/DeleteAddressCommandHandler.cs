@@ -4,7 +4,7 @@ using Clicco.Domain.Model;
 using MediatR;
 using static Clicco.Domain.Core.ResponseModel.BaseResponse;
 
-namespace Clicco.Application.Features.Commands.Addresses
+namespace Clicco.Application.Features.Commands
 {
     public class DeleteAddressCommand : IRequest<BaseResponse>
     {

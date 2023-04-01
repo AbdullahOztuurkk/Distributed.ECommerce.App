@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using Clicco.Application.Features.Queries.Categories;
-using Clicco.Application.Features.Queries.Menus;
+using Clicco.Application.Features.Queries;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Domain.Core.Extensions;
 using Clicco.Domain.Model;
 using MediatR;
 
-namespace Clicco.Application.Features.Commands.Categories
+namespace Clicco.Application.Features.Commands
 {
     public class CreateCategoryCommand : IRequest<Category>
     {

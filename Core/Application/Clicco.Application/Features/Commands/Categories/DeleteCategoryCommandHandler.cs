@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using Clicco.Application.Features.Queries.Categories;
+using Clicco.Application.Features.Queries;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
 using static Clicco.Domain.Core.ResponseModel.BaseResponse;
 
-namespace Clicco.Application.Features.Commands.Categories
+namespace Clicco.Application.Features.Commands
 {
     public class DeleteCategoryCommand : IRequest<BaseResponse>
     {

@@ -2,7 +2,7 @@
 using Clicco.Domain.Model;
 using MediatR;
 
-namespace Clicco.Application.Features.Queries.Menus
+namespace Clicco.Application.Features.Queries
 {
     public class GetMenuByUrlQuery : IRequest<Menu>
     {

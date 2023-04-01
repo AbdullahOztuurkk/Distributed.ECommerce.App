@@ -2,7 +2,7 @@
 using Clicco.Domain.Model;
 using MediatR;
 
-namespace Clicco.Application.Features.Queries.Categories
+namespace Clicco.Application.Features.Queries
 {
     public class GetCategoryByURLQuery : IRequest<Category>
     {

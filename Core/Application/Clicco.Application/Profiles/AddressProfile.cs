@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Clicco.Application.Features.Commands.Addresses;
+using Clicco.Application.Features.Commands;
 using Clicco.Domain.Model;
 
 namespace Clicco.Application.Profiles
