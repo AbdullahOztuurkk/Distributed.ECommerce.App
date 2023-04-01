@@ -13,5 +13,10 @@ namespace Clicco.Domain.Core.Extensions
             str = Regex.Replace(str, @"-+", "-");
             return str;
         }
+
+        public static string ConcatUrls(this List<string> seoUrls)
+        {
+            return string.Join('-',seoUrls);
+        }
     }
 }
