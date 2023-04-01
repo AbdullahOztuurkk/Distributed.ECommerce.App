@@ -26,8 +26,7 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
-            //TODO: Delete All Menus by Request Id via MediatR
-            var result = await mediator.Send(new GetCategoryByIdQuery { Id = request.Id });
+            var result = await mediator.Send(new GetCategoryByIdQuery { Id = request.Id }, cancellationToken);
             if(result != null)
             {
                 var category = mapper.Map<Category>(request);

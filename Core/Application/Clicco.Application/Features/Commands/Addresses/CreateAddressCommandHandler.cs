@@ -29,8 +29,8 @@ namespace Clicco.Application.Features.Commands
         public async Task<BaseResponse> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
         {
             var address = mapper.Map<Address>(request);
-            addressRepository.AddAsync(address);
-            addressRepository.SaveChangesAsync();
+            await addressRepository.AddAsync(address);
+            await addressRepository.SaveChangesAsync();
             return new SuccessResponse("Address has been created!");
         }
     }

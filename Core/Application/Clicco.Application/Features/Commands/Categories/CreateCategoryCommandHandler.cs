@@ -2,19 +2,21 @@
 using Clicco.Application.Features.Queries;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Domain.Core.Extensions;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
+using static Clicco.Domain.Core.ResponseModel.BaseResponse;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class CreateCategoryCommand : IRequest<Category>
+    public class CreateCategoryCommand : IRequest<BaseResponse>
     {
         public string Name { get; set; }
         public int? ParentId { get; set; }
         public int? MenuId { get; set; }
     }
 
-    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Category>
+    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, BaseResponse>
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
@@ -25,11 +27,11 @@ namespace Clicco.Application.Features.Commands
             this.mapper = mapper;
             this.mediator = mediator;
         }
-        public async Task<Category> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
             if (request.ParentId.HasValue)
             {
-                var parentCategory = await mediator.Send(new GetCategoryByIdQuery { Id = request.ParentId.Value });
+                var parentCategory = await mediator.Send(new GetCategoryByIdQuery { Id = request.ParentId.Value },cancellationToken);
                 if (parentCategory == null)
                 {
                     throw new Exception("Parent Category not Found!");
@@ -37,7 +39,7 @@ namespace Clicco.Application.Features.Commands
             }
             if (request.MenuId.HasValue)
             {
-                var menu = await mediator.Send(new GetMenuByIdQuery { Id = request.MenuId.Value });
+                var menu = await mediator.Send(new GetMenuByIdQuery { Id = request.MenuId.Value }, cancellationToken);
                 if (menu == null)
                 {
                     throw new Exception("Menu not Found!");
@@ -47,7 +49,7 @@ namespace Clicco.Application.Features.Commands
             category.SlugUrl = request.Name.ToSeoFriendlyUrl();
             await categoryRepository.AddAsync(category);
             await categoryRepository.SaveChangesAsync();
-            return category;
+            return new SuccessResponse("Category has been added!");
         }
     }
 }
