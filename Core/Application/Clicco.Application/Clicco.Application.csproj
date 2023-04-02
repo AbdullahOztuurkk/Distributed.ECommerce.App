@@ -19,10 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Commands\Products\" />
     <Folder Include="Features\Commands\Transactions\" />
     <Folder Include="Features\Commands\Reviews\" />
-    <Folder Include="Features\Queries\Products\" />
     <Folder Include="Features\Queries\Reviews\" />
     <Folder Include="Features\Queries\Transactions\" />
     <Folder Include="Validations\Coupons\" />
