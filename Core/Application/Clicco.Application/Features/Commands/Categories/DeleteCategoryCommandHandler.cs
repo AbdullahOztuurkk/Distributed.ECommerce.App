@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Clicco.Application.Features.Commands.Menus;
 using Clicco.Application.Features.Queries;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Domain.Core.ResponseModel;
@@ -31,7 +32,7 @@ namespace Clicco.Application.Features.Commands
             {
                 var category = mapper.Map<Category>(request);
                 await categoryRepository.DeleteAsync(category);
-                //TODO: Send DeleteMenuCommandByCategoryId via MediatR
+                await mediator.Send(new DeleteMenuByCategoryIdCommand { CategoryId = category.Id });
                 return new SuccessResponse("Category has been deleted!");
             }
             return new ErrorResponse("Category not Found!");
