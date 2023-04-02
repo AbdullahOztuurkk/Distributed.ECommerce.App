@@ -15,7 +15,7 @@ namespace Clicco.Application.Features.Commands
         public string State { get; set; }
         public string Country { get; set; }
         public string ZipCode { get; set; }
-        public string UserId { get; set; }
+        public int UserId { get; set; }
     }
     public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, BaseResponse>
     {

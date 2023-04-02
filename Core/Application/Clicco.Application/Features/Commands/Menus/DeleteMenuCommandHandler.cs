@@ -6,12 +6,12 @@ using static Clicco.Domain.Core.ResponseModel.BaseResponse;
 
 namespace Clicco.Application.Features.Commands
 {
-    internal class DeleteMenuCommand : IRequest<BaseResponse>
+    public class DeleteMenuCommand : IRequest<BaseResponse>
     {
         public int Id { get; set; }
     }
 
-    internal class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand, BaseResponse>
+    public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand, BaseResponse>
     {
         private readonly IMenuRepository menuRepository;
         private readonly IMediator mediator;
