@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Clicco.Application.Features.Commands;
-using Clicco.Application.Features.Commands.Products;
+using Clicco.Application.Features.Commands.Reviews;
 using Clicco.Domain.Core.Extensions;
 using Clicco.Domain.Model;
 
@@ -26,6 +26,8 @@ namespace Clicco.Application.Profiles
                 .ForMember(x => x.SlugUrl, opt => opt.MapFrom(z => z.Name.ToSeoFriendlyUrl()));
             CreateMap<DeleteProductCommand, Product>();
 
+            CreateMap<CreateReviewCommand, Review>();
+            CreateMap<DeleteReviewCommand, Review>();
         }
     }
 }

@@ -20,8 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Commands\Transactions\" />
-    <Folder Include="Features\Commands\Reviews\" />
-    <Folder Include="Features\Queries\Reviews\" />
     <Folder Include="Features\Queries\Transactions\" />
     <Folder Include="Validations\Coupons\" />
     <Folder Include="Validations\Products\" />
