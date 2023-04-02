@@ -46,7 +46,7 @@ namespace Clicco.Application.Features.Commands
                 }
             }
             var category = mapper.Map<Category>(request);
-            category.SlugUrl = request.Name.ToSeoFriendlyUrl();
+            //category.SlugUrl = request.Name.ToSeoFriendlyUrl();
             await categoryRepository.AddAsync(category);
             await categoryRepository.SaveChangesAsync();
             return new SuccessResponse("Category has been added!");
