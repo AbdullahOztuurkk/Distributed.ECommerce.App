@@ -6,7 +6,7 @@ using Clicco.Domain.Model;
 using MediatR;
 using static Clicco.Domain.Core.ResponseModel.BaseResponse;
 
-namespace Clicco.Application.Features.Commands.Menus
+namespace Clicco.Application.Features.Commands
 {
     public class CreateMenuCommand : IRequest<BaseResponse>
     {
@@ -26,13 +26,23 @@ namespace Clicco.Application.Features.Commands.Menus
         public async Task<BaseResponse> Handle(CreateMenuCommand request, CancellationToken cancellationToken)
         {
             var category = await mediator.Send(new GetCategoryByIdQuery { Id = request.CategoryId }, cancellationToken);
+            
             if(category == null)
             {
                 throw new Exception("Category Not Found!");
             }
-            var menu = mapper.Map<Menu>(request);
-            menu.SlugUrl = menuRepository.GetExactSlugUrlByCategoryId(category.Id);
-            await menuRepository.AddAsync(menu);
+            var exactUri = menuRepository.GetExactSlugUrlByCategoryId(category.Id);
+
+            var menu = await mediator.Send(new GetMenuByUrlQuery { Url = exactUri }, cancellationToken);
+
+            if(menu != null)
+            {
+                throw new Exception("Menu already exists!");
+            }
+
+            var newMenu = mapper.Map<Menu>(request);
+            newMenu.SlugUrl = exactUri;
+            await menuRepository.AddAsync(newMenu);
             await menuRepository.SaveChangesAsync();
             return new SuccessResponse("Menu has been added!");
 
