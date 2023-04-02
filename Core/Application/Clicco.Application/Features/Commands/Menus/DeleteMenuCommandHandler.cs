@@ -2,7 +2,6 @@
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Domain.Core.ResponseModel;
 using MediatR;
-using static Clicco.Domain.Core.ResponseModel.BaseResponse;
 
 namespace Clicco.Application.Features.Commands
 {
