@@ -21,9 +21,6 @@
   <ItemGroup>
     <Folder Include="Features\Commands\Transactions\" />
     <Folder Include="Features\Queries\Transactions\" />
-    <Folder Include="Validations\Coupons\" />
-    <Folder Include="Validations\Products\" />
-    <Folder Include="Validations\Reviews\" />
     <Folder Include="Validations\Transactions\" />
   </ItemGroup>
 
