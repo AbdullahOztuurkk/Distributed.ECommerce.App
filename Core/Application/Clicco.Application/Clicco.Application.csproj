@@ -19,8 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Commands\Transactions\" />
-    <Folder Include="Features\Queries\Transactions\" />
     <Folder Include="Validations\Transactions\" />
   </ItemGroup>
 
