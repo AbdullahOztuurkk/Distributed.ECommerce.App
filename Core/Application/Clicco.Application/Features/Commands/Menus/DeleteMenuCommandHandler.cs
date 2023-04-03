@@ -21,14 +21,14 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
         {
-            var menu = await mediator.Send(new GetMenuByIdQuery { Id = request.Id }, cancellationToken);
-            if (menu != null)
+            var menu = await mediator.Send(new GetMenuByIdQuery { Id = request.Id });
+            if (menu == null)
             {
-                await menuRepository.DeleteAsync(menu);
-                await menuRepository.SaveChangesAsync();
-                return new SuccessResponse("Menu has been deleted!");
+                throw new Exception("Menu not found!");
             }
-            return new ErrorResponse("Menu not found!");
+            await menuRepository.DeleteAsync(menu);
+            await menuRepository.SaveChangesAsync();
+            return new SuccessResponse("Menu has been deleted!");
         }
     }
 }

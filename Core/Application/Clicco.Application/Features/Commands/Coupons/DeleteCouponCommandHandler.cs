@@ -23,14 +23,14 @@ namespace Clicco.Application.Features.Commands
         public async Task<BaseResponse> Handle(DeleteCouponCommand request, CancellationToken cancellationToken)
         {
             var couponExist = await mediator.Send(new GetCouponByIdQuery { Id = request.Id}, cancellationToken);
-            if (couponExist != null)
+            if (couponExist == null)
             {
-                //TODO: Check coupon still using from redis service and prevent this
-                await couponRepository.DeleteAsync(couponExist);
-                await couponRepository.SaveChangesAsync();
-                return new SuccessResponse("Coupon has been deleted!");
+                throw new Exception("Coupon not found!");
             }
-            return new ErrorResponse("Coupon not found!");
+            //TODO: Check coupon still using from redis service and prevent this
+            await couponRepository.DeleteAsync(couponExist);
+            await couponRepository.SaveChangesAsync();
+            return new SuccessResponse("Coupon has been deleted!");
         }
     }
 }

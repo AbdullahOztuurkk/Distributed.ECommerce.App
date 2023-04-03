@@ -33,7 +33,7 @@ namespace Clicco.Application.Features.Commands
             var coupon = mapper.Map<Coupon>(request);
             await couponRepository.AddAsync(coupon);
             await couponRepository.SaveChangesAsync();
-            return new SuccessResponse("Coupon has been added!");
+            return new SuccessResponse("Coupon has been created!");
         }
     }
 }

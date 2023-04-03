@@ -31,7 +31,7 @@ namespace Clicco.Application.Features.Commands
         public async Task<BaseResponse> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
         {
             //TODO: Send Request to Auth Api For User Check
-            var address = await mediator.Send(new GetAddressesByUserIdQuery { UserId = request.UserId /*UserId = AuthApiResponse.Id*/},cancellationToken);
+            var address = await mediator.Send(new GetAddressesByUserIdQuery { UserId = request.UserId /*UserId = AuthApiResponse.Id*/});
             if (address == null)
             {
                 throw new Exception("Address not found!");
@@ -39,7 +39,7 @@ namespace Clicco.Application.Features.Commands
             var transaction = mapper.Map<Transaction>(request);
             await transactionRepository.AddAsync(transaction);
             await transactionRepository.SaveChangesAsync();
-            return new SuccessResponse("Transaction has been added!");
+            return new SuccessResponse("Transaction has been created!");
         }
     }
 }

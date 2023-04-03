@@ -29,15 +29,15 @@ namespace Clicco.Application.Features.Commands
         public async Task<BaseResponse> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
             //TODO: Send Request to Auth Api for User Check
-            var product = await mediator.Send(new GetProductByIdQuery { Id = request.ProductId }, cancellationToken);
+            var product = await mediator.Send(new GetProductByIdQuery { Id = request.ProductId });
             if (product == null)
             {
-                throw new Exception("Product doesnt exist!");
+                throw new Exception("Product not found!");
             }
             var review = mapper.Map<Review>(request);
             await reviewRepository.AddAsync(review);
             await reviewRepository.SaveChangesAsync();
-            return new SuccessResponse("Review has been added!");
+            return new SuccessResponse("Review has been created!");
         }
     }
 }

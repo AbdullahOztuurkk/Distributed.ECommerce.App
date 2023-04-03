@@ -25,7 +25,7 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(CreateMenuCommand request, CancellationToken cancellationToken)
         {
-            var category = await mediator.Send(new GetCategoryByIdQuery { Id = request.CategoryId }, cancellationToken);
+            var category = await mediator.Send(new GetCategoryByIdQuery { Id = request.CategoryId });
             
             if(category == null)
             {
@@ -33,7 +33,7 @@ namespace Clicco.Application.Features.Commands
             }
             var exactUri = menuRepository.GetExactSlugUrlByCategoryId(category.Id);
 
-            var menu = await mediator.Send(new GetMenuByUrlQuery { Url = exactUri }, cancellationToken);
+            var menu = await mediator.Send(new GetMenuByUrlQuery { Url = exactUri });
 
             if(menu != null)
             {
@@ -44,7 +44,7 @@ namespace Clicco.Application.Features.Commands
             newMenu.SlugUrl = exactUri;
             await menuRepository.AddAsync(newMenu);
             await menuRepository.SaveChangesAsync();
-            return new SuccessResponse("Menu has been added!");
+            return new SuccessResponse("Menu has been created!");
 
         }
     }

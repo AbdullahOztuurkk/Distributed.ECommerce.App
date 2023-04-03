@@ -28,7 +28,7 @@ namespace Clicco.Application.Features.Commands
             }
             await transactionRepository.DeleteAsync(transaction);
             await transactionRepository.SaveChangesAsync();
-            return new SuccessResponse("Transaction has been created!");
+            return new SuccessResponse("Transaction has been deleted!");
         }
     }
 }

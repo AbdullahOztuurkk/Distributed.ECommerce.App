@@ -31,7 +31,7 @@ namespace Clicco.Application.Features.Commands
         {
             if (request.ParentId.HasValue)
             {
-                var parentCategory = await mediator.Send(new GetCategoryByIdQuery { Id = request.ParentId.Value },cancellationToken);
+                var parentCategory = await mediator.Send(new GetCategoryByIdQuery { Id = request.ParentId.Value });
                 if (parentCategory == null)
                 {
                     throw new Exception("Parent Category not Found!");
@@ -39,7 +39,7 @@ namespace Clicco.Application.Features.Commands
             }
             if (request.MenuId.HasValue)
             {
-                var menu = await mediator.Send(new GetMenuByIdQuery { Id = request.MenuId.Value }, cancellationToken);
+                var menu = await mediator.Send(new GetMenuByIdQuery { Id = request.MenuId.Value });
                 if (menu == null)
                 {
                     throw new Exception("Menu not Found!");
@@ -49,7 +49,7 @@ namespace Clicco.Application.Features.Commands
             //category.SlugUrl = request.Name.ToSeoFriendlyUrl();
             await categoryRepository.AddAsync(category);
             await categoryRepository.SaveChangesAsync();
-            return new SuccessResponse("Category has been added!");
+            return new SuccessResponse("Category has been created!");
         }
     }
 }

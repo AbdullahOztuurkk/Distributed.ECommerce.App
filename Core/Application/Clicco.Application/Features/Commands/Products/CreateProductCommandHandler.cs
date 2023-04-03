@@ -30,16 +30,16 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var category = await mediator.Send(new GetCategoryByIdQuery { Id = request.CategoryId }, cancellationToken);
-            if(category != null)
+            var category = await mediator.Send(new GetCategoryByIdQuery { Id = request.CategoryId });
+            if(category == null)
             {
-                var product = mapper.Map<Product>(request);
-                //product.SlugUrl = product.Name.ToSeoFriendlyUrl();
-                await productRepository.AddAsync(product);
-                await productRepository.SaveChangesAsync();
-                return new SuccessResponse("Product has been added!");
+                throw new Exception("Category not found!");
             }
-            return new ErrorResponse("Invalid Category!");
+            var product = mapper.Map<Product>(request);
+            //product.SlugUrl = product.Name.ToSeoFriendlyUrl();
+            await productRepository.AddAsync(product);
+            await productRepository.SaveChangesAsync();
+            return new SuccessResponse("Product has been created!");
         }
     }
 }

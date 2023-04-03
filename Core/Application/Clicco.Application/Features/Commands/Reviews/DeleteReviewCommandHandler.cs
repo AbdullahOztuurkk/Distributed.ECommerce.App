@@ -23,14 +23,14 @@ namespace Clicco.Application.Features.Commands.Reviews
 
         public async Task<BaseResponse> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
         {
-            var review = await mediator.Send(new GetReviewByIdQuery { Id = request.Id }, cancellationToken);
-            if (review != null)
+            var review = await mediator.Send(new GetReviewByIdQuery { Id = request.Id });
+            if (review == null)
             {
-                await reviewRepository.DeleteAsync(review);
-                await reviewRepository.SaveChangesAsync();
-                return new SuccessResponse("Review has been deleted!");
+                throw new Exception("Review not found!");
             }
-            return new ErrorResponse("Invalid Review!");
+            await reviewRepository.DeleteAsync(review);
+            await reviewRepository.SaveChangesAsync();
+            return new SuccessResponse("Review has been deleted!");
         }
     }
 }

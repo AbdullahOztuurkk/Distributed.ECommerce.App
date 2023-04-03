@@ -27,15 +27,15 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
-            var result = await mediator.Send(new GetCategoryByIdQuery { Id = request.Id }, cancellationToken);
-            if(result != null)
+            var category = await mediator.Send(new GetCategoryByIdQuery { Id = request.Id });
+            if(category != null)
             {
-                var category = mapper.Map<Category>(request);
-                await categoryRepository.DeleteAsync(category);
-                await mediator.Send(new DeleteMenuByCategoryIdCommand { CategoryId = category.Id });
-                return new SuccessResponse("Category has been deleted!");
+                throw new Exception("Category not found!");
             }
-            return new ErrorResponse("Category not Found!");
+            await categoryRepository.DeleteAsync(category);
+            await mediator.Send(new DeleteMenuByCategoryIdCommand { CategoryId = category.Id });
+            await categoryRepository.SaveChangesAsync();
+            return new SuccessResponse("Category has been deleted!");
         }
     }
 }

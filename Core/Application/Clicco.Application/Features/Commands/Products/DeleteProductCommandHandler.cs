@@ -21,14 +21,14 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            var product = await mediator.Send(new GetProductByIdQuery { Id = request.Id }, cancellationToken);
-            if(product != null)
+            var product = await mediator.Send(new GetProductByIdQuery { Id = request.Id });
+            if(product == null)
             {
-                await productRepository.DeleteAsync(product);
-                await productRepository.SaveChangesAsync();
-                return new SuccessResponse("Product has been deleted!");
+                throw new Exception("Product not found!");
             }
-            return new ErrorResponse("Invalid Product!");
+            await productRepository.DeleteAsync(product);
+            await productRepository.SaveChangesAsync();
+            return new SuccessResponse("Product has been deleted!");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Clicco.Application.Interfaces.Repositories;
+﻿using Clicco.Application.Features.Queries.Addresses;
+using Clicco.Application.Interfaces.Repositories;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
@@ -14,16 +15,21 @@ namespace Clicco.Application.Features.Commands
     public class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressCommand, BaseResponse>
     {
         private readonly IAddressRepository addressRepository;
-        public DeleteAddressCommandHandler(IAddressRepository addressRepository)
+        private readonly IMediator mediator;
+        public DeleteAddressCommandHandler(IAddressRepository addressRepository, IMediator mediator)
         {
             this.addressRepository = addressRepository;
+            this.mediator = mediator;
         }
         public async Task<BaseResponse> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
         {  
-            var address = new Address { Id = request.Id };
+            var address = await mediator.Send(new GetAddressByIdQuery { Id = request.Id });
+            if(address == null)
+            {
+                throw new Exception("Address not found!");
+            }
             await addressRepository.DeleteAsync(address);
             return new SuccessResponse("Address has been deleted!");
-
         }
     }
 }
