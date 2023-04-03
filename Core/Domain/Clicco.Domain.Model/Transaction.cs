@@ -9,6 +9,7 @@ namespace Clicco.Domain.Model
         public string Dealer { get; set; }
         public DateTime DeliveryDate { get; set; }
         public DateTime CreatedDate { get; set; }
+        public TransactionStatus TransactionStatus { get; set; } = TransactionStatus.Pending;
 
         //Relationship
         public User User { get; set; }

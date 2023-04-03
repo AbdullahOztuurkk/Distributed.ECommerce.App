@@ -12,6 +12,10 @@ namespace Clicco.Infrastructure.EntityConfigurations
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
+            builder.Property(x => x.Name)
+                .HasMaxLength(50)
+                .IsRequired();
+
             builder.Property(x => x.SlugUrl)
                 .HasMaxLength(200)
                 .IsRequired();

@@ -1,4 +1,5 @@
-﻿using Clicco.Domain.Model;
+﻿using Clicco.Domain.Core;
+using Clicco.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,15 +21,23 @@ namespace Clicco.Infrastructure.EntityConfigurations
                 .HasMaxLength(50)
                 .IsRequired();
 
-            builder.Property(x => x.CreatedDate).IsRequired();
+            builder.Property(x => x.TransactionStatus)
+                .IsRequired();
 
-            builder.Property(x => x.DeliveryDate).IsRequired();
+            builder.Property(x => x.CreatedDate)
+                .IsRequired();
 
-            builder.Property(x => x.UserId).IsRequired();
+            builder.Property(x => x.DeliveryDate)
+                .IsRequired();
 
-            builder.Property(x => x.AddressId).IsRequired();
+            builder.Property(x => x.UserId)
+                .IsRequired();
 
-            builder.Property(x => x.TotalAmount).IsRequired();
+            builder.Property(x => x.AddressId)
+                .IsRequired();
+
+            builder.Property(x => x.TotalAmount)
+                .IsRequired();
 
             builder.HasOne(x => x.User)
                 .WithMany(x => x.Transactions)

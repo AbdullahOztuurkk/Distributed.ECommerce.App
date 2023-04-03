@@ -10,6 +10,7 @@ namespace Clicco.Application.Features.Commands
 {
     public class CreateMenuCommand : IRequest<BaseResponse>
     {
+        public string Name { get; set; }
         public int CategoryId { get; set; }
     }
     public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, BaseResponse>

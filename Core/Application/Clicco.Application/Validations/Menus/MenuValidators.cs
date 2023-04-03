@@ -21,6 +21,11 @@ namespace Clicco.Application.Validations.Menus
                 RuleFor(x => x.CategoryId)
                     .GreaterThan(0)
                     .NotEmpty();
+
+                RuleFor(x => x.Name)
+                    .MinimumLength(1)
+                    .MaximumLength(50)
+                    .NotEmpty();
             }
         }
     }

@@ -12,4 +12,11 @@
         Percentage,
         Default
     }
+
+    public enum TransactionStatus
+    {
+        Failed,
+        Pending,
+        Success,
+    }
 }

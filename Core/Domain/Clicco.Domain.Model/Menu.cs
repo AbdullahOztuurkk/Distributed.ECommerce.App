@@ -5,6 +5,7 @@ namespace Clicco.Domain.Model
     public class Menu : BaseEntity
     {
         public string SlugUrl { get; set; }
+        public string Name { get; set; }
 
         //Relationship
         public Category Category { get; set; }
