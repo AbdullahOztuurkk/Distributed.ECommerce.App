@@ -3,7 +3,7 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Domain.Core.ResponseModel;
 using MediatR;
 
-namespace Clicco.Application.Features.Commands.Transactions
+namespace Clicco.Application.Features.Commands
 {
     public class DeleteTransactionCommand : IRequest<BaseResponse>
     {

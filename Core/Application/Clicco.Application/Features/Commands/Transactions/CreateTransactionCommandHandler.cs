@@ -5,7 +5,7 @@ using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
 
-namespace Clicco.Application.Features.Commands.Transactions
+namespace Clicco.Application.Features.Commands
 {
     public class CreateTransactionCommand : IRequest<BaseResponse>
     {
@@ -13,7 +13,7 @@ namespace Clicco.Application.Features.Commands.Transactions
         public int TotalAmount { get; set; }
         public string Dealer { get; set; }
         public DateTime DeliveryDate { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int UserId { get; set; }
         public int AddressId { get; set; }
     }

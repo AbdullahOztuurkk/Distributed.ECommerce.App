@@ -18,8 +18,4 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validations\Transactions\" />
-  </ItemGroup>
-
 </Project>
