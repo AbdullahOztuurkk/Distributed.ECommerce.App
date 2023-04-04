@@ -18,6 +18,9 @@ namespace Clicco.Application.Validations.Menus
         {
             public CreateMenuValidator()
             {
+                RuleFor(x => x.IsActive)
+                    .NotEmpty();
+
                 RuleFor(x => x.CategoryId)
                     .GreaterThan(0)
                     .NotEmpty();

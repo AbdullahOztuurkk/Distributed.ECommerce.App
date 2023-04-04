@@ -32,6 +32,9 @@ namespace Clicco.Application.Validations.Coupons
                     .GreaterThan(DateTime.UtcNow)
                     .NotEmpty();
 
+                RuleFor(x => x.IsActive)
+                    .NotEmpty();
+
                 When(x => x.DiscountType == DiscountType.Percentage, () =>
                 {
                     RuleFor(x => x.DiscountAmount)

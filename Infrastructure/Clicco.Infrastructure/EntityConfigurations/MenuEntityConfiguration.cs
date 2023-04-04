@@ -20,6 +20,10 @@ namespace Clicco.Infrastructure.EntityConfigurations
                 .HasMaxLength(200)
                 .IsRequired();
 
+            builder.Property(x => x.IsActive)
+                .HasDefaultValue(true)
+                .IsRequired();
+
             builder.HasOne(x => x.Category)
                 .WithOne(x => x.Menu)
                 .HasForeignKey<Category>(x => x.MenuId);

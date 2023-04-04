@@ -16,12 +16,6 @@ namespace Clicco.Infrastructure.EntityConfigurations
                 .HasMaxLength(50)
                 .IsRequired();
 
-            builder.Property(x => x.Type)
-                .IsRequired();
-
-            builder.Property(x => x.TypeId)
-                .IsRequired();
-
             builder.Property(x => x.Description)
                 .HasMaxLength(150)
                 .IsRequired();
@@ -33,6 +27,10 @@ namespace Clicco.Infrastructure.EntityConfigurations
                 .IsRequired();
 
             builder.Property(x => x.ExpirationDate)
+                .IsRequired();
+
+            builder.Property(x => x.IsActive)
+                .HasDefaultValue<bool>(true)
                 .IsRequired();
 
             builder.HasOne(x => x.Transaction)

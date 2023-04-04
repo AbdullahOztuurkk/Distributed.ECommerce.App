@@ -12,6 +12,7 @@ namespace Clicco.Application.Features.Commands
     {
         public string Name { get; set; }
         public int CategoryId { get; set; }
+        public bool IsActive { get; set; } = true;
     }
     public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, BaseResponse>
     {
