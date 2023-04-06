@@ -20,6 +20,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.Persistence", "Infrastructure\Clicco.Persistence\Clicco.Persistence.csproj", "{4CF7E93E-6DDF-4DFC-B7C2-D4A435768EE6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clicco.Infrastructure", "Infrastructure\Clicco.Infrastructure\Clicco.Infrastructure.csproj", "{E38452C1-754F-4E31-AD2D-E5032535489D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2493CE7E-D2B4-4FB7-B9B5-5B52DB0A3CDD} = {2493CE7E-D2B4-4FB7-B9B5-5B52DB0A3CDD}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

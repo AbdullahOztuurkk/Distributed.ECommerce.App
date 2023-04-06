@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Clicco.Application.Features.Queries;
 using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
@@ -21,20 +22,17 @@ namespace Clicco.Application.Features.Commands
     {
         private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
-        private readonly IMediator mediator;
-        public CreateProductCommandHandler(IProductRepository productRepository, IMapper mapper, IMediator mediator)
+        private readonly IProductService productService;
+        public CreateProductCommandHandler(IProductRepository productRepository, IMapper mapper, IProductService productService)
         {
             this.productRepository = productRepository;
             this.mapper = mapper;
-            this.mediator = mediator;
+            this.productService = productService;
         }
         public async Task<BaseResponse> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var category = await mediator.Send(new GetCategoryByIdQuery { Id = request.CategoryId });
-            if(category == null)
-            {
-                throw new Exception("Category not found!");
-            }
+            productService.CheckCategoryId(request.CategoryId);
+
             var product = mapper.Map<Product>(request);
             //product.SlugUrl = product.Name.ToSeoFriendlyUrl();
             await productRepository.AddAsync(product);

@@ -1,6 +1,8 @@
-﻿using Clicco.Application.Features.Queries;
+﻿using AutoMapper;
 using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core.ResponseModel;
+using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
@@ -13,19 +15,18 @@ namespace Clicco.Application.Features.Commands
     public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand, BaseResponse>
     {
         private readonly IMenuRepository menuRepository;
-        private readonly IMediator mediator;
-        public DeleteMenuCommandHandler(IMenuRepository menuRepository, IMediator mediator)
+        private readonly IMenuService menuService;
+        private readonly IMapper mapper;
+        public DeleteMenuCommandHandler(IMenuRepository menuRepository, IMenuService menuService, IMapper mapper)
         {
             this.menuRepository = menuRepository;
-            this.mediator = mediator;
+            this.menuService = menuService;
+            this.mapper = mapper;
         }
         public async Task<BaseResponse> Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
         {
-            var menu = await mediator.Send(new GetMenuByIdQuery { Id = request.Id });
-            if (menu == null)
-            {
-                throw new Exception("Menu not found!");
-            }
+            menuService.CheckSelfId(request.Id, "Menu not found!");
+            var menu = mapper.Map<Menu>(request);
             await menuRepository.DeleteAsync(menu);
             await menuRepository.SaveChangesAsync();
             return new SuccessResponse("Menu has been deleted!");

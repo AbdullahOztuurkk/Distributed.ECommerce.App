@@ -2,6 +2,7 @@
 using Clicco.Application.Features.Commands.Menus;
 using Clicco.Application.Features.Queries;
 using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
@@ -18,22 +19,19 @@ namespace Clicco.Application.Features.Commands
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
-        private readonly IMediator mediator;
-        public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator)
+        private readonly ICategoryService categoryService;
+        public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, ICategoryService categoryService)
         {
             this.categoryRepository = categoryRepository;
             this.mapper = mapper;
-            this.mediator = mediator;
+            this.categoryService = categoryService;
         }
         public async Task<BaseResponse> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
-            var category = await mediator.Send(new GetCategoryByIdQuery { Id = request.Id });
-            if(category != null)
-            {
-                throw new Exception("Category not found!");
-            }
+            categoryService.CheckSelfId(request.Id, "Category not found!");
+            var category = mapper.Map<Category>(request.Id);
             await categoryRepository.DeleteAsync(category);
-            await mediator.Send(new DeleteMenuByCategoryIdCommand { CategoryId = category.Id });
+            categoryService.DisableMenuId(request.Id);
             await categoryRepository.SaveChangesAsync();
             return new SuccessResponse("Category has been deleted!");
         }

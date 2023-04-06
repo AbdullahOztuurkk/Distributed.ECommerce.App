@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Clicco.Application.Features.Queries;
 using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
@@ -18,29 +19,18 @@ namespace Clicco.Application.Features.Commands
     {
         private readonly IMenuRepository menuRepository;
         private readonly IMapper mapper;
-        private readonly IMediator mediator;
-        public CreateMenuCommandHandler(IMenuRepository menuRepository, IMapper mapper, IMediator mediator)
+        private readonly IMenuService menuService;
+        public CreateMenuCommandHandler(IMenuRepository menuRepository, IMapper mapper, IMenuService menuService)
         {
             this.menuRepository = menuRepository;
             this.mapper = mapper;
-            this.mediator = mediator;
+            this.menuService = menuService;
         }
         public async Task<BaseResponse> Handle(CreateMenuCommand request, CancellationToken cancellationToken)
         {
-            var category = await mediator.Send(new GetCategoryByIdQuery { Id = request.CategoryId });
-            
-            if(category == null)
-            {
-                throw new Exception("Category Not Found!");
-            }
-            var exactUri = menuRepository.GetExactSlugUrlByCategoryId(category.Id);
-
-            var menu = await mediator.Send(new GetMenuByUrlQuery { Url = exactUri });
-
-            if(menu != null)
-            {
-                throw new Exception("Menu already exists!");
-            }
+            menuService.CheckCategoryId(request.CategoryId);
+            var exactUri = menuRepository.GetExactSlugUrlByCategoryId(request.CategoryId);
+            menuService.CheckSlugUrl(exactUri);
 
             var newMenu = mapper.Map<Menu>(request);
             newMenu.SlugUrl = exactUri;
