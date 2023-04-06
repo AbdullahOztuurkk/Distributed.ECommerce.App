@@ -8,6 +8,8 @@ namespace Clicco.Infrastructure.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Review> builder)
         {
+            builder.HasQueryFilter(x => !x.IsDeleted);
+
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
@@ -16,13 +18,20 @@ namespace Clicco.Infrastructure.EntityConfigurations
                 .HasMaxLength(200)
                 .IsRequired();
 
-            builder.Property(x => x.Rating).IsRequired();
+            builder.Property(x => x.Rating)
+                .IsRequired();
 
-            builder.Property(x => x.CreatedDate).IsRequired();
+            builder.Property(x => x.CreatedDate)
+                .IsRequired();
 
-            builder.Property(x => x.ProductId).IsRequired();
+            builder.Property(x => x.ProductId)
+                .IsRequired();
 
-            builder.Property(x => x.UserId).IsRequired();
+            builder.Property(x => x.UserId)
+                .IsRequired();
+
+            builder.Property(x => x.IsDeleted)
+                .HasDefaultValue(false);
 
             builder.HasOne(x => x.Product)
                 .WithMany(x => x.Reviews)

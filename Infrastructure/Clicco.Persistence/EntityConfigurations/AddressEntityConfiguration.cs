@@ -8,7 +8,12 @@ namespace Clicco.Infrastructure.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Address> builder)
         {
+            builder.HasQueryFilter(x => !x.IsDeleted);
+
             builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.IsDeleted)
+                .HasDefaultValue(false);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 

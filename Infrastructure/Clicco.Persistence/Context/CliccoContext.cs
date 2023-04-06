@@ -1,4 +1,5 @@
-﻿using Clicco.Domain.Model;
+﻿using Clicco.Domain.Core;
+using Clicco.Domain.Model;
 using Clicco.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,21 @@ namespace Clicco.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AddressEntityConfiguration).Assembly);
+        }
 
+        public override int SaveChanges()
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is ISoftDeletable && entry.State == EntityState.Deleted)
+                {
+                    // Mark the entity as modified instead of deleting it
+                    entry.State = EntityState.Modified;
+                    // Set the Deleted flag to true
+                    ((ISoftDeletable)entry.Entity).IsDeleted = true;
+                }
+            }
+            return base.SaveChanges();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

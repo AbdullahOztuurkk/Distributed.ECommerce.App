@@ -2,7 +2,7 @@
 
 namespace Clicco.Domain.Model
 {
-    public class Transaction : BaseEntity
+    public class Transaction : BaseEntity, ISoftDeletable
     {
         public string Code { get; set; }
         public int TotalAmount { get; set; }
@@ -10,6 +10,7 @@ namespace Clicco.Domain.Model
         public DateTime DeliveryDate { get; set; }
         public DateTime CreatedDate { get; set; }
         public TransactionStatus TransactionStatus { get; set; } = TransactionStatus.Pending;
+        public bool IsDeleted { get; set; } = false;
 
         //Relationship
         public User User { get; set; }

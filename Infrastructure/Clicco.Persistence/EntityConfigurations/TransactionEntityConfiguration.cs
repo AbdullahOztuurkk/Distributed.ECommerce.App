@@ -9,6 +9,8 @@ namespace Clicco.Infrastructure.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Transaction> builder)
         {
+            builder.HasQueryFilter(x => !x.IsDeleted);
+
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
@@ -38,6 +40,9 @@ namespace Clicco.Infrastructure.EntityConfigurations
 
             builder.Property(x => x.TotalAmount)
                 .IsRequired();
+
+            builder.Property(x => x.IsDeleted)
+                .HasDefaultValue(false);
 
             builder.HasOne(x => x.User)
                 .WithMany(x => x.Transactions)

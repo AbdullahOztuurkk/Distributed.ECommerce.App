@@ -8,6 +8,8 @@ namespace Clicco.Infrastructure.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            //builder.HasQueryFilter(x => !x.IsDeleted);
+
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
@@ -26,6 +28,9 @@ namespace Clicco.Infrastructure.EntityConfigurations
             builder.Property(x => x.Email)
                 .HasMaxLength(50)
                 .IsRequired();
+
+            //builder.Property(x => x.IsDeleted)
+            //    .HasDefaultValue(false);
 
             builder.Property(x => x.PhoneNumber)
                 .HasMaxLength(20);
