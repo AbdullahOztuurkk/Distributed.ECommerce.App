@@ -25,12 +25,12 @@ namespace Clicco.Infrastructure.Context
         {
             foreach (var entry in ChangeTracker.Entries())
             {
-                if (entry.Entity is ISoftDeletable && entry.State == EntityState.Deleted)
+                if (entry.Entity is ISoftDeletable deletable && entry.State == EntityState.Deleted)
                 {
                     // Mark the entity as modified instead of deleting it
                     entry.State = EntityState.Modified;
                     // Set the Deleted flag to true
-                    ((ISoftDeletable)entry.Entity).IsDeleted = true;
+                    deletable.IsDeleted = true;
                 }
             }
             return base.SaveChanges();
