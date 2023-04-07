@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="TechBuddy.Extensions.AspNetCore.ExceptionHandling" Version="1.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Application\Clicco.Application\Clicco.Application.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Clicco.Infrastructure\Clicco.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Clicco.Persistence\Clicco.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

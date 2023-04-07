@@ -2,7 +2,7 @@
 using Clicco.Domain.Model;
 using MediatR;
 
-namespace Clicco.Application.Features.Queries.Addresses
+namespace Clicco.Application.Features.Queries
 {
     public class GetAddressesByUserIdQuery : IRequest<List<Address>>
     {
