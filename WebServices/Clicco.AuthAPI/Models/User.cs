@@ -1,6 +1,6 @@
-﻿using Clicco.Domain.Core;
+﻿using Clicco.AuthAPI.Models.Common;
 
-namespace Clicco.Domain.Model
+namespace Clicco.AuthAPI.Models
 {
     public class User : BaseEntity, ISoftDeletable
     {
@@ -10,12 +10,8 @@ namespace Clicco.Domain.Model
         public bool Gender { get; set; } // Male / Female
         public string PhoneNumber { get; set; }
         public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
         public bool IsSA { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
-
-        //Relationship
-        public ICollection<Transaction> Transactions { get; set; }
-        public ICollection<Address> Addresses { get; set; }
-        public ICollection<Review>  Reviews { get; set; }
     }
 }

@@ -7,7 +7,6 @@ namespace Clicco.Infrastructure.Context
 {
     public class CliccoContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Menu> Menus { get; set; }
@@ -21,7 +20,7 @@ namespace Clicco.Infrastructure.Context
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AddressEntityConfiguration).Assembly);
         }
 
-        public override int SaveChanges()
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (var entry in ChangeTracker.Entries())
             {
@@ -33,7 +32,7 @@ namespace Clicco.Infrastructure.Context
                     deletable.IsDeleted = true;
                 }
             }
-            return base.SaveChanges();
+            return base.SaveChangesAsync();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

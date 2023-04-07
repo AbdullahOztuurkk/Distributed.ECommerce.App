@@ -1,14 +1,14 @@
-﻿using Clicco.Domain.Model;
+﻿using Clicco.AuthAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Clicco.Infrastructure.EntityConfigurations
+namespace Clicco.AuthAPI.Data.EntityConfigurations
 {
     public class UserEntityConfiguration : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            //builder.HasQueryFilter(x => !x.IsDeleted);
+            builder.HasQueryFilter(x => !x.IsDeleted);
 
             builder.HasKey(x => x.Id);
 
@@ -29,8 +29,11 @@ namespace Clicco.Infrastructure.EntityConfigurations
                 .HasMaxLength(50)
                 .IsRequired();
 
-            //builder.Property(x => x.IsDeleted)
-            //    .HasDefaultValue(false);
+            builder.Property(x => x.IsSA)
+                .HasDefaultValue(false);
+
+            builder.Property(x => x.IsDeleted)
+                .HasDefaultValue(false);
 
             builder.Property(x => x.PhoneNumber)
                 .HasMaxLength(20);
