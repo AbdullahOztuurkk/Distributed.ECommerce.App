@@ -2,6 +2,7 @@
 using Clicco.Domain.Core;
 using Clicco.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Clicco.Persistence.Services
 {
@@ -16,7 +17,7 @@ namespace Clicco.Persistence.Services
 
         public virtual void ThrowExceptionIfNull(object value,string errorMessage) 
         {
-            if (value == null) throw new Exception(errorMessage);
+            if (value == null) throw new Exception(errorMessage) { HResult = (int)HttpStatusCode.BadRequest };
         }
     }
 }
