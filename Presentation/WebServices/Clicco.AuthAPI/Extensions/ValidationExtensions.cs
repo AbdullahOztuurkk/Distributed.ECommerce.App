@@ -16,10 +16,19 @@ namespace Clicco.AuthAPI.Extensions
         public static IRuleBuilderOptions<T, string> MatchPasswordRegex<T>(this IRuleBuilder<T, string> ruleBuilder)
         {
             return ruleBuilder
-                .NotEmpty().WithMessage("Password is required.")
+                .NotEmpty()
+                .WithMessage("Password is required.")
                 .Matches(new Regex(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$"))
                 .WithMessage("Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 8 characters long.");
         }
 
+        public static IRuleBuilderOptions<T, string> MatchPhoneNumberRegex<T>(this IRuleBuilder<T, string> ruleBuilder)
+        {
+            return ruleBuilder
+                .NotEmpty()
+                .WithMessage("Phone number is required.")
+                .Matches(new Regex(@"^\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d$"))
+                .WithMessage("Phone number is not valid.");
+        }
     }
 }

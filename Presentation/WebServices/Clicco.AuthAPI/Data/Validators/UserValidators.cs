@@ -1,7 +1,6 @@
 ﻿using Clicco.AuthAPI.Extensions;
 using Clicco.AuthAPI.Models.Request;
 using FluentValidation;
-using System.Text.RegularExpressions;
 
 namespace Clicco.AuthAPI.Data.Validators
 {
@@ -22,6 +21,7 @@ namespace Clicco.AuthAPI.Data.Validators
             {
                 RuleFor(x => x.Email).MatchPasswordRegex();
                 RuleFor(x => x.Password).MatchPasswordRegex();
+                RuleFor(x => x.PhoneNumber).MatchPhoneNumberRegex();
             }
         }
     }

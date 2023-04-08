@@ -1,4 +1,5 @@
 ﻿using Clicco.AuthAPI.Models;
+using Clicco.AuthAPI.Services.Contracts;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Clicco.AuthAPI.Services
 {
-    public class TokenHandler
+    public class TokenHandler : ITokenHandler<User>
     {
         public IConfiguration Configuration { get; set; }
         public TokenHandler(IConfiguration configuration)
