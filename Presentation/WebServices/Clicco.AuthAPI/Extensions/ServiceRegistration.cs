@@ -2,6 +2,7 @@
 using Clicco.AuthAPI.Data.Repositories;
 using Clicco.AuthAPI.Data.Validators;
 using Clicco.AuthAPI.Models;
+using Clicco.AuthAPI.Services;
 using Clicco.AuthAPI.Services.Contracts;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,24 +16,23 @@ namespace Clicco.AuthAPI.Extensions
     {
         public static IServiceCollection AddFundamentalServices(this IServiceCollection services, IConfiguration configuration)
         {
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AUTH_API_KEY"]));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(option =>
             {
                 option.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateAudience = true,
-                    ValidateIssuer = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["Token:Issuer"],
-                    ValidAudience = configuration["Token:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:SecurityKey"])),
+                    IssuerSigningKey = signingKey,
                     ClockSkew = TimeSpan.Zero
                 };
             });
 
             services.AddValidatorsFromAssembly(typeof(UserValidators).Assembly);
 
-            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IAuthService, AuthService>();
             
             services.AddScoped<IUserRepository,UserRepository>();
 

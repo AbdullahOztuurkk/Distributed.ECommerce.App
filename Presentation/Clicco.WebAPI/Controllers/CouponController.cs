@@ -3,6 +3,7 @@ using Clicco.Application.Features.Queries;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
+using Clicco.WebAPI.NewFolder;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -49,6 +50,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPost("Create")]
+        [TypeFilter(typeof(SystemAdministratorFilter))]
         [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateCouponCommand command)
@@ -58,6 +60,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
+        [TypeFilter(typeof(SystemAdministratorFilter))]
         [ProducesResponseType(typeof(Coupon), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateCouponCommand command)
@@ -67,6 +70,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpDelete("Delete")]
+        [TypeFilter(typeof(SystemAdministratorFilter))]
         [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromBody] DeleteCouponCommand command)

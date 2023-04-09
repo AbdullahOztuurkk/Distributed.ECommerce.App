@@ -1,6 +1,7 @@
 using Clicco.Application.Extensions;
 using Clicco.Infrastructure.Extensions;
 using Clicco.WebAPI.Models;
+using Clicco.WebAPI.NewFolder;
 using FluentValidation;
 using TechBuddy.Extensions.AspNetCore.ExceptionHandling;
 
@@ -15,6 +16,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddSingleton(sp => sp.ConfigureRedis(builder.Configuration));
+builder.Services.ConfigureAuth(builder.Configuration);
+builder.Services.AddSingleton<SystemAdministratorFilter>();
 
 builder.Services.AddSwaggerGen();
 
@@ -35,7 +38,7 @@ app.ConfigureTechBuddyExceptionHandling(opt =>
     opt.UseCustomHandler(async (context, ex, logger) =>
     {
         logger.LogError("Unhandled exception occured");
-        var dynamicResponseModel = new { ErrorMessage = ex.Message, Type = "Exception" };
+        var dynamicResponseModel = new DynamicResponseModel ( ErrorMessage: ex.Message, ErrorType: "Exception");
 
         // we can set the response but don't have to
         await context.Response.WriteAsJsonAsync(dynamicResponseModel);

@@ -1,8 +1,8 @@
 ﻿using Clicco.AuthAPI.Models;
 
-namespace Clicco.AuthAPI.Data.Contracts
+namespace Clicco.AuthAPI.Services.Contracts
 {
-    public interface IAuthRepository
+    public interface IAuthService
     {
         Task<User> Register(User user, string password);
         Task<User> Login(string email, string password);

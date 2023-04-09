@@ -1,27 +1,30 @@
 ﻿using Clicco.AuthAPI.Data.Context;
 using Clicco.AuthAPI.Data.Contracts;
 using Clicco.AuthAPI.Models;
-using Microsoft.EntityFrameworkCore;
+using Clicco.AuthAPI.Services.Contracts;
 
-namespace Clicco.AuthAPI.Data.Repositories
+namespace Clicco.AuthAPI.Services
 {
-    public class AuthRepository : IAuthRepository
+    public class AuthService : IAuthService
     {
         private readonly AuthContext context;
         private readonly IUserRepository userRepository;
-        public AuthRepository(AuthContext context, IUserRepository userRepository)
+        public AuthService(AuthContext context, IUserRepository userRepository)
         {
             this.context = context;
             this.userRepository = userRepository;
         }
         public async Task<User> Login(string email, string password)
         {
-            var user = await userRepository.GetSingleAsync(m => m.Email == email);
-            if (user == null)
-                return null;
-            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            var user = new User();
+            if (email.StartsWith('#'))
+                user = await userRepository.GetSingleAsync(m => m.Email == email && m.IsSA);
+            else
+                user = await userRepository.GetSingleAsync(m => m.Email == email);
+
+            if (user == null || (user != null && !VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)))
             {
-                return null;
+                throw new Exception("Username or password is wrong!");
             }
             return user;
         }

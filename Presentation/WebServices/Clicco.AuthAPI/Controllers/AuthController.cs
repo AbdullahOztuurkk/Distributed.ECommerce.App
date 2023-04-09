@@ -1,14 +1,7 @@
-﻿using Clicco.AuthAPI.Data.Contracts;
-using Clicco.AuthAPI.Data.Repositories;
-using Clicco.AuthAPI.Models;
+﻿using Clicco.AuthAPI.Models;
 using Clicco.AuthAPI.Models.Request;
-using Clicco.AuthAPI.Models.Response;
+using Clicco.AuthAPI.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Clicco.AuthAPI.Controllers
 {
@@ -16,10 +9,10 @@ namespace Clicco.AuthAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthRepository authRepository;
+        private readonly IAuthService authRepository;
         private readonly IConfiguration configuration;
 
-        public AuthController(IAuthRepository authRepository, IConfiguration configuration)
+        public AuthController(IAuthService authRepository, IConfiguration configuration)
         {
             this.authRepository = authRepository;
             this.configuration = configuration;
@@ -48,12 +41,13 @@ namespace Clicco.AuthAPI.Controllers
             var createdUser = await authRepository.Register(CreateToUser, request.Password);
             return StatusCode(201, createdUser);
         }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dtoModel)
         {
             var user = await authRepository.Login(dtoModel.Email, dtoModel.Password);
             if (user == null)
-            {
+            {   
                 return Unauthorized();
             }
 
