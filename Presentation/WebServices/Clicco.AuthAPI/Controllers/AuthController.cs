@@ -9,19 +9,19 @@ namespace Clicco.AuthAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService authRepository;
+        private readonly IAuthService authService;
         private readonly IConfiguration configuration;
 
         public AuthController(IAuthService authRepository, IConfiguration configuration)
         {
-            this.authRepository = authRepository;
+            this.authService = authRepository;
             this.configuration = configuration;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto request)
         {
-            if (await authRepository.UserExists(request.Email))
+            if (await authService.UserExists(request.Email))
             {
                 ModelState.AddModelError("UserName", "User already exists");
             }
@@ -38,14 +38,14 @@ namespace Clicco.AuthAPI.Controllers
                 Gender = request.Gender,
                 PhoneNumber = request.PhoneNumber,
             };
-            var createdUser = await authRepository.Register(CreateToUser, request.Password);
+            var createdUser = await authService.Register(CreateToUser, request.Password);
             return StatusCode(201, createdUser);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dtoModel)
         {
-            var user = await authRepository.Login(dtoModel.Email, dtoModel.Password);
+            var user = await authService.Login(dtoModel.Email, dtoModel.Password);
             if (user == null)
             {   
                 return Unauthorized();

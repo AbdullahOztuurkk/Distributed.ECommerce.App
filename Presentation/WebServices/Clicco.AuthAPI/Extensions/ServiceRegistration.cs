@@ -33,6 +33,8 @@ namespace Clicco.AuthAPI.Extensions
             services.AddValidatorsFromAssembly(typeof(UserValidators).Assembly);
 
             services.AddScoped<IAuthService, AuthService>();
+
+            services.AddScoped<IUserService, UserService>();
             
             services.AddScoped<IUserRepository,UserRepository>();
 
