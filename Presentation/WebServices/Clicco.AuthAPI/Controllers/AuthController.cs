@@ -21,12 +21,10 @@ namespace Clicco.AuthAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto request)
         {
-            if (await authService.UserExists(request.Email))
+            var result = await authService.UserExists(request.Email);
+            if (result)
             {
                 ModelState.AddModelError("UserName", "User already exists");
-            }
-            if (!ModelState.IsValid)
-            {
                 return BadRequest(request);
             }
 

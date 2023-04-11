@@ -27,7 +27,7 @@ namespace Clicco.Application.Features.Commands
         {
             addressService.CheckSelfId(request.Id,"Address not found!");
             var address = mapper.Map<Address>(request);
-            await addressRepository.DeleteAsync(address);
+            addressRepository.Delete(address);
             return new SuccessResponse("Address has been deleted!");
         }
     }

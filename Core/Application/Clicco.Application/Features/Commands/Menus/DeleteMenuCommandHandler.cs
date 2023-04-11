@@ -27,7 +27,7 @@ namespace Clicco.Application.Features.Commands
         {
             menuService.CheckSelfId(request.Id, "Menu not found!");
             var menu = mapper.Map<Menu>(request);
-            await menuRepository.DeleteAsync(menu);
+            menuRepository.Delete(menu);
             await menuRepository.SaveChangesAsync();
             return new SuccessResponse("Menu has been deleted!");
         }

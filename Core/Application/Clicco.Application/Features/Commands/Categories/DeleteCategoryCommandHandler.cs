@@ -30,7 +30,7 @@ namespace Clicco.Application.Features.Commands
         {
             categoryService.CheckSelfId(request.Id, "Category not found!");
             var category = mapper.Map<Category>(request.Id);
-            await categoryRepository.DeleteAsync(category);
+            categoryRepository.Delete(category);
             categoryService.DisableMenuId(request.Id);
             await categoryRepository.SaveChangesAsync();
             return new SuccessResponse("Category has been deleted!");

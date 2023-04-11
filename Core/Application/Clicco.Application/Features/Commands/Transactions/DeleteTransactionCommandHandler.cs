@@ -26,7 +26,7 @@ namespace Clicco.Application.Features.Commands
             {
                 throw new Exception("Transaction not found!");
             }
-            await transactionRepository.DeleteAsync(transaction);
+            transactionRepository.Delete(transaction);
             await transactionRepository.SaveChangesAsync();
             return new SuccessResponse("Transaction has been deleted!");
         }

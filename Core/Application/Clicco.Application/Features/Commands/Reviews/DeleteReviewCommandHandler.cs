@@ -31,7 +31,7 @@ namespace Clicco.Application.Features.Commands.Reviews
             reviewService.CheckSelfId(request.Id,"Review not found!");
             
             var review = mapper.Map<Review>(request);
-            await reviewRepository.DeleteAsync(review);
+            reviewRepository.Delete(review);
             await reviewRepository.SaveChangesAsync();
             return new SuccessResponse("Review has been deleted!");
         }

@@ -29,17 +29,15 @@ namespace Clicco.AuthAPI.Data.EntityConfigurations
                 .HasMaxLength(50)
                 .IsRequired();
 
-            builder.Property(x => x.IsSA)
-                .HasDefaultValue(false);
-
-            builder.Property(x => x.IsDeleted)
-                .HasDefaultValue(false);
-
             builder.Property(x => x.PhoneNumber)
                 .HasMaxLength(20);
 
             builder.Property(x => x.PasswordHash)
-                .HasMaxLength(250)
+                .HasMaxLength(500)
+                .IsRequired();
+
+            builder.Property(x => x.PasswordSalt)
+                .HasMaxLength(500)
                 .IsRequired();
         }
     }

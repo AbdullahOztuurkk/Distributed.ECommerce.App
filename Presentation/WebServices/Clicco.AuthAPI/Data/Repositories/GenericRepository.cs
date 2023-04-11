@@ -9,25 +9,29 @@ namespace Clicco.AuthAPI.Data.Repositories
         where TEntity : BaseEntity
         where TContext : DbContext, new()
     {
+        private readonly TContext context;
+        private DbSet<TEntity> Table => context.Set<TEntity>();
+        public IQueryable<TEntity> Query => Table.AsQueryable();
+        public GenericRepository()
+        {
+            context = new TContext();
+        }
 
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
-            using var context = new TContext();
-            await context.Set<TEntity>().AddAsync(entity);
+            await Table.AddAsync(entity);
             return entity;
         }
 
-        public virtual async Task<TEntity> DeleteAsync(TEntity entity)
+        public virtual TEntity DeleteAsync(TEntity entity)
         {
-            using var context = new TContext();
-            context.Entry(entity).State = EntityState.Deleted;
+            Table.Remove(entity);
             return entity;
         }
 
         public virtual async Task<List<TEntity>> Get(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, params Expression<Func<TEntity, object>>[] includes)
         {
-            using var context = new TContext();
-            IQueryable<TEntity> query = context.Set<TEntity>();
+            IQueryable<TEntity> query = Query;
 
             foreach (Expression<Func<TEntity, object>> include in includes)
             {
@@ -54,21 +58,17 @@ namespace Clicco.AuthAPI.Data.Repositories
 
         public virtual async Task<List<TEntity>> GetAll()
         {
-            using var context = new TContext();
-            return await context.Set<TEntity>().ToListAsync();
+            return await Table.ToListAsync();
         }
 
         public virtual async Task<TEntity> GetById(int id)
         {
-            using var context = new TContext();
-            return await context.Set<TEntity>().FindAsync(id);
+            return await Table.FindAsync(id);
         }
 
         public virtual async Task<TEntity> GetByIdAsync(int id, params Expression<Func<TEntity, object>>[] includes)
         {
-            using var context = new TContext();
-
-            IQueryable<TEntity> query = context.Set<TEntity>();
+            IQueryable<TEntity> query = Query;
 
             foreach (Expression<Func<TEntity, object>> include in includes)
             {
@@ -80,7 +80,6 @@ namespace Clicco.AuthAPI.Data.Repositories
 
         public virtual async Task<TEntity> GetSingleAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes)
         {
-            using var context = new TContext();
             IQueryable<TEntity> query = context.Set<TEntity>();
 
             foreach (Expression<Func<TEntity, object>> include in includes)
@@ -93,14 +92,12 @@ namespace Clicco.AuthAPI.Data.Repositories
 
         public async Task<int> SaveChangesAsync()
         {
-            using var context = new TContext();
             return await context.SaveChangesAsync();
         }
 
         public virtual TEntity Update(TEntity entity)
         {
-            using var context = new TContext();
-            context.Set<TEntity>().Update(entity);
+            Table.Update(entity);
             return entity;
         }
     }

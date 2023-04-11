@@ -14,7 +14,7 @@ namespace Clicco.AuthAPI.Data.Context
         public AuthContext(DbContextOptions<AuthContext> options) : base(options) { }
         public AuthContext()
         {
-            
+
         }
         public DbSet<User> Users { get; set; }
 
@@ -31,18 +31,17 @@ namespace Clicco.AuthAPI.Data.Context
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            foreach (var entry in ChangeTracker.Entries())
+            foreach (var entry in ChangeTracker.Entries<User>())
             {
-                if (entry.Entity is User user && entry.State == EntityState.Deleted)
+                if (entry.State == EntityState.Deleted)
                 {
                     // Mark the entity as modified instead of deleting it
                     entry.State = EntityState.Modified;
                     // Set the Deleted flag to true
-                    user.IsDeleted = true;
+                    entry.Entity.IsDeleted = true;
                 }
             }
             return base.SaveChangesAsync();
         }
-
     }
 }

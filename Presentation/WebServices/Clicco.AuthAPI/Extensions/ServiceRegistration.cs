@@ -19,7 +19,12 @@ namespace Clicco.AuthAPI.Extensions
         public static IServiceCollection AddFundamentalServices(this IServiceCollection services, IConfiguration configuration)
         {
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AUTH_API_KEY"]));
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(option =>
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(option =>
             {
                 option.TokenValidationParameters = new TokenValidationParameters
                 {

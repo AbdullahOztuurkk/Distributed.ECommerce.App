@@ -29,7 +29,7 @@ namespace Clicco.Application.Features.Commands
             productService.CheckSelfId(request.Id, "Product not found!");
 
             var product = mapper.Map<Product>(request);
-            await productRepository.DeleteAsync(product);
+            productRepository.Delete(product);
             await productRepository.SaveChangesAsync();
             return new SuccessResponse("Product has been deleted!");
         }

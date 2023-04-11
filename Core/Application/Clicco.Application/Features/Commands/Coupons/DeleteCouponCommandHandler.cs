@@ -38,7 +38,7 @@ namespace Clicco.Application.Features.Commands
                 throw new Exception("The coupon is now used!");
             }
             var coupon = mapper.Map<Coupon>(request);
-            await couponRepository.DeleteAsync(coupon);
+            couponRepository.Delete(coupon);
             await couponRepository.SaveChangesAsync();
             return new SuccessResponse("Coupon has been deleted!");
         }

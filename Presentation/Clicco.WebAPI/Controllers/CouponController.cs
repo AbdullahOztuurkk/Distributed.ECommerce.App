@@ -3,7 +3,6 @@ using Clicco.Application.Features.Queries;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
-using Clicco.WebAPI.NewFolder;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

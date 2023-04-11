@@ -47,7 +47,7 @@ namespace Clicco.Infrastructure.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("", opt =>
+            optionsBuilder.UseSqlServer("Data Source=DESKTOP-2QF0S4K;Initial Catalog=ParamECommerce;Integrated Security=True;", opt =>
             {
                 opt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null);
             });

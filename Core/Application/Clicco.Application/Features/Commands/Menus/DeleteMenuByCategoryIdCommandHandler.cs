@@ -29,7 +29,7 @@ namespace Clicco.Application.Features.Commands.Menus
             menuService.CheckCategoryId(request.CategoryId);
 
             var menu = await menuRepository.GetSingleAsync(x => x.CategoryId == request.CategoryId);
-            await menuRepository.DeleteAsync(menu);
+            menuRepository.Delete(menu);
             await menuRepository.SaveChangesAsync();
             return new SuccessResponse("Menu has been deleted!");
         }

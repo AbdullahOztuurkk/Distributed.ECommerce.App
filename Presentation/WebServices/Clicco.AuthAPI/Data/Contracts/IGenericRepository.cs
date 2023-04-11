@@ -13,6 +13,6 @@ namespace Clicco.AuthAPI.Data.Contracts
         Task<T> GetSingleAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes);
         Task<T> AddAsync(T entity);
         T Update(T entity);
-        Task<T> DeleteAsync(T entity);
+        T DeleteAsync(T entity);
     }
 }
