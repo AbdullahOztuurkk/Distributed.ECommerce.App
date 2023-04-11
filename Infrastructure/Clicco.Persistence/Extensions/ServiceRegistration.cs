@@ -1,12 +1,13 @@
-﻿using Clicco.Application.Interfaces.Repositories;
+﻿using Clicco.Application.Interfaces.CacheManager;
+using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Infrastructure.Context;
 using Clicco.Infrastructure.Repositories;
+using Clicco.Infrastructure.Services;
 using Clicco.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace Clicco.Infrastructure.Extensions
 {
@@ -22,6 +23,8 @@ namespace Clicco.Infrastructure.Extensions
                 });
                 opt.EnableSensitiveDataLogging();
             });
+
+            services.AddScoped<ICacheManager, RedisCacheManager>();
 
             #region Repositories
             services.AddScoped<ITransactionRepository, TransactionRepository>();

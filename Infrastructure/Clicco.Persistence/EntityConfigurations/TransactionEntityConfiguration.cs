@@ -44,10 +44,6 @@ namespace Clicco.Infrastructure.EntityConfigurations
             builder.Property(x => x.IsDeleted)
                 .HasDefaultValue(false);
 
-            builder.HasOne(x => x.User)
-                .WithMany(x => x.Transactions)
-                .HasForeignKey(x => x.UserId);
-
             builder.HasOne(x => x.Address)
                 .WithMany(x => x.Transactions)
                 .HasForeignKey(x => x.AddressId);

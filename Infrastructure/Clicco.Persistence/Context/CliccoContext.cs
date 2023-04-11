@@ -7,6 +7,16 @@ namespace Clicco.Infrastructure.Context
 {
     public class CliccoContext : DbContext
     {
+        public CliccoContext(DbContextOptions<CliccoContext> options) : base(options)
+        {
+            
+        }
+
+        public CliccoContext()
+        {
+            
+        }
+
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Menu> Menus { get; set; }

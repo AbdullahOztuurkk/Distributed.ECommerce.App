@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Clicco.Application.Features.Queries;
-using Clicco.Application.Features.Queries.Addresses;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Model;

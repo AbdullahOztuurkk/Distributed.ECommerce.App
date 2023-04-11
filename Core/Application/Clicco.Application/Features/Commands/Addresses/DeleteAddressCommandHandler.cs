@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using Clicco.Application.Features.Queries.Addresses;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
-using static Clicco.Domain.Core.ResponseModel.BaseResponse;
 
 namespace Clicco.Application.Features.Commands
 {

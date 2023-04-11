@@ -25,7 +25,7 @@ namespace Clicco.Application.Features.Queries
             {
                 throw new Exception("Product not Found!");
             }
-            return await reviewRepository.Get(x => x.ProductId == request.ProductId, x => x.User);
+            return await reviewRepository.Get(x => x.ProductId == request.ProductId);
         }
     }
 }

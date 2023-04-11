@@ -49,7 +49,6 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPost("Create")]
-        [TypeFilter(typeof(SystemAdministratorFilter))]
         [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateMenuCommand command)
@@ -59,7 +58,6 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [TypeFilter(typeof(SystemAdministratorFilter))]
         [ProducesResponseType(typeof(Menu), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateMenuCommand command)
@@ -69,7 +67,6 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpDelete("Delete")]
-        [TypeFilter(typeof(SystemAdministratorFilter))]
         [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromBody] DeleteMenuCommand command)

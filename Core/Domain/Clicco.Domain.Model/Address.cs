@@ -13,7 +13,6 @@ namespace Clicco.Domain.Model
 
         //Relationship
         public ICollection<Transaction> Transactions { get; set; }
-        public User User { get; set; }
         public int UserId { get; set; }
     }
 }

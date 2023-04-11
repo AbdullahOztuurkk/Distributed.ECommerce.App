@@ -27,9 +27,6 @@ namespace Clicco.Infrastructure.EntityConfigurations
 
             builder.Property(x => x.ZipCode).HasMaxLength(50);
 
-            builder.HasOne(x => x.User)
-                .WithMany(x => x.Addresses)
-                .HasForeignKey(x => x.UserId);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Clicco.AuthAPI.Data.Contracts;
+﻿using Clicco.AuthAPI.Data.Context;
+using Clicco.AuthAPI.Data.Contracts;
 using Clicco.AuthAPI.Data.Repositories;
 using Clicco.AuthAPI.Data.Validators;
 using Clicco.AuthAPI.Models;
@@ -6,6 +7,7 @@ using Clicco.AuthAPI.Services;
 using Clicco.AuthAPI.Services.Contracts;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
@@ -28,6 +30,15 @@ namespace Clicco.AuthAPI.Extensions
                     IssuerSigningKey = signingKey,
                     ClockSkew = TimeSpan.Zero
                 };
+            });
+
+            services.AddDbContext<AuthContext>(opt =>
+            {
+                opt.UseSqlServer(configuration.GetConnectionString("AuthContext"), sqlOpt =>
+                {
+                    sqlOpt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null);
+                });
+                opt.EnableSensitiveDataLogging();
             });
 
             services.AddValidatorsFromAssembly(typeof(UserValidators).Assembly);
