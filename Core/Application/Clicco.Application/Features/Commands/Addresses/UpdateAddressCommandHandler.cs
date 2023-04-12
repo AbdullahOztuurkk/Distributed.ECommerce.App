@@ -3,6 +3,9 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Model;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.JsonWebTokens;
+using System.Security.Claims;
 
 namespace Clicco.Application.Features.Commands
 {
@@ -20,19 +23,21 @@ namespace Clicco.Application.Features.Commands
         private readonly IAddressRepository addressRepository;
         private readonly IMapper mapper;
         private readonly IAddressService addressService;
+        private readonly IHttpContextAccessor contextAccessor;
 
-        public UpdateAddressCommandHandler(IAddressRepository addressRepository, IMapper mapper)
+        public UpdateAddressCommandHandler(IAddressRepository addressRepository, IMapper mapper, IAddressService addressService, IHttpContextAccessor contextAccessor)
         {
             this.addressRepository = addressRepository;
             this.mapper = mapper;
+            this.addressService = addressService;
+            this.contextAccessor = contextAccessor;
         }
 
         public async Task<Address> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
         {
-            //TODO:Inject IHttpContextAccessor for get userId
             addressService.CheckSelfId(request.Id, "Address not found!");
             var address = mapper.Map<Address>(request);
-            //address.UserId = httpContextAccessor.Context.User.Id;
+            address.UserId = Convert.ToInt32(contextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.UniqueName).Value);
             addressRepository.Update(address);
             await addressRepository.SaveChangesAsync();
             return address;

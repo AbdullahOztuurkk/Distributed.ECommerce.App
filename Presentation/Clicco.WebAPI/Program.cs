@@ -15,7 +15,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddPersistenceServices(builder.Configuration);
+builder.Services.AddInfrastructureServices();
 builder.Services.AddSingleton(sp => sp.ConfigureRedis(builder.Configuration));
 builder.Services.ConfigureAuth(builder.Configuration);
 builder.Services.AddSingleton<SystemAdministratorFilter>();

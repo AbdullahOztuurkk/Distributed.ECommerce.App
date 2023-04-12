@@ -4,7 +4,7 @@ namespace Clicco.Application.Interfaces.Services
 {
     public interface IReviewService : IGenericService<Review>
     {
-        void CheckProductId(int productId);
-        void CheckUserId(int userId);
+        void CheckProductIdAsync(int productId);
+        void CheckUserIdAsync(int userId);
     }
 }

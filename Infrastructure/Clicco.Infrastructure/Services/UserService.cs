@@ -10,11 +10,11 @@ namespace Clicco.Infrastructure.Services
         public UserService(IConfiguration configuration)
         {
             this.configuration = configuration;
-            httpClient = new HttpRestClientHelper(configuration["AUTH_API_URL"]);
+            httpClient = new HttpRestClientHelper(configuration["URLS:AUTH_API"]);
         }
         public async Task<bool> IsExistAsync(int UserId)
         {
-            var result = await httpClient.GetAsync<string>($"api/users/{UserId}");
+            var result = await httpClient.GetAsync<string>($"/api/users/{UserId}");
             return result != null && result.Length > 0;
         }
     }

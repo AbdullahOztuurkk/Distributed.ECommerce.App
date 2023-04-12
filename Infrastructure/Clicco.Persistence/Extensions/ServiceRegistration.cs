@@ -13,7 +13,7 @@ namespace Clicco.Infrastructure.Extensions
 {
     public static class ServiceRegistration
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<CliccoContext>(opt =>
             {
@@ -25,6 +25,8 @@ namespace Clicco.Infrastructure.Extensions
             });
 
             services.AddScoped<ICacheManager, RedisCacheManager>();
+
+            services.AddHttpContextAccessor();
 
             #region Repositories
             services.AddScoped<ITransactionRepository, TransactionRepository>();

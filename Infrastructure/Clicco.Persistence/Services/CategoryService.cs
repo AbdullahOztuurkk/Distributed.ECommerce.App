@@ -17,10 +17,12 @@ namespace Clicco.Persistence.Services
             ThrowExceptionIfNull(result, "Menu not Found!");
         }
 
-        public void DisableMenuId(int menuId)
+        public async void DisableMenuId(int menuId)
         {
-            //TODO: Set IsDeleted property to true by Menu Id
-            throw new NotImplementedException();
+            var menu = await menuRepository.GetById(menuId);
+            menu.IsDeleted = true;
+            menuRepository.Update(menu);
+            await menuRepository.SaveChangesAsync();
         }
     }
 }

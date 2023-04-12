@@ -31,8 +31,8 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
         {
-            //TODO: Send request to Auth Api for User check
-            //await addressService.CheckUserId()
+            addressService.CheckUserIdAsync(request.UserId);
+            
             var address = mapper.Map<Address>(request);
             await addressRepository.AddAsync(address);
             await addressRepository.SaveChangesAsync();

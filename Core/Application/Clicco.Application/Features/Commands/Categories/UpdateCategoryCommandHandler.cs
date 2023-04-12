@@ -28,7 +28,6 @@ namespace Clicco.Application.Features.Commands
 
         public async Task<Category> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
-            //TODO:Inject IHttpContextAccessor for get userId
             categoryService.CheckSelfId(request.Id, "Category not found!");
             if (request.ParentId.HasValue)
                 categoryService.CheckSelfId(request.ParentId.Value, "Parent Category not Found!");

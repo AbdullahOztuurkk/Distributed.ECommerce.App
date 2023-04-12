@@ -1,15 +1,22 @@
 ﻿using Clicco.Application.Interfaces.Services;
+using Clicco.Application.Interfaces.Services.External;
 using Clicco.Domain.Model;
+using System.Net;
 
 namespace Clicco.Persistence.Services
 {
     public class AddressService : GenericService<Address>, IAddressService
     {
-        public AddressService() { }
-        public void CheckUserId(string userId)
+        private readonly IUserService userService;
+        public AddressService(IUserService userService)
         {
-            //TODO: Inject Auth Service then send request to Auth Api for check user Id
-            throw new NotImplementedException();
+            this.userService = userService;
+        }
+        public async void CheckUserIdAsync(int userId)
+        {
+            var result = await userService.IsExistAsync(userId);
+            if (!result)
+                throw new Exception("User not found!") { HResult = (int)HttpStatusCode.BadRequest };
         }
     }
 }
