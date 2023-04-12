@@ -5,13 +5,15 @@ using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Clicco.WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/reviews")]
+    [Authorize]
     public class ReviewController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -21,6 +23,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(Review), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
@@ -32,6 +35,7 @@ namespace Clicco.WebAPI.Controllers
 
         // v1/api/controller/action/2012-12-31
         [HttpGet("GetByProductId/{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(List<Review>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetMenuByUrl(int id)

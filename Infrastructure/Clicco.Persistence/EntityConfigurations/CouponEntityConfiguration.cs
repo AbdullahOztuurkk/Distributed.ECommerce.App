@@ -32,11 +32,7 @@ namespace Clicco.Infrastructure.EntityConfigurations
                 .IsRequired();
 
             builder.Property(x => x.IsActive)
-                .HasDefaultValue<bool>(true)
                 .IsRequired();
-
-            builder.Property(x => x.IsDeleted)
-                .HasDefaultValue(false);
 
             builder.HasOne(x => x.Transaction)
                 .WithOne(x => x.Coupon)

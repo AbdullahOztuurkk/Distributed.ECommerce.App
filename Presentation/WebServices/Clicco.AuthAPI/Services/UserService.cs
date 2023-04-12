@@ -13,7 +13,7 @@ namespace Clicco.AuthAPI.Services
         }
         public async Task<User> IsExistAsync(int userId)
         {
-            return await userRepository.GetSingleAsync(x => x.Id == userId);
+            return await userRepository.GetByIdAsync(userId);
         }
     }
 }

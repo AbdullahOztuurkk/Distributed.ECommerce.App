@@ -3,15 +3,16 @@ using Clicco.Application.Features.Queries;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
-using Clicco.WebAPI.NewFolder;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Clicco.WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/transactions")]
+    [Authorize]
     public class TransactionController : ControllerBase
     {
         private readonly IMediator mediator;

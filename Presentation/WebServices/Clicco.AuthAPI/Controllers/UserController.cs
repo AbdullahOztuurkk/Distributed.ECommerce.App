@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Clicco.AuthAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace Clicco.AuthAPI.Controllers
 
             if (user == null)
             {
-                return NoContent();
+                return BadRequest("User not found!");
             }
 
             return Ok(user);

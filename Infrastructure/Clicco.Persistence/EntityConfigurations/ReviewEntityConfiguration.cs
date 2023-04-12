@@ -30,9 +30,6 @@ namespace Clicco.Infrastructure.EntityConfigurations
             builder.Property(x => x.UserId)
                 .IsRequired();
 
-            builder.Property(x => x.IsDeleted)
-                .HasDefaultValue(false);
-
             builder.HasOne(x => x.Product)
                 .WithMany(x => x.Reviews)
                 .HasForeignKey(x => x.ProductId);

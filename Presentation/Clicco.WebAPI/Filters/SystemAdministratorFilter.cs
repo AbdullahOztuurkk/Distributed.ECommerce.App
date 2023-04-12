@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace Clicco.WebAPI.NewFolder
+namespace Clicco.WebAPI.Filters
 {
     public class SystemAdministratorFilter : IAuthorizationFilter
     {

@@ -41,9 +41,6 @@ namespace Clicco.Infrastructure.EntityConfigurations
             builder.Property(x => x.TotalAmount)
                 .IsRequired();
 
-            builder.Property(x => x.IsDeleted)
-                .HasDefaultValue(false);
-
             builder.HasOne(x => x.Address)
                 .WithMany(x => x.Transactions)
                 .HasForeignKey(x => x.AddressId);

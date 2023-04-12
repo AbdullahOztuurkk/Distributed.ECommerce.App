@@ -23,11 +23,7 @@ namespace Clicco.Infrastructure.EntityConfigurations
                 .IsRequired();
 
             builder.Property(x => x.IsActive)
-                .HasDefaultValue(true)
                 .IsRequired();
-
-            builder.Property(x => x.IsDeleted)
-                .HasDefaultValue(false);
 
             builder.HasOne(x => x.Category)
                 .WithOne(x => x.Menu)

@@ -3,15 +3,16 @@ using Clicco.Application.Features.Queries;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
-using Clicco.WebAPI.NewFolder;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Clicco.WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/menus")]
+    [Authorize]
     public class MenuController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -21,6 +22,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(List<Menu>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
@@ -29,6 +31,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(Coupon), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
@@ -38,8 +41,9 @@ namespace Clicco.WebAPI.Controllers
             return Ok(result);
         }
 
-        // v1/api/controller/action/2012-12-31
+        // v1/api/controller/action/clicco-e-commerce-menu-url
         [HttpGet("GetByUrl/{url}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(List<Menu>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetMenuByUrl(string url)

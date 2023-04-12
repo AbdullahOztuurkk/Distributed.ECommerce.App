@@ -4,13 +4,15 @@ using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Clicco.WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/coupons")]
+    [Authorize]
     public class CouponController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -20,6 +22,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(List<Coupon>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
@@ -28,6 +31,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(Coupon), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
@@ -39,6 +43,7 @@ namespace Clicco.WebAPI.Controllers
 
         // v1/api/controller/action/2012-12-31
         [HttpGet("GetListByDate/{date}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(List<Coupon>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetCouponsByDate(string date)

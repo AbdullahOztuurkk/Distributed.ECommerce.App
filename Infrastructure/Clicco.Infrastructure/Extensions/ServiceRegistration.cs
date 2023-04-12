@@ -8,6 +8,8 @@ namespace Clicco.Infrastructure.Extensions
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
+            services.AddHttpClient();
+
             services.AddScoped<IUserService, UserService>();
 
             return services;

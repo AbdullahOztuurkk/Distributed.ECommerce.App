@@ -6,16 +6,18 @@ namespace Clicco.Infrastructure.Services
     public class UserService : IUserService
     {
         private readonly IConfiguration configuration;
-        private readonly HttpRestClientHelper httpClient;
-        public UserService(IConfiguration configuration)
+        private readonly string baseUri;
+        private readonly HttpClient httpClient;
+        public UserService(IConfiguration configuration, HttpClient httpClient)
         {
             this.configuration = configuration;
-            httpClient = new HttpRestClientHelper(configuration["URLS:AUTH_API"]);
+            baseUri = configuration["URLS:AUTH_API"];
+            this.httpClient = httpClient;
         }
         public async Task<bool> IsExistAsync(int UserId)
         {
-            var result = await httpClient.GetAsync<string>($"/api/users/{UserId}");
-            return result != null && result.Length > 0;
+            var response = await httpClient.GetAsync($"{baseUri}/api/users/{UserId}");
+            return response.IsSuccessStatusCode;
         }
     }
 }

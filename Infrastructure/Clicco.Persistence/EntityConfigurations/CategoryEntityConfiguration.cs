@@ -22,9 +22,6 @@ namespace Clicco.Infrastructure.EntityConfigurations
                 .HasMaxLength(100)
                 .IsRequired();
 
-            builder.Property(x => x.IsDeleted)
-                .HasDefaultValue(false);
-
             builder.HasOne(x => x.Menu)
                 .WithOne(x => x.Category)
                 .HasForeignKey<Menu>(x => x.CategoryId);

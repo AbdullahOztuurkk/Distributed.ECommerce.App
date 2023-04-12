@@ -3,15 +3,16 @@ using Clicco.Application.Features.Queries;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
-using Clicco.WebAPI.NewFolder;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Clicco.WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/products")]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -21,6 +22,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(List<Product>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
@@ -29,6 +31,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 

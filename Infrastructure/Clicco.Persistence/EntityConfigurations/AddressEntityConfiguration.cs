@@ -12,9 +12,6 @@ namespace Clicco.Infrastructure.EntityConfigurations
 
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.IsDeleted)
-                .HasDefaultValue(false);
-
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
             builder.Property(x => x.City).HasMaxLength(50);

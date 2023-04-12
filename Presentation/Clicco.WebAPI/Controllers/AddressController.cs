@@ -4,13 +4,15 @@ using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Clicco.WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/addresses")]
+    [Authorize]
     public class AddressController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -20,6 +22,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(List<Address>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
@@ -28,6 +31,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(Address), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
@@ -38,6 +42,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("GetByUserId")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(Address), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetAddressByUserId(int userId)
