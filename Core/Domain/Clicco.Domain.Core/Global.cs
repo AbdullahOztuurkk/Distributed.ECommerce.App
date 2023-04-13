@@ -22,6 +22,6 @@
 
     public class CacheKeys
     {
-        public const string ACTIVE_COUPONS = "active_coupons";
+        public const string ActiveCoupons = "active_coupons";
     }
 }

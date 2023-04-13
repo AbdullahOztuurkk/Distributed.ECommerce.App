@@ -21,7 +21,7 @@ namespace Clicco.Application.Features.Queries
         }
         public async Task<List<Address>> Handle(GetAddressesByUserIdQuery request, CancellationToken cancellationToken)
         {
-            addressService.CheckUserIdAsync(request.UserId);
+            await addressService.CheckUserIdAsync(request.UserId);
 
             return await addressRepository.Get(x => x.UserId == request.UserId);
         }

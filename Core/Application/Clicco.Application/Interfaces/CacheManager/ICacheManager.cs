@@ -2,10 +2,12 @@
 {
     public interface ICacheManager
     {
-        bool SearchInArray<T>(string key, T value);
-        T GetOrSet<T>(string key, Func<T> getValueFunc, int expirationDate = 60);
-        T Get<T>(string key);
-        bool Exist(string key);
-        void Remove(string key);
+        Task<T> GetOrSetAsync<T>(string key, Func<T> getValueFunc, int expirationDate = 60);
+        Task<T> GetAsync<T>(string key);
+        Task<bool> ExistAsync(string key);
+        void RemoveAsync(string key);
+        Task<List<string>> GetListAsync(string key);
+        Task AddToListAsync(string key, string value);
+        Task<List<string>> SearchInListAsync(string key, string value);
     }
 }

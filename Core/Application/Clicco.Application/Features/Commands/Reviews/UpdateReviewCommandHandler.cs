@@ -32,8 +32,8 @@ namespace Clicco.Application.Features.Commands
 
         public async Task<Review> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
         {
-            reviewService.CheckSelfId(request.Id, "Review not found!");
-            reviewService.CheckProductIdAsync(request.ProductId);
+            await reviewService.CheckSelfId(request.Id);
+            await reviewService.CheckProductIdAsync(request.ProductId);
 
             var review = mapper.Map<Review>(request);
             reviewRepository.Update(review);

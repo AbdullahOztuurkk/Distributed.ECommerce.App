@@ -28,9 +28,9 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(CreateMenuCommand request, CancellationToken cancellationToken)
         {
-            menuService.CheckCategoryId(request.CategoryId);
+            await menuService.CheckCategoryId(request.CategoryId);
             var exactUri = menuRepository.GetExactSlugUrlByCategoryId(request.CategoryId);
-            menuService.CheckSlugUrl(exactUri);
+            await menuService.CheckSlugUrl(exactUri);
 
             var newMenu = mapper.Map<Menu>(request);
             newMenu.SlugUrl = exactUri;

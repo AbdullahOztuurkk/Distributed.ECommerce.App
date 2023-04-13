@@ -4,7 +4,7 @@ namespace Clicco.Application.Interfaces.Services
 {
     public interface ITransactionService : IGenericService<Transaction>
     {
-        void CheckUserIdAsync(int userId);
-        void CheckAddressIdAsync(int addressId);
+        Task CheckUserIdAsync(int userId);
+        Task CheckAddressIdAsync(int addressId);
     }
 }

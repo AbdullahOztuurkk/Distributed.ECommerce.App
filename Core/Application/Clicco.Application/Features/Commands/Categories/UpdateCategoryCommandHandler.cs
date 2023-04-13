@@ -2,6 +2,7 @@
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Model;
+using Clicco.Domain.Model.Exceptions;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
@@ -28,11 +29,11 @@ namespace Clicco.Application.Features.Commands
 
         public async Task<Category> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
-            categoryService.CheckSelfId(request.Id, "Category not found!");
+            await categoryService.CheckSelfId(request.Id);
             if (request.ParentId.HasValue)
-                categoryService.CheckSelfId(request.ParentId.Value, "Parent Category not Found!");
+                await categoryService.CheckSelfId(request.ParentId.Value, CustomErrors.ParentCategoryNotFound);
             if (request.MenuId.HasValue)
-                categoryService.CheckMenuId(request.MenuId.Value);
+                await categoryService.CheckMenuId(request.MenuId.Value);
 
             var category = mapper.Map<Category>(request);
             categoryRepository.Update(category);

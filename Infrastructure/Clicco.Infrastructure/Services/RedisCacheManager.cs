@@ -14,12 +14,12 @@ namespace Clicco.Infrastructure.Services
             db = _redis.GetDatabase();
         }
 
-        public bool Exist(string key)
+        public async Task<bool> ExistAsync(string key)
         {
-            return db.KeyExists(key);
+            return await db.KeyExistsAsync(key);
         }
 
-        public T GetOrSet<T>(string key, Func<T> getValueFunc, int expirationDate = 60)
+        public async Task<T> GetOrSetAsync<T>(string key, Func<T> getValueFunc, int expirationDate = 60)
         {
             var cachedValue = db.StringGet(key);
             if (!cachedValue.IsNull)
@@ -32,38 +32,71 @@ namespace Clicco.Infrastructure.Services
             var result = getValueFunc();
 
             // Caching new value
-            db.StringSet(key, JsonConvert.SerializeObject(result), TimeSpan.FromMinutes(expirationDate));
+            await db.StringSetAsync(key, JsonConvert.SerializeObject(result), TimeSpan.FromMinutes(expirationDate));
 
             return result;
         }
 
-        public T Get<T>(string key)
+        public async Task<T> GetAsync<T>(string key)
         {
-            var cachedValue = db.StringGet(key);
-            return !cachedValue.IsNull ? JsonConvert.DeserializeObject<T>(cachedValue) : default;
+            var cachedValue = await db.StringGetAsync(key);
+            return !cachedValue.IsNull ? JsonConvert.DeserializeObject<T>(cachedValue) : default(T);
 
         }
 
-        public async void Remove(string key)
+        public async void RemoveAsync(string key)
         {
             await db.KeyDeleteAsync(key);
         }
 
         public bool SearchInArray<T>(string key, T value)
         {
-            //Check number exist in List
-            bool found = false;
             long length = db.ListLength(key);
             for (long i = 0; i < length; i++)
             {
                 RedisValue redisValue = db.ListGetByIndex(key, i);
-                if (redisValue.HasValue && redisValue.ToString() == value.ToString())
+                if (db.ListGetByIndex(key, i).ToString() == value.ToString())
                 {
-                    found = true;
-                    break;
+                    return true;
                 }
             }
-            return found;
+            return false;
+        }
+
+        public async Task<List<string>> GetListAsync(string key)
+        {
+            var list = new List<string>();
+
+            var redisValues = await db.ListRangeAsync(key);
+
+            foreach (var value in redisValues)
+            {
+                list.Add(value);
+            }
+
+            return list;
+        }
+
+        public async Task AddToListAsync(string key, string value)
+        {
+            await db.ListRightPushAsync(key, value);
+        }
+
+        public async Task<List<string>> SearchInListAsync(string key, string value)
+        {
+            var list = new List<string>();
+
+            var redisValues = await db.ListRangeAsync(key);
+
+            foreach (var redisValue in redisValues)
+            {
+                if (redisValue.ToString().Contains(value))
+                {
+                    list.Add(redisValue);
+                }
+            }
+
+            return list;
         }
     }
 }

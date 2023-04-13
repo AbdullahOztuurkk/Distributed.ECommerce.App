@@ -33,8 +33,8 @@ namespace Clicco.Application.Features.Commands
 
         public async Task<Product> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
-            productService.CheckSelfId(request.Id, "Product not found!");
-            productService.CheckCategoryId(request.CategoryId);
+            await productService.CheckSelfId(request.Id);
+            await productService.CheckCategoryId(request.CategoryId);
 
             var product = mapper.Map<Product>(request);
             productRepository.Update(product);

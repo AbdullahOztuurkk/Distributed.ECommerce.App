@@ -1,7 +1,9 @@
-﻿namespace Clicco.Application.Interfaces.Services
+﻿using Clicco.Domain.Model.Exceptions;
+
+namespace Clicco.Application.Interfaces.Services
 {
     public interface IGenericService<TEntity>
     {
-        void CheckSelfId(int entityId, string errorMessage);
+        Task CheckSelfId(int entityId, CustomError err = null);
     }
 }

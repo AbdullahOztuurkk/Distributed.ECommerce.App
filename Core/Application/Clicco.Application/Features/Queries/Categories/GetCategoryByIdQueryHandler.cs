@@ -18,7 +18,7 @@ namespace Clicco.Application.Features.Queries
         }
         public async Task<Category> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
-            return await categoryRepository.GetById(request.Id);
+            return await categoryRepository.GetByIdAsync(request.Id);
         }
     }
 }

@@ -29,8 +29,8 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
-            reviewService.CheckUserIdAsync(request.UserId);
-            reviewService.CheckProductIdAsync(request.ProductId);
+            await reviewService.CheckUserIdAsync(request.UserId);
+            await reviewService.CheckProductIdAsync(request.ProductId);
 
             var review = mapper.Map<Review>(request);
             await reviewRepository.AddAsync(review);

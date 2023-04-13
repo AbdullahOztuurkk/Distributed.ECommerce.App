@@ -31,10 +31,10 @@ namespace Clicco.Application.Features.Commands
 
         public async Task<Menu> Handle(UpdateMenuCommand request, CancellationToken cancellationToken)
         {
-            menuService.CheckSelfId(request.Id, "Menu not found!");
-            menuService.CheckCategoryId(request.CategoryId);
+            await menuService.CheckSelfId(request.Id);
+            await menuService.CheckCategoryId(request.CategoryId);
             var uri = menuRepository.GetExactSlugUrlByCategoryId(request.CategoryId);
-            menuService.CheckSlugUrl(uri);
+            await menuService.CheckSlugUrl(uri);
 
             var menu = mapper.Map<Menu>(request);
             menu.SlugUrl = uri;

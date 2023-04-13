@@ -28,7 +28,7 @@ namespace Clicco.Application.Features.Commands.Reviews
 
         public async Task<BaseResponse> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
         {
-            reviewService.CheckSelfId(request.Id,"Review not found!");
+            await reviewService.CheckSelfId(request.Id);
             
             var review = mapper.Map<Review>(request);
             reviewRepository.Delete(review);

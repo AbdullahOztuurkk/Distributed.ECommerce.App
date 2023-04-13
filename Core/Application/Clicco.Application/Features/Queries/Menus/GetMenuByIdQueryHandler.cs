@@ -18,7 +18,7 @@ namespace Clicco.Application.Features.Queries
         }
         public async Task<Menu> Handle(GetMenuByIdQuery request, CancellationToken cancellationToken)
         {
-            return await menuRepository.GetSingleAsync(x => x.Id == request.Id, x => x.Category);
+            return await menuRepository.GetByIdAsync(request.Id, x => x.Category);
         }
     }
 }

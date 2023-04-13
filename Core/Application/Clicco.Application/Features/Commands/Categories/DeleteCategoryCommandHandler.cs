@@ -28,7 +28,8 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
-            categoryService.CheckSelfId(request.Id, "Category not found!");
+            await categoryService.CheckSelfId(request.Id);
+
             var category = mapper.Map<Category>(request.Id);
             categoryRepository.Delete(category);
             categoryService.DisableMenuId(request.Id);

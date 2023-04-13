@@ -35,7 +35,8 @@ namespace Clicco.Application.Features.Commands
 
         public async Task<Address> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
         {
-            addressService.CheckSelfId(request.Id, "Address not found!");
+            await addressService.CheckSelfId(request.Id);
+
             var address = mapper.Map<Address>(request);
             address.UserId = Convert.ToInt32(contextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.UniqueName).Value);
             addressRepository.Update(address);

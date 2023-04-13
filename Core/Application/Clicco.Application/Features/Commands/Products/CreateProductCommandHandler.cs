@@ -31,7 +31,7 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            productService.CheckCategoryId(request.CategoryId);
+            await productService.CheckCategoryId(request.CategoryId);
 
             var product = mapper.Map<Product>(request);
             //product.SlugUrl = product.Name.ToSeoFriendlyUrl();

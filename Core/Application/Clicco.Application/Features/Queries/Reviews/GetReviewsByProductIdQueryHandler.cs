@@ -1,4 +1,5 @@
 ﻿using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Model;
 using MediatR;
 
@@ -12,19 +13,15 @@ namespace Clicco.Application.Features.Queries
     public class GetReviewsByProductIdQueryHandler : IRequestHandler<GetReviewsByProductIdQuery, List<Review>>
     {
         private readonly IReviewRepository reviewRepository;
-        private IMediator mediator;
-        public GetReviewsByProductIdQueryHandler(IReviewRepository reviewRepository, IMediator mediator)
+        private readonly IReviewService reviewService;
+        public GetReviewsByProductIdQueryHandler(IReviewRepository reviewRepository, IReviewService reviewService)
         {
             this.reviewRepository = reviewRepository;
-            this.mediator = mediator;
+            this.reviewService = reviewService;
         }
         public async Task<List<Review>> Handle(GetReviewsByProductIdQuery request, CancellationToken cancellationToken)
         {
-            var product = await mediator.Send(new GetProductByIdQuery { Id = request.ProductId },cancellationToken);
-            if(product == null)
-            {
-                throw new Exception("Product not Found!");
-            }
+            await reviewService.CheckProductIdAsync(request.ProductId);
             return await reviewRepository.Get(x => x.ProductId == request.ProductId);
         }
     }

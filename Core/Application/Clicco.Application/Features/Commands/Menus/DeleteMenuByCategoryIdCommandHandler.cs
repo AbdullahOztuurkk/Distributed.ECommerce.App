@@ -26,7 +26,7 @@ namespace Clicco.Application.Features.Commands.Menus
 
         public async Task<BaseResponse> Handle(DeleteMenuByCategoryIdCommand request, CancellationToken cancellationToken)
         {
-            menuService.CheckCategoryId(request.CategoryId);
+            await menuService.CheckCategoryId(request.CategoryId);
 
             var menu = await menuRepository.GetSingleAsync(x => x.CategoryId == request.CategoryId);
             menuRepository.Delete(menu);

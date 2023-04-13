@@ -25,7 +25,8 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
         {
-            menuService.CheckSelfId(request.Id, "Menu not found!");
+            await menuService.CheckSelfId(request.Id);
+
             var menu = mapper.Map<Menu>(request);
             menuRepository.Delete(menu);
             await menuRepository.SaveChangesAsync();

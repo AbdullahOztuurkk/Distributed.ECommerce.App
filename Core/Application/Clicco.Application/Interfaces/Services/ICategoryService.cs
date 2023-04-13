@@ -4,7 +4,7 @@ namespace Clicco.Application.Interfaces.Services
 {
     public interface ICategoryService : IGenericService<Category>
     {
-        void CheckMenuId(int menuId);
-        void DisableMenuId(int menuId);
+        Task CheckMenuId(int menuId);
+        Task DisableMenuId(int menuId);
     }
 }

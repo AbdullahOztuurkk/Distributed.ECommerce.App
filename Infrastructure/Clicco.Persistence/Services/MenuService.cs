@@ -7,18 +7,26 @@ namespace Clicco.Persistence.Services
 {
     public class MenuService : GenericService<Menu>, IMenuService
     {
+        private readonly IMenuRepository menuRepository;
         private readonly ICategoryRepository categoryRepository;
-        public MenuService(ICategoryRepository categoryRepository)
+        public MenuService(ICategoryRepository categoryRepository, IMenuRepository menuRepository)
         {
             this.categoryRepository = categoryRepository;
+            this.menuRepository = menuRepository;
         }
-        public async void CheckCategoryId(int categoryId)
+        public async Task CheckCategoryId(int categoryId)
         {
             var result = await categoryRepository.GetByIdAsync(categoryId);
             ThrowExceptionIfNull(result, CustomErrors.CategoryNotFound);
         }
 
-        public async void CheckSlugUrl(string uri)
+        public override async Task CheckSelfId(int entityId, CustomError err = null)
+        {
+            var result = await menuRepository.GetByIdAsync(entityId);
+            ThrowExceptionIfNull(result, err ?? CustomErrors.MenuNotFound);
+        }
+
+        public async Task CheckSlugUrl(string uri)
         {
             var result = await categoryRepository.GetSingleAsync(x => x.SlugUrl == uri);
             ThrowExceptionIfNull(result, CustomErrors.MenuAlreadyExist);

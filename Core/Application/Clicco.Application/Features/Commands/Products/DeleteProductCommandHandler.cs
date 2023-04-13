@@ -26,7 +26,7 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            productService.CheckSelfId(request.Id, "Product not found!");
+            await productService.CheckSelfId(request.Id);
 
             var product = mapper.Map<Product>(request);
             productRepository.Delete(product);

@@ -3,8 +3,10 @@ using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.Exceptions;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
+using Clicco.Domain.Model.Exceptions;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
@@ -29,14 +31,14 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(DeleteCouponCommand request, CancellationToken cancellationToken)
         {
-            couponService.CheckSelfId(request.Id, "Coupon not found!");
+            await couponService.CheckSelfId(request.Id);
 
-            var isActive = cacheManager.SearchInArray<int>(CacheKeys.ACTIVE_COUPONS, request.Id);
-
-            if (isActive)
+            var activeCoupons = await cacheManager.GetListAsync(CacheKeys.ActiveCoupons);
+            if (activeCoupons.Any(x => x == request.Id.ToString()))
             {
-                throw new Exception("The coupon is now used!");
+                throw new CustomException(CustomErrors.CouponIsNowUsed);
             }
+
             var coupon = mapper.Map<Coupon>(request);
             couponRepository.Delete(coupon);
             await couponRepository.SaveChangesAsync();

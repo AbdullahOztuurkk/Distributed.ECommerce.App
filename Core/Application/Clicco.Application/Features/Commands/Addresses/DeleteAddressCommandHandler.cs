@@ -25,7 +25,8 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
         {
-            addressService.CheckSelfId(request.Id,"Address not found!");
+            await addressService.CheckSelfId(request.Id);
+
             var address = mapper.Map<Address>(request);
             addressRepository.Delete(address);
             return new SuccessResponse("Address has been deleted!");

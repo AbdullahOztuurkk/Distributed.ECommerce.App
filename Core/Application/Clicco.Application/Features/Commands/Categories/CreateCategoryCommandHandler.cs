@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using Clicco.Application.Features.Queries;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
-using Clicco.Domain.Core.Extensions;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
+using Clicco.Domain.Model.Exceptions;
 using MediatR;
-using static Clicco.Domain.Core.ResponseModel.BaseResponse;
 
 namespace Clicco.Application.Features.Commands
 {
@@ -31,9 +29,9 @@ namespace Clicco.Application.Features.Commands
         public async Task<BaseResponse> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
             if (request.ParentId.HasValue)
-                categoryService.CheckSelfId(request.ParentId.Value, "Category not Found!");
+                await categoryService.CheckSelfId(request.ParentId.Value, CustomErrors.ParentCategoryNotFound);
             if (request.MenuId.HasValue)
-                categoryService.CheckMenuId(request.MenuId.Value);
+                await categoryService.CheckMenuId(request.MenuId.Value);
 
             var category = mapper.Map<Category>(request);
             //category.SlugUrl = request.Name.ToSeoFriendlyUrl();

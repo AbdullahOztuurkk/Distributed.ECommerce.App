@@ -4,25 +4,33 @@ using Clicco.Application.Interfaces.Services.External;
 using Clicco.Domain.Core.Exceptions;
 using Clicco.Domain.Model;
 using Clicco.Domain.Model.Exceptions;
-using System.Net;
 
 namespace Clicco.Persistence.Services
 {
     public class TransactionService : GenericService<Transaction>, ITransactionService
     {
+        private readonly ITransactionRepository transactionRepository;
         private readonly IAddressRepository addressRepository;
         private readonly IUserService userService;
-        public TransactionService(IAddressRepository addressRepository)
+        public TransactionService(IAddressRepository addressRepository, ITransactionRepository transactionRepository, IUserService userService)
         {
             this.addressRepository = addressRepository;
+            this.transactionRepository = transactionRepository;
+            this.userService = userService;
         }
-        public async void CheckAddressIdAsync(int addressId)
+        public async Task CheckAddressIdAsync(int addressId)
         {
             var result = await addressRepository.GetByIdAsync(addressId);
             ThrowExceptionIfNull(result, CustomErrors.AddressNotFound);
         }
 
-        public async void CheckUserIdAsync(int userId)
+        public override async Task CheckSelfId(int entityId, CustomError err = null)
+        {
+            var result = await transactionRepository.GetByIdAsync(entityId);
+            ThrowExceptionIfNull(result, err ?? CustomErrors.TransactionNotFound);
+        }
+
+        public async Task CheckUserIdAsync(int userId)
         {
             var result = await userService.IsExistAsync(userId);
             if (!result)

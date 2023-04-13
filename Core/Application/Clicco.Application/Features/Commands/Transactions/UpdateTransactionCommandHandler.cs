@@ -30,9 +30,9 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<Transaction> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
         {
-            transactionService.CheckUserIdAsync(request.UserId);
-            transactionService.CheckSelfId(request.Id,"Transaction not found!");
-            transactionService.CheckAddressIdAsync(request.AddressId);
+            await transactionService.CheckUserIdAsync(request.UserId);
+            await transactionService.CheckSelfId(request.Id);
+            await transactionService.CheckAddressIdAsync(request.AddressId);
 
             var transaction = mapper.Map<Transaction>(request);
             await transactionRepository.AddAsync(transaction);

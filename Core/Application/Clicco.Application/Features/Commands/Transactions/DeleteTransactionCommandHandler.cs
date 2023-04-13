@@ -1,6 +1,9 @@
-﻿using Clicco.Application.Features.Queries;
+﻿using AutoMapper;
+using Clicco.Application.Features.Queries;
 using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core.ResponseModel;
+using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
@@ -13,19 +16,19 @@ namespace Clicco.Application.Features.Commands
     public class DeleteTransactionCommandHandler : IRequestHandler<DeleteTransactionCommand, BaseResponse>
     {
         private readonly ITransactionRepository transactionRepository;
-        private readonly IMediator mediator;
-        public DeleteTransactionCommandHandler(ITransactionRepository transactionRepository, IMediator mediator)
+        private readonly IMapper mapper;
+        private readonly ITransactionService transactionService;
+        public DeleteTransactionCommandHandler(ITransactionRepository transactionRepository, IMapper mapper, ITransactionService transactionService)
         {
             this.transactionRepository = transactionRepository;
-            this.mediator = mediator;
+            this.transactionService = transactionService;
+            this.mapper = mapper;
         }
         public async Task<BaseResponse> Handle(DeleteTransactionCommand request, CancellationToken cancellationToken)
         {
-            var transaction = await mediator.Send(new GetTransactionByIdQuery { Id = request.Id }, cancellationToken);
-            if (transaction == null)
-            {
-                throw new Exception("Transaction not found!");
-            }
+            await transactionService.CheckSelfId(request.Id);
+
+            var transaction = mapper.Map<Transaction>(request);
             transactionRepository.Delete(transaction);
             await transactionRepository.SaveChangesAsync();
             return new SuccessResponse("Transaction has been deleted!");

@@ -21,7 +21,7 @@ namespace Clicco.Application.Features.Queries
 
         public async Task<Coupon> Handle(GetCouponByIdQuery request, CancellationToken cancellationToken)
         {
-            return await couponRepository.GetSingleAsync(x => x.Id == request.Id);  
+            return await couponRepository.GetByIdAsync(request.Id);  
         }
     }
 }
