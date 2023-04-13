@@ -1,23 +1,24 @@
 ﻿using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.Exceptions;
+using Clicco.Domain.Model.Exceptions;
 using Clicco.Infrastructure.Context;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Clicco.Persistence.Services
 {
     public class GenericService<TEntity> : IGenericService<TEntity> where TEntity : BaseEntity, new()
     {
-        public virtual void CheckSelfId(int entityId,string errorMessage)
+        public virtual void CheckSelfId(int entityId, string errorMessage)
         {
             using var context = new CliccoContext();
             var result = context.Set<TEntity>().FirstOrDefault(x => x.Id == entityId);
-            ThrowExceptionIfNull(result, errorMessage);
+            ThrowExceptionIfNull(result, CustomErrors.NotFoundArr[typeof(TEntity)]);
         }
 
-        public virtual void ThrowExceptionIfNull(object value,string errorMessage) 
+        public virtual void ThrowExceptionIfNull(object value, CustomError err)
         {
-            if (value == null) throw new Exception(errorMessage) { HResult = (int)HttpStatusCode.BadRequest };
+            if (value == null) throw new CustomException(err);
         }
     }
 }

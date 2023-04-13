@@ -1,6 +1,7 @@
 using Clicco.Application.Extensions;
 using Clicco.Infrastructure.Extensions;
 using Clicco.WebAPI.Filters;
+using Clicco.WebAPI.Middlewares;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddInfrastructureServices();
 builder.Services.AddSingleton(sp => sp.ConfigureRedis(builder.Configuration));
 builder.Services.ConfigureAuth(builder.Configuration);
 builder.Services.AddSingleton<SystemAdministratorFilter>();
+builder.Services.AddScoped<ExceptionHandlingMiddleware>();
 
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -48,13 +50,14 @@ builder.Services.AddSwaggerGen(c => {
 
 var app = builder.Build();
 
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

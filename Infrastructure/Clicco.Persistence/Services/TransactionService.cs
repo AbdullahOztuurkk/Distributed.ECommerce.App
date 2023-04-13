@@ -1,7 +1,9 @@
 ﻿using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.Interfaces.Services.External;
+using Clicco.Domain.Core.Exceptions;
 using Clicco.Domain.Model;
+using Clicco.Domain.Model.Exceptions;
 using System.Net;
 
 namespace Clicco.Persistence.Services
@@ -17,14 +19,14 @@ namespace Clicco.Persistence.Services
         public async void CheckAddressIdAsync(int addressId)
         {
             var result = await addressRepository.GetByIdAsync(addressId);
-            ThrowExceptionIfNull(result, "Address Not Found!");
+            ThrowExceptionIfNull(result, CustomErrors.AddressNotFound);
         }
 
         public async void CheckUserIdAsync(int userId)
         {
             var result = await userService.IsExistAsync(userId);
             if (!result)
-                throw new Exception("User not found!") { HResult = (int)HttpStatusCode.BadRequest };
+                throw new CustomException(CustomErrors.UserNotFound);
         }
     }
 }

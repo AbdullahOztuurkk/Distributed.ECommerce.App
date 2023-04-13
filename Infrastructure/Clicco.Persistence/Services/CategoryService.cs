@@ -1,6 +1,7 @@
 ﻿using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Model;
+using Clicco.Domain.Model.Exceptions;
 
 namespace Clicco.Persistence.Services
 {
@@ -14,7 +15,7 @@ namespace Clicco.Persistence.Services
         public async void CheckMenuId(int menuId)
         {
             var result = await menuRepository.GetByIdAsync(menuId);
-            ThrowExceptionIfNull(result, "Menu not Found!");
+            ThrowExceptionIfNull(result, CustomErrors.MenuNotFound);
         }
 
         public async void DisableMenuId(int menuId)

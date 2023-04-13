@@ -1,7 +1,8 @@
 ﻿using Clicco.Application.Interfaces.Services;
 using Clicco.Application.Interfaces.Services.External;
+using Clicco.Domain.Core.Exceptions;
 using Clicco.Domain.Model;
-using System.Net;
+using Clicco.Domain.Model.Exceptions;
 
 namespace Clicco.Persistence.Services
 {
@@ -12,11 +13,11 @@ namespace Clicco.Persistence.Services
         {
             this.userService = userService;
         }
-        public async void CheckUserIdAsync(int userId)
+        public async Task CheckUserIdAsync(int userId)
         {
             var result = await userService.IsExistAsync(userId);
             if (!result)
-                throw new Exception("User not found!") { HResult = (int)HttpStatusCode.BadRequest };
+                throw new CustomException(CustomErrors.UserNotFound);
         }
     }
 }

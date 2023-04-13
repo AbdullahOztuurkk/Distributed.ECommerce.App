@@ -1,6 +1,7 @@
 ﻿using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Model;
+using Clicco.Domain.Model.Exceptions;
 
 namespace Clicco.Persistence.Services
 {
@@ -15,7 +16,7 @@ namespace Clicco.Persistence.Services
         public async void CheckCategoryId(int categoryId)
         {
             var category = await categoryRepository.GetByIdAsync(categoryId);
-            ThrowExceptionIfNull(category, "Category Not Found!");
+            ThrowExceptionIfNull(category, CustomErrors.CategoryNotFound);
         }
     }
 }

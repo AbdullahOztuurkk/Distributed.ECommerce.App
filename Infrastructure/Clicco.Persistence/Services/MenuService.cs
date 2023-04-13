@@ -1,6 +1,7 @@
 ﻿using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Model;
+using Clicco.Domain.Model.Exceptions;
 
 namespace Clicco.Persistence.Services
 {
@@ -14,13 +15,13 @@ namespace Clicco.Persistence.Services
         public async void CheckCategoryId(int categoryId)
         {
             var result = await categoryRepository.GetByIdAsync(categoryId);
-            ThrowExceptionIfNull(result, "Category Not Found!");
+            ThrowExceptionIfNull(result, CustomErrors.CategoryNotFound);
         }
 
         public async void CheckSlugUrl(string uri)
         {
             var result = await categoryRepository.GetSingleAsync(x => x.SlugUrl == uri);
-            ThrowExceptionIfNull(result, "Menu already exists!");
+            ThrowExceptionIfNull(result, CustomErrors.MenuAlreadyExist);
         }
     }
 }
