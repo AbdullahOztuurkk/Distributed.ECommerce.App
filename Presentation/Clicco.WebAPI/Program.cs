@@ -18,7 +18,6 @@ builder.Services.AddInfrastructureServices();
 builder.Services.AddSingleton(sp => sp.ConfigureRedis(builder.Configuration));
 builder.Services.ConfigureAuth(builder.Configuration);
 builder.Services.AddScoped<SystemAdministratorFilter>();
-builder.Services.AddScoped<TokenInjectionMiddleware>();
 builder.Services.AddScoped<ExceptionHandlingMiddleware>();
 
 builder.Services.AddSwaggerGen(c => {
@@ -57,7 +56,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseMiddleware<TokenInjectionMiddleware>();
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
