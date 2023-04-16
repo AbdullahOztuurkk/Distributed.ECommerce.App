@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Clicco.Infrastructure": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:52595;http://localhost:52600"
+    }
+  }
+}
