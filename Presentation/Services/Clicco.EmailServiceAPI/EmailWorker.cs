@@ -20,7 +20,7 @@ namespace Clicco.EmailServiceAPI
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await queueService.ReceiveMessages<RegistrationEmailTemplateModel>(QueueNames.NewUserEmailQueue, async (model) =>
+            await queueService.ReceiveMessages<RegistrationEmailTemplateModel>(QueueNames.RegistrationEmailQueue, async (model) =>
             {
                 await emailService.SendEmailAsync(model);
 

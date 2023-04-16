@@ -76,7 +76,7 @@ namespace Clicco.EmailServiceAPI.Services
         {
             return emailType switch
             {
-                EmailType.NewUser => QueueNames.NewUserEmailQueue,
+                EmailType.NewUser => QueueNames.RegistrationEmailQueue,
                 EmailType.SuccessPayment => QueueNames.SuccessPaymentEmailQueue,
                 EmailType.FailedPayment => QueueNames.FailedPaymentEmailQueue,
                 EmailType.ForgotPassword => QueueNames.ForgotPasswordEmailQueue
