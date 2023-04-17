@@ -4,6 +4,8 @@ using Clicco.AuthAPI.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Clicco.AuthAPI.Models.Response;
 using Clicco.AuthAPI.Models.Extensions;
+using Clicco.AuthAPI.Models.Email;
+using System;
 
 namespace Clicco.AuthAPI.Controllers
 {
@@ -23,7 +25,7 @@ namespace Clicco.AuthAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto request)
         {
-            var result = await authService.UserExists(request.Email);
+            var result = await authService.UserExistsAsync(request.Email);
             if (result)
             {
                 ModelState.AddModelError("UserName", "User already exists");
@@ -38,14 +40,14 @@ namespace Clicco.AuthAPI.Controllers
                 Gender = request.Gender,
                 PhoneNumber = request.PhoneNumber,
             };
-            var createdUser = await authService.Register(CreateToUser, request.Password);
+            var createdUser = await authService.RegisterAsync(CreateToUser, request.Password);
             return StatusCode(201, createdUser.AsViewModel());
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dtoModel)
         {
-            var user = await authService.Login(dtoModel.Email, dtoModel.Password);
+            var user = await authService.LoginAsync(dtoModel.Email, dtoModel.Password);
             if (user == null)
             {   
                 return Unauthorized();
@@ -55,6 +57,18 @@ namespace Clicco.AuthAPI.Controllers
             var token = tokenHandler.CreateAccessToken(user);
             LoggedUserViewModel model = new(token, dtoModel.Email);
             return Ok(model);
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            var result = await authService.UserExistsAsync(email);
+            if (result)
+            {
+                await authService.ForgotPasswordAsync(email);
+                return Ok("Temporary password sent to email address!");
+            }
+            return BadRequest("User not found!");
         }
     }
 }

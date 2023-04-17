@@ -4,8 +4,9 @@ namespace Clicco.AuthAPI.Services.Contracts
 {
     public interface IAuthService
     {
-        Task<User> Register(User user, string password);
-        Task<User> Login(string email, string password);
-        Task<bool> UserExists(string email);
+        Task<User> RegisterAsync(User user, string password);
+        Task<User> LoginAsync(string email, string password);
+        Task ForgotPasswordAsync(string email);
+        Task<bool> UserExistsAsync(string email);
     }
 }

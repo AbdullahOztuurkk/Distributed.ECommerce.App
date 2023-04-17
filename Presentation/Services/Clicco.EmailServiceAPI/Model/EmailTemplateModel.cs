@@ -40,8 +40,8 @@ namespace Clicco.EmailServiceAPI.Model
         [DisplayElement("#FULL_NAME#")]
         public string FullName { get; set; }
 
-        [DisplayElement("#RESET_LINK#")]
-        public string ResetLink { get; set; }
+        [DisplayElement("#NEW_PASSWORD#")]
+        public string NewPassword { get; set; }
     }
 
     public class SuccessPaymentEmailTemplateModel : EmailTemplateModel

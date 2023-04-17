@@ -80,14 +80,14 @@ namespace Clicco.AuthAPI.Data.Repositories
 
         public virtual async Task<TEntity> GetSingleAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes)
         {
-            IQueryable<TEntity> query = context.Set<TEntity>();
+            IQueryable<TEntity> query = Query;
 
             foreach (Expression<Func<TEntity, object>> include in includes)
             {
                 query = query.Include(include);
             }
 
-            return await query.SingleOrDefaultAsync();
+            return await query.SingleOrDefaultAsync(expression);
         }
 
         public async Task<int> SaveChangesAsync()

@@ -3,6 +3,7 @@ using Clicco.AuthAPI.Data.Contracts;
 using Clicco.AuthAPI.Models;
 using Clicco.AuthAPI.Models.Email;
 using Clicco.AuthAPI.Services.Contracts;
+using Microsoft.AspNetCore.Identity;
 
 namespace Clicco.AuthAPI.Services
 {
@@ -19,7 +20,7 @@ namespace Clicco.AuthAPI.Services
             this.userRepository = userRepository;
             this.emailService = emailService;
         }
-        public async Task<User> Login(string email, string password)
+        public async Task<User> LoginAsync(string email, string password)
         {
             var user = new User();
             if (email.StartsWith('#'))
@@ -38,7 +39,7 @@ namespace Clicco.AuthAPI.Services
             return user;
         }
 
-        public async Task<User> Register(User user, string password)
+        public async Task<User> RegisterAsync(User user, string password)
         {
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -58,10 +59,36 @@ namespace Clicco.AuthAPI.Services
             return user;
         }
 
-        public async Task<bool> UserExists(string email)
+        public async Task<bool> UserExistsAsync(string email)
         {
             var user = await userRepository.Get(x => x.Email == email);
             return user != null && user.Count != 0;
+        }
+
+        public async Task ForgotPasswordAsync(string email)
+        {
+            var user = await userRepository.GetSingleAsync(x => x.Email == email);
+            if (user != null)
+            {
+                byte[] passwordHash, passwordSalt;
+                Guid guid = Guid.NewGuid();
+                string password = guid.ToString().Replace("-", string.Empty)[10..];
+                CreatePasswordHash(password, out passwordHash, out passwordSalt);
+
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
+                userRepository.Update(user);
+                await userRepository.SaveChangesAsync();
+
+                await emailService.SendForgotPasswordEmailAsync(new ForgotPasswordEmailRequest
+                {
+                    FullName = string.Join(" ", user.FirstName, user.LastName),
+                    NewPassword = password,
+                    To = user.Email
+                });
+            }
+
+            await Task.CompletedTask;
         }
 
         #region 

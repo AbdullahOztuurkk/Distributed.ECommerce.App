@@ -19,7 +19,7 @@ namespace Clicco.EmailServiceAPI.Model.Extensions
             {
                 To = request.To,
                 FullName = request.FullName,
-                ResetLink = request.ResetLink,
+                NewPassword = request.NewPassword,
             };
         }
 
