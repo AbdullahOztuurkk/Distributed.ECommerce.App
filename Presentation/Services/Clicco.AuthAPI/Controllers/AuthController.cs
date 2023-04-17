@@ -1,5 +1,5 @@
-﻿using Clicco.AuthAPI.Models;
-using Clicco.AuthAPI.Models.Request;
+﻿using Clicco.AuthAPI.Models.Request;
+using Clicco.AuthAPI.Models;
 using Clicco.AuthAPI.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 

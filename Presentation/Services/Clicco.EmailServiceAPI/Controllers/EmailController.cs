@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Clicco.EmailServiceAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     public class EmailController : ControllerBase
     {
         private readonly IQueueService queueService;

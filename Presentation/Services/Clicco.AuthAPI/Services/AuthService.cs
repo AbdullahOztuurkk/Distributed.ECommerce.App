@@ -1,6 +1,7 @@
 ﻿using Clicco.AuthAPI.Data.Context;
 using Clicco.AuthAPI.Data.Contracts;
 using Clicco.AuthAPI.Models;
+using Clicco.AuthAPI.Models.Email;
 using Clicco.AuthAPI.Services.Contracts;
 
 namespace Clicco.AuthAPI.Services
@@ -8,11 +9,15 @@ namespace Clicco.AuthAPI.Services
     public class AuthService : IAuthService
     {
         private readonly AuthContext context;
+        private readonly IEmailService emailService;
         private readonly IUserRepository userRepository;
-        public AuthService(AuthContext context, IUserRepository userRepository)
+        public AuthService(AuthContext context,
+            IUserRepository userRepository,
+            IEmailService emailService)
         {
             this.context = context;
             this.userRepository = userRepository;
+            this.emailService = emailService;
         }
         public async Task<User> Login(string email, string password)
         {
@@ -43,6 +48,12 @@ namespace Clicco.AuthAPI.Services
 
             await userRepository.AddAsync(user);
             await userRepository.SaveChangesAsync();
+
+            await emailService.SendRegistrationEmailAsync(new RegistrationEmailRequest
+            {
+                FullName = string.Join(" ", user.FirstName, user.LastName),
+                To = user.Email
+            });
 
             return user;
         }
