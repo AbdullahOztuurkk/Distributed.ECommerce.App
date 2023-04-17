@@ -2,6 +2,8 @@
 using Clicco.AuthAPI.Models;
 using Clicco.AuthAPI.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Clicco.AuthAPI.Models.Response;
+using Clicco.AuthAPI.Models.Extensions;
 
 namespace Clicco.AuthAPI.Controllers
 {
@@ -37,7 +39,7 @@ namespace Clicco.AuthAPI.Controllers
                 PhoneNumber = request.PhoneNumber,
             };
             var createdUser = await authService.Register(CreateToUser, request.Password);
-            return StatusCode(201, createdUser);
+            return StatusCode(201, createdUser.AsViewModel());
         }
 
         [HttpPost("login")]
@@ -51,7 +53,8 @@ namespace Clicco.AuthAPI.Controllers
 
             var tokenHandler = new Services.TokenHandler(configuration);
             var token = tokenHandler.CreateAccessToken(user);
-            return Ok(token);
+            LoggedUserViewModel model = new(token, dtoModel.Email);
+            return Ok(model);
         }
     }
 }
