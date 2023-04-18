@@ -18,6 +18,7 @@ namespace Clicco.EmailServiceAPI
             this.logger = logger;
         }
 
+        //Todo: Code Smell
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await queueService.ReceiveMessages<RegistrationEmailTemplateModel>(QueueNames.RegistrationEmailQueue, async (model) =>
@@ -29,7 +30,6 @@ namespace Clicco.EmailServiceAPI
 
             await queueService.ReceiveMessages<SuccessPaymentEmailTemplateModel>(QueueNames.SuccessPaymentEmailQueue, async (model) =>
             {
-                model.EmailType = EmailType.SuccessPayment;
                 await emailService.SendEmailAsync(model);
 
                 logger.LogInformation($"Send success payment email to {model.To} at {DateTime.Now}");
@@ -37,7 +37,6 @@ namespace Clicco.EmailServiceAPI
 
             await queueService.ReceiveMessages<FailedPaymentEmailTemplateModel>(QueueNames.FailedPaymentEmailQueue, async (model) =>
             {
-                model.EmailType = EmailType.FailedPayment;
                 await emailService.SendEmailAsync(model);
 
                 logger.LogInformation($"Send failed payment email to {model.To} at {DateTime.Now}");
@@ -45,7 +44,6 @@ namespace Clicco.EmailServiceAPI
 
             await queueService.ReceiveMessages<ForgotPasswordEmailTemplateModel>(QueueNames.ForgotPasswordEmailQueue, async (model) =>
             {
-                model.EmailType = EmailType.ForgotPassword;
                 await emailService.SendEmailAsync(model);
 
                 logger.LogInformation($"Send forgot password email with resetlink to {model.To} at {DateTime.Now}");
