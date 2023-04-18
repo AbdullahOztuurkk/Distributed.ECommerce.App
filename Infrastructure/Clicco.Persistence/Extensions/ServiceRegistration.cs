@@ -18,7 +18,7 @@ namespace Clicco.Infrastructure.Extensions
         {
             services.AddDbContext<CliccoContext>(opt =>
             {
-                opt.UseSqlServer(configuration["CliccoDatabaseConnectionString"],sqlOpt =>
+                opt.UseSqlServer(configuration.GetConnectionString("CliccoContext"),sqlOpt =>
                 {
                     sqlOpt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null);
                 });

@@ -7,7 +7,7 @@ namespace Clicco.Infrastructure.Extensions
     {
         public static ConnectionMultiplexer ConfigureRedis(this IServiceProvider services, IConfiguration configuration)
         {
-            var redisConfig = ConfigurationOptions.Parse(configuration["RedisSettings:ConnectionString"], true);
+            var redisConfig = ConfigurationOptions.Parse(configuration.GetConnectionString("Redis"), true);
             redisConfig.ResolveDns = true;
 
             return ConnectionMultiplexer.Connect(redisConfig);
