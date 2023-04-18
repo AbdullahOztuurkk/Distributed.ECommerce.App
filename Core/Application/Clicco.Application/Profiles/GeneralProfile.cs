@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Clicco.Application.Features.Commands;
-using Clicco.Application.Features.Commands.Reviews;
 using Clicco.Domain.Core.Extensions;
 using Clicco.Domain.Model;
 

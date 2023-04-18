@@ -6,7 +6,7 @@ using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
 
-namespace Clicco.Application.Features.Commands.Reviews
+namespace Clicco.Application.Features.Commands
 {
     public class DeleteReviewCommand : IRequest<BaseResponse>
     {
