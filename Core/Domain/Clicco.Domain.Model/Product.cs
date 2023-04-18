@@ -14,6 +14,8 @@ namespace Clicco.Domain.Model
 
 
         //Relationship
+        public Vendor Vendor { get; set; }
+        public int VendorId { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public Category Category { get; set; }
         public int CategoryId { get; set; }

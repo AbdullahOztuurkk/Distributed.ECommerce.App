@@ -24,6 +24,7 @@ namespace Clicco.Infrastructure.Context
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Vendor> Vendors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

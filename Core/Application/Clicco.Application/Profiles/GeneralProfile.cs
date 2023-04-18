@@ -38,6 +38,10 @@ namespace Clicco.Application.Profiles
             CreateMap<CreateCouponCommand, Coupon>();
             CreateMap<UpdateCouponCommand, Coupon>();
             CreateMap<DeleteCouponCommand, Coupon>();
+
+            CreateMap<CreateVendorCommand, Vendor>();
+            CreateMap<UpdateVendorCommand, Vendor>();
+            CreateMap<DeleteVendorCommand, Vendor>();
         }
     }
 }

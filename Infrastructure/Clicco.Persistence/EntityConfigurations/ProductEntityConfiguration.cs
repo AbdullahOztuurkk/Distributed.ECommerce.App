@@ -36,6 +36,10 @@ namespace Clicco.Infrastructure.EntityConfigurations
             builder.HasOne(x => x.Category)
                 .WithMany(x => x.Products)
                 .HasForeignKey(x => x.CategoryId);
+
+            builder.HasOne(x => x.Vendor)
+                .WithMany(x => x.Products)
+                .HasForeignKey(x => x.VendorId);
         }
     }
 }

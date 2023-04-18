@@ -4,6 +4,7 @@ using Clicco.Application.Interfaces.Services;
 using Clicco.Infrastructure.Context;
 using Clicco.Infrastructure.Repositories;
 using Clicco.Infrastructure.Services;
+using Clicco.Persistence.Repositories;
 using Clicco.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +30,7 @@ namespace Clicco.Infrastructure.Extensions
             services.AddHttpContextAccessor();
 
             #region Repositories
+
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             
             services.AddScoped<IProductRepository, ProductRepository>();
@@ -43,10 +45,12 @@ namespace Clicco.Infrastructure.Extensions
 
             services.AddScoped<IMenuRepository, MenuRepository>();
 
-            //services.AddScoped<UserRepository, UserRepository>();
+            services.AddScoped<IVendorRepository, VendorRepository>();
+
             #endregion
 
             #region Services
+
             services.AddScoped<ITransactionService, TransactionService>();
 
             services.AddScoped<IProductService, ProductService>();
@@ -60,6 +64,9 @@ namespace Clicco.Infrastructure.Extensions
             services.AddScoped<IAddressService, AddressService>();
 
             services.AddScoped<IMenuService, MenuService>();
+
+            services.AddScoped<IVendorService, VendorService>();
+
             #endregion
 
             return services;

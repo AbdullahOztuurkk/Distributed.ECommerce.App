@@ -4,56 +4,52 @@ using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Clicco.WebAPI.Controllers
 {
+    [Route("api/vendors")]
     [ApiController]
-    [Route("api/transactions")]
-    [Authorize]
-    public class TransactionController : ControllerBase
+    public class VendorController : ControllerBase
     {
         private readonly IMediator mediator;
-        public TransactionController(IMediator mediator)
+        public VendorController(IMediator mediator)
         {
             this.mediator = mediator;
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(List<Vendor>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAll()
+        {
+            var addresses = await mediator.Send(new GetAllVendorsQuery());
+            return Ok(addresses);
+        }
+
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Transaction), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Vendor), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
         {
-            var result = await mediator.Send(new GetTransactionByIdQuery { Id = id });
+            var result = await mediator.Send(new GetVendorsByIdQuery { Id = id });
             return Ok(result);
         }
-
-        // v1/api/controller/action/2012-12-31
-        //[HttpGet("GetListByDate/{date}")]
-        //[ProducesResponseType(typeof(List<Transaction>), (int)HttpStatusCode.OK)]
-        //[ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        //public async Task<IActionResult> GetTransactionsByDate(string date)
-        //{
-        //    var result = await mediator.Send(new GetTransactionsByDateQuery { Date = date });
-        //    return Ok(result);
-        //}
 
         [HttpPost("Create")]
         [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateTransactionCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateVendorCommand command)
         {
             var result = await mediator.Send(command);
             return Ok(result);
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(Transaction), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Vendor), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Update([FromBody] UpdateTransactionCommand command)
+        public async Task<IActionResult> Update([FromBody] UpdateVendorCommand command)
         {
             var result = await mediator.Send(command);
             return Ok(result);
@@ -62,7 +58,7 @@ namespace Clicco.WebAPI.Controllers
         [HttpDelete("Delete")]
         [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Delete([FromBody] DeleteTransactionCommand command)
+        public async Task<IActionResult> Delete([FromBody] DeleteVendorCommand command)
         {
             var result = await mediator.Send(command);
             return Ok(result);
