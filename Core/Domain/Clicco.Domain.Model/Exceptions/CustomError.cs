@@ -4,20 +4,11 @@ namespace Clicco.Domain.Model.Exceptions
 {
     public class CustomErrors
     {
-        public static Dictionary<Type, CustomError> NotFoundArr = new()
-        {
-            { typeof(Menu) , MenuNotFound },
-            { typeof(Category) , CategoryNotFound },
-            { typeof(Product) , ProductNotFound },
-            { typeof(Address) , AddressNotFound },
-            { typeof(Transaction) , TransactionNotFound },
-            { typeof(Coupon) , CouponNotFound },
-            { typeof(Review) , MenuNotFound },
-            { typeof(Vendor), VendorNotFound },
-        };
 
         public static CustomError UnexceptedError = new("E_100", "Unexcepted error occurred!");
 
+        #region NoContent Errors
+        
         public static CustomError UserNotFound = new("E_200", "User not found!");
         public static CustomError MenuNotFound = new("E_201", "Menu not found!");
         public static CustomError CategoryNotFound = new("E_202", "Category not found!");
@@ -29,8 +20,14 @@ namespace Clicco.Domain.Model.Exceptions
         public static CustomError ParentCategoryNotFound = new("E_208", "Main category not found!");
         public static CustomError VendorNotFound = new("E_209", "Vendor not found!");
 
+        #endregion
+
+        #region Specific Errors
+
         public static CustomError MenuAlreadyExist = new("E_303", "Menu already exists!");
         public static CustomError CouponIsNowUsed = new("E_304", "The coupon is now used!");
+
+        #endregion
     }
 
     public class CustomError
