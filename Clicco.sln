@@ -30,9 +30,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.WebAPI", "Presentati
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{B0555D1C-2430-4915-BBD7-7A89283C6DF3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.AuthAPI", "Presentation\Services\Clicco.AuthAPI\Clicco.AuthAPI.csproj", "{89D4E990-B80C-4721-9126-51EE40273944}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.AuthServiceAPI", "Presentation\Services\Clicco.AuthAPI\Clicco.AuthServiceAPI.csproj", "{89D4E990-B80C-4721-9126-51EE40273944}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clicco.EmailServiceAPI", "Presentation\Services\Clicco.EmailServiceAPI\Clicco.EmailServiceAPI.csproj", "{13A94D9E-C0D5-48A1-90CD-019AE391E1D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.EmailServiceAPI", "Presentation\Services\Clicco.EmailServiceAPI\Clicco.EmailServiceAPI.csproj", "{13A94D9E-C0D5-48A1-90CD-019AE391E1D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
