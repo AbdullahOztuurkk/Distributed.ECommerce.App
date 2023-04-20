@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
+using Clicco.Application.ViewModels;
 using Clicco.Domain.Model;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.JsonWebTokens;
-using System.Security.Claims;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class UpdateAddressCommand : IRequest<Address>
+    public class UpdateAddressCommand : IRequest<AddressViewModel>
     {
         public int Id { get; set; }
         public string City { get; set; }
@@ -18,7 +18,7 @@ namespace Clicco.Application.Features.Commands
         public string Country { get; set; }
         public string ZipCode { get; set; }
     }
-    public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, Address>
+    public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, AddressViewModel>
     {
         private readonly IAddressRepository addressRepository;
         private readonly IMapper mapper;
@@ -33,15 +33,16 @@ namespace Clicco.Application.Features.Commands
             this.contextAccessor = contextAccessor;
         }
 
-        public async Task<Address> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
+        public async Task<AddressViewModel> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
         {
             await addressService.CheckSelfId(request.Id);
 
             var address = mapper.Map<Address>(request);
+            //Todo: code smell
             address.UserId = Convert.ToInt32(contextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.UniqueName).Value);
             addressRepository.Update(address);
             await addressRepository.SaveChangesAsync();
-            return address;
+            return mapper.Map<AddressViewModel>(address);
         }
     }
 }

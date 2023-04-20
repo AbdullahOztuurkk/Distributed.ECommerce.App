@@ -1,27 +1,29 @@
-﻿using Clicco.Application.Interfaces.Repositories;
-using Clicco.Domain.Model;
+﻿using AutoMapper;
+using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.ViewModels;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetCouponByDateQuery : IRequest<Coupon>
+    public class GetCouponByDateQuery : IRequest<CouponViewModel>
     {
         public DateTime ExpirationDate { get; set; }
     }
 
-    public class GetCouponByDateQueryHandler : IRequestHandler<GetCouponByDateQuery, Coupon>
+    public class GetCouponByDateQueryHandler : IRequestHandler<GetCouponByDateQuery, CouponViewModel>
     {
         private readonly ICouponRepository  couponRepository;
+        private readonly IMapper mapper;
 
-
-        public GetCouponByDateQueryHandler(ICouponRepository couponRepository)
+        public GetCouponByDateQueryHandler(ICouponRepository couponRepository, IMapper mapper)
         {
             this.couponRepository = couponRepository;
+            this.mapper = mapper;
         }
 
-        public async Task<Coupon> Handle(GetCouponByDateQuery request, CancellationToken cancellationToken)
+        public async Task<CouponViewModel> Handle(GetCouponByDateQuery request, CancellationToken cancellationToken)
         {
-            return await couponRepository.GetSingleAsync(x => x.ExpirationDate <= request.ExpirationDate);  
+            return mapper.Map<CouponViewModel>(await couponRepository.GetSingleAsync(x => x.ExpirationDate <= request.ExpirationDate));  
         }
     }
 }

@@ -1,24 +1,27 @@
-﻿using Clicco.Application.Interfaces.Repositories;
-using Clicco.Domain.Model;
+﻿using AutoMapper;
+using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.ViewModels;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetReviewByIdQuery : IRequest<Review>
+    public class GetReviewByIdQuery : IRequest<ReviewViewModel>
     {
         public int Id { get; set; }
     }
 
-    public class GetReviewByIdQueryHandler : IRequestHandler<GetReviewByIdQuery, Review>
+    public class GetReviewByIdQueryHandler : IRequestHandler<GetReviewByIdQuery, ReviewViewModel>
     {
         private readonly IReviewRepository reviewRepository;
-        public GetReviewByIdQueryHandler(IReviewRepository reviewRepository)
+        private readonly IMapper mapper;
+        public GetReviewByIdQueryHandler(IReviewRepository reviewRepository, IMapper mapper)
         {
             this.reviewRepository = reviewRepository;
+            this.mapper = mapper;
         }
-        public async Task<Review> Handle(GetReviewByIdQuery request, CancellationToken cancellationToken)
+        public async Task<ReviewViewModel> Handle(GetReviewByIdQuery request, CancellationToken cancellationToken)
         {
-            return await reviewRepository.GetByIdAsync(request.Id);
+            return mapper.Map<ReviewViewModel>(await reviewRepository.GetByIdAsync(request.Id, x => x.Product));
         }
     }
 }

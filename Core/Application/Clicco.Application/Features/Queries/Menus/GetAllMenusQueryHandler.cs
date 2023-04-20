@@ -1,25 +1,28 @@
-﻿using Clicco.Application.Interfaces.Repositories;
-using Clicco.Domain.Model;
+﻿using AutoMapper;
+using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.ViewModels;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetAllMenusQuery : IRequest<List<Menu>>
+    public class GetAllMenusQuery : IRequest<List<MenuViewModel>>
     {
 
     }
-    public class GetAllMenusQueryHandler : IRequestHandler<GetAllMenusQuery, List<Menu>>
+    public class GetAllMenusQueryHandler : IRequestHandler<GetAllMenusQuery, List<MenuViewModel>>
     {
         private readonly IMenuRepository menuRepository;
+        private readonly IMapper mapper;
 
-        public GetAllMenusQueryHandler(IMenuRepository menuRepository)
+        public GetAllMenusQueryHandler(IMenuRepository menuRepository, IMapper mapper)
         {
             this.menuRepository = menuRepository;
+            this.mapper = mapper;
         }
 
-        public async Task<List<Menu>> Handle(GetAllMenusQuery request, CancellationToken cancellationToken)
+        public async Task<List<MenuViewModel>> Handle(GetAllMenusQuery request, CancellationToken cancellationToken)
         {
-            return await menuRepository.Get(x => x.IsActive == true);
+            return mapper.Map<List<MenuViewModel>>(await menuRepository.Get(x => x.IsActive));
         }
     }
 }

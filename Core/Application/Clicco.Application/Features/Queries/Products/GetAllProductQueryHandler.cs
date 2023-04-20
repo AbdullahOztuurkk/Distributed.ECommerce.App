@@ -20,7 +20,7 @@ namespace Clicco.Application.Features.Queries
 
         public async Task<List<Product>> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
         {
-            return await productRepository.GetAll();
+            return await productRepository.Get(null, x => x.Category, x => x.Vendor);
         }
     }
 }

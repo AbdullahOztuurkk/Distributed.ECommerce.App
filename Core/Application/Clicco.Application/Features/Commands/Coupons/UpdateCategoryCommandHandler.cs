@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Clicco.Application.Features.Queries;
 using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
+using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
 using Clicco.Domain.Core.Exceptions;
 using Clicco.Domain.Model;
@@ -11,7 +11,7 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class UpdateCouponCommand : IRequest<Coupon>
+    public class UpdateCouponCommand : IRequest<CouponViewModel>
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -23,14 +23,14 @@ namespace Clicco.Application.Features.Commands
         public DiscountType DiscountType { get; set; }
         public int DiscountAmount { get; set; }
     }
-    public class UpdateCouponCommandHandler : IRequestHandler<UpdateCouponCommand, Coupon>
+    public class UpdateCouponCommandHandler : IRequestHandler<UpdateCouponCommand, CouponViewModel>
     {
         private readonly ICouponRepository couponRepository;
         private readonly ICouponService couponService;
         private readonly IMapper mapper;
         private readonly ICacheManager cacheManager;
 
-        public UpdateCouponCommandHandler(ICouponRepository couponRepository, ICouponService couponService,IMapper mapper, ICacheManager cacheManager)
+        public UpdateCouponCommandHandler(ICouponRepository couponRepository, ICouponService couponService, IMapper mapper, ICacheManager cacheManager)
         {
             this.couponRepository = couponRepository;
             this.couponService = couponService;
@@ -38,7 +38,7 @@ namespace Clicco.Application.Features.Commands
             this.cacheManager = cacheManager;
         }
 
-        public async Task<Coupon> Handle(UpdateCouponCommand request, CancellationToken cancellationToken)
+        public async Task<CouponViewModel> Handle(UpdateCouponCommand request, CancellationToken cancellationToken)
         {
             await couponService.CheckSelfId(request.Id);
 
@@ -51,7 +51,7 @@ namespace Clicco.Application.Features.Commands
             var coupon = mapper.Map<Coupon>(request);
             couponRepository.Update(coupon);
             await couponRepository.SaveChangesAsync();
-            return coupon;
+            return mapper.Map<CouponViewModel>(coupon);
         }
     }
 }

@@ -20,7 +20,8 @@ namespace Clicco.Application.Extensions
             
             services.AddAutoMapper(cfg =>
             {
-                cfg.AddProfile(new GeneralProfile());
+                cfg.AddProfile<GeneralProfile>();
+                cfg.AddProfile<ViewModelProfile>();
             });
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));

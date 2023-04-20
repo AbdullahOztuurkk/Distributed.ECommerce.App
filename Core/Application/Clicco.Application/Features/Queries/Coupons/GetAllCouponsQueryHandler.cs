@@ -1,25 +1,28 @@
-﻿using Clicco.Application.Interfaces.Repositories;
-using Clicco.Domain.Model;
+﻿using AutoMapper;
+using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.ViewModels;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetAllCouponsQuery : IRequest<List<Coupon>>
+    public class GetAllCouponsQuery : IRequest<List<CouponViewModel>>
     {
 
     }
-    public class GetAllCouponsQueryHandler : IRequestHandler<GetAllCouponsQuery, List<Coupon>>
+    public class GetAllCouponsQueryHandler : IRequestHandler<GetAllCouponsQuery, List<CouponViewModel>>
     {
         private readonly ICouponRepository couponRepository;
+        private readonly IMapper mapper;
 
-        public GetAllCouponsQueryHandler(ICouponRepository couponRepository)
+        public GetAllCouponsQueryHandler(ICouponRepository couponRepository, IMapper mapper)
         {
             this.couponRepository = couponRepository;
+            this.mapper = mapper;
         }
 
-        public async Task<List<Coupon>> Handle(GetAllCouponsQuery request, CancellationToken cancellationToken)
+        public async Task<List<CouponViewModel>> Handle(GetAllCouponsQuery request, CancellationToken cancellationToken)
         {
-            return await couponRepository.Get(x => x.IsActive == true);
+            return mapper.Map<List<CouponViewModel>>(await couponRepository.Get(x => x.IsActive == true));
         }
     }
 }

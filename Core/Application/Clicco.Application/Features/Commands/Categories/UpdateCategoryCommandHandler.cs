@@ -1,20 +1,21 @@
 ﻿using AutoMapper;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
+using Clicco.Application.ViewModels;
 using Clicco.Domain.Model;
 using Clicco.Domain.Model.Exceptions;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class UpdateCategoryCommand : IRequest<Category>
+    public class UpdateCategoryCommand : IRequest<CategoryViewModel>
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public int? ParentId { get; set; }
         public int? MenuId { get; set; }
     }
-    public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, Category>
+    public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, CategoryViewModel>
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
@@ -27,7 +28,7 @@ namespace Clicco.Application.Features.Commands
             this.categoryService = categoryService;
         }
 
-        public async Task<Category> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<CategoryViewModel> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
             await categoryService.CheckSelfId(request.Id);
             if (request.ParentId.HasValue)
@@ -38,7 +39,7 @@ namespace Clicco.Application.Features.Commands
             var category = mapper.Map<Category>(request);
             categoryRepository.Update(category);
             await categoryRepository.SaveChangesAsync();
-            return category;
+            return mapper.Map<CategoryViewModel>(category);
         }
     }
 }

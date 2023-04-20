@@ -1,24 +1,27 @@
-﻿using Clicco.Application.Interfaces.Repositories;
-using Clicco.Domain.Model;
+﻿using AutoMapper;
+using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.ViewModels;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetAllAddressesQuery : IRequest<List<Address>>
+    public class GetAllAddressesQuery : IRequest<List<AddressViewModel>>
     {
 
     }
 
-    public class GetAllAddressesQueryHandler : IRequestHandler<GetAllAddressesQuery, List<Address>>
+    public class GetAllAddressesQueryHandler : IRequestHandler<GetAllAddressesQuery, List<AddressViewModel>>
     {
         private readonly IAddressRepository addressRepository;
-        public GetAllAddressesQueryHandler(IAddressRepository addressRepository)
+        private readonly IMapper mapper;
+        public GetAllAddressesQueryHandler(IAddressRepository addressRepository, IMapper mapper)
         {
             this.addressRepository = addressRepository;
+            this.mapper = mapper;
         }
-        public async Task<List<Address>> Handle(GetAllAddressesQuery request, CancellationToken cancellationToken)
+        public async Task<List<AddressViewModel>> Handle(GetAllAddressesQuery request, CancellationToken cancellationToken)
         {
-            return await addressRepository.GetAll();
+            return mapper.Map<List<AddressViewModel>>(await addressRepository.GetAll());
         }
     }
 }

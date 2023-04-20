@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
+using Clicco.Application.ViewModels;
 using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class UpdateTransactionCommand : IRequest<Transaction>
+    public class UpdateTransactionCommand : IRequest<TransactionViewModel>
     {
         public int Id { get; set; }
         public string Code { get; set; }
@@ -17,7 +18,7 @@ namespace Clicco.Application.Features.Commands
         public int UserId { get; set; }
         public int AddressId { get; set; }
     }
-    public class UpdateTransactionCommandHandler : IRequestHandler<UpdateTransactionCommand, Transaction>
+    public class UpdateTransactionCommandHandler : IRequestHandler<UpdateTransactionCommand, TransactionViewModel>
     {
         private readonly ITransactionRepository transactionRepository;
         private readonly IMapper mapper;
@@ -28,7 +29,7 @@ namespace Clicco.Application.Features.Commands
             this.mapper = mapper;
             this.transactionService = transactionService;
         }
-        public async Task<Transaction> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
+        public async Task<TransactionViewModel> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
         {
             await transactionService.CheckUserIdAsync(request.UserId);
             await transactionService.CheckSelfId(request.Id);
@@ -37,7 +38,7 @@ namespace Clicco.Application.Features.Commands
             var transaction = mapper.Map<Transaction>(request);
             await transactionRepository.AddAsync(transaction);
             await transactionRepository.SaveChangesAsync();
-            return transaction;
+            return mapper.Map<TransactionViewModel>(transaction);
         }
     }
 }

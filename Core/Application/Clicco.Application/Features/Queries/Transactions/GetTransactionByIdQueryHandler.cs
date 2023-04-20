@@ -1,24 +1,35 @@
-﻿using Clicco.Application.Interfaces.Repositories;
-using Clicco.Domain.Model;
+﻿using AutoMapper;
+using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.Interfaces.Services;
+using Clicco.Application.ViewModels;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetTransactionByIdQuery : IRequest<Transaction>
+    public class GetTransactionByIdQuery : IRequest<TransactionViewModel>
     {
         public int Id { get; set; }
     }
 
-    public class GetTransactionByIdQueryHandler : IRequestHandler<GetTransactionByIdQuery, Transaction>
+    public class GetTransactionByIdQueryHandler : IRequestHandler<GetTransactionByIdQuery, TransactionViewModel>
     {
         private readonly ITransactionRepository transactionRepository;
-        public GetTransactionByIdQueryHandler(ITransactionRepository transactionRepository)
+        private readonly ITransactionService transactionService;
+        private readonly IMapper mapper;
+        public GetTransactionByIdQueryHandler(
+            ITransactionRepository transactionRepository,
+            IMapper mapper,
+            ITransactionService transactionService)
         {
             this.transactionRepository = transactionRepository;
+            this.mapper = mapper;
+            this.transactionService = transactionService;
         }
-        public async Task<Transaction> Handle(GetTransactionByIdQuery request, CancellationToken cancellationToken)
+        public async Task<TransactionViewModel> Handle(GetTransactionByIdQuery request, CancellationToken cancellationToken)
         {
-            return await transactionRepository.GetByIdAsync(request.Id);
+            await transactionService.CheckSelfId(request.Id);
+
+            return mapper.Map<TransactionViewModel>(await transactionRepository.GetByIdAsync(request.Id));
         }
     }
 }
