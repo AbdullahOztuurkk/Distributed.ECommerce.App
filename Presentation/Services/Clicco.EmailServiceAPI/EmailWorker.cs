@@ -1,6 +1,5 @@
 ﻿using Clicco.EmailServiceAPI.Model;
 using Clicco.EmailServiceAPI.Services.Contracts;
-using Microsoft.Extensions.DependencyInjection;
 using static Clicco.EmailServiceAPI.Model.Common.Global;
 
 namespace Clicco.EmailServiceAPI
@@ -13,43 +12,27 @@ namespace Clicco.EmailServiceAPI
 
         public EmailWorker(IServiceProvider serviceProvider,ILogger<EmailWorker> logger)
         {
-            this.queueService = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IQueueService>();
-            this.emailService = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IEmailService>();
+            var scope = serviceProvider.CreateScope().ServiceProvider;
+            queueService = scope.GetRequiredService<IQueueService>();
+            emailService = scope.GetRequiredService<IEmailService>();
             this.logger = logger;
         }
 
-        //Todo: Code Smell
+        private async Task ReceiveAndSendEmailAsync<T>(string queueName, string logMessage) where T : EmailTemplateModel
+        {
+            await queueService.ReceiveMessages<T>(queueName, async model =>
+            {
+                await emailService.SendEmailAsync(model);
+                logger.LogInformation($"{logMessage} {model.To} at {DateTime.Now}");
+            });
+        }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await queueService.ReceiveMessages<RegistrationEmailTemplateModel>(QueueNames.RegistrationEmailQueue, async (model) =>
-            {
-                await emailService.SendEmailAsync(model);
-
-                logger.LogInformation($"Send registration email to {model.To} at {DateTime.Now}");
-            });
-
-            await queueService.ReceiveMessages<SuccessPaymentEmailTemplateModel>(QueueNames.SuccessPaymentEmailQueue, async (model) =>
-            {
-                await emailService.SendEmailAsync(model);
-
-                logger.LogInformation($"Send success payment email to {model.To} at {DateTime.Now}");
-            });
-
-            await queueService.ReceiveMessages<FailedPaymentEmailTemplateModel>(QueueNames.FailedPaymentEmailQueue, async (model) =>
-            {
-                await emailService.SendEmailAsync(model);
-
-                logger.LogInformation($"Send failed payment email to {model.To} at {DateTime.Now}");
-            });
-
-            await queueService.ReceiveMessages<ForgotPasswordEmailTemplateModel>(QueueNames.ForgotPasswordEmailQueue, async (model) =>
-            {
-                await emailService.SendEmailAsync(model);
-
-                logger.LogInformation($"Send forgot password email with resetlink to {model.To} at {DateTime.Now}");
-            });
-
-            await Task.CompletedTask;
+            await ReceiveAndSendEmailAsync<RegistrationEmailTemplateModel>(QueueNames.RegistrationEmailQueue, "Send registration email to");
+            await ReceiveAndSendEmailAsync<SuccessPaymentEmailTemplateModel>(QueueNames.SuccessPaymentEmailQueue, "Send success payment email to");
+            await ReceiveAndSendEmailAsync<FailedPaymentEmailTemplateModel>(QueueNames.FailedPaymentEmailQueue, "Send failed payment email to");
+            await ReceiveAndSendEmailAsync<ForgotPasswordEmailTemplateModel>(QueueNames.ForgotPasswordEmailQueue, "Send forgot password email with reset link to");
         }
     }
 }
