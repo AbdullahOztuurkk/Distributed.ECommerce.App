@@ -30,9 +30,6 @@ namespace Clicco.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AddressEntityConfiguration).Assembly);
-
-            modelBuilder.Entity<TransactionDetailProduct>()
-                .HasKey(o => new { o.ProductId, o.TransactionDetailId });
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

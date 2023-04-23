@@ -13,10 +13,6 @@ namespace Clicco.Persistence.EntityConfigurations
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
-
-            builder.HasOne(x => x.Transaction)
-                .WithOne(x => x.TransactionDetail)
-                .HasForeignKey<Transaction>(x => x.TransactionDetailId);
         }
     }
 }
