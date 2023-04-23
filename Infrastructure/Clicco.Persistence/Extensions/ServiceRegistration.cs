@@ -9,6 +9,7 @@ using Clicco.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Clicco.Infrastructure.Extensions
 {
@@ -31,17 +32,21 @@ namespace Clicco.Infrastructure.Extensions
 
             #region Repositories
 
-            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<ITransactionDetailProductRepository,TransactionDetailProductRepository>();
             
-            services.AddScoped<IProductRepository, ProductRepository>();
-            
-            services.AddScoped<IReviewRepository, ReviewRepository>();
-            
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-            
-            services.AddScoped<ICouponRepository,CouponRepository>();
+            services.AddScoped<ITransactionDetailRepository,TransactionDetailRepository>();
 
-            services.AddScoped<IAddressRepository , AddressRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+            services.AddScoped<IProductRepository, ProductRepository>();
+
+            services.AddScoped<IReviewRepository, ReviewRepository>();
+
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+            services.AddScoped<ICouponRepository, CouponRepository>();
+
+            services.AddScoped<IAddressRepository, AddressRepository>();
 
             services.AddScoped<IMenuRepository, MenuRepository>();
 
@@ -50,6 +55,10 @@ namespace Clicco.Infrastructure.Extensions
             #endregion
 
             #region Services
+
+            services.AddScoped<ITransactionDetailProductService, TransactionDetailProductService>();
+
+            services.AddScoped<ITransactionDetailService, TransactionDetailService>();
 
             services.AddScoped<ITransactionService, TransactionService>();
 

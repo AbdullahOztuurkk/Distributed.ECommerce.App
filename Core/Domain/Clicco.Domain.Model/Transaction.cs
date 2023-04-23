@@ -9,14 +9,14 @@ namespace Clicco.Domain.Model
         public string Dealer { get; set; }
         public DateTime DeliveryDate { get; set; }
         public DateTime CreatedDate { get; set; }
-        public TransactionStatus TransactionStatus { get; set; } = TransactionStatus.Pending;
         public bool IsDeleted { get; set; } = false;
 
         //Relationship
-        public int UserId { get; set; }
         public Address Address { get; set; }
         public int AddressId { get; set; }
         public Coupon Coupon { get; set; }
         public int CouponId { get; set; }
+        public TransactionDetail TransactionDetail { get; set; }
+        public int TransactionDetailId { get; set; }
     }
 }

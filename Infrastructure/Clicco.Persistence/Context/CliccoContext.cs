@@ -9,12 +9,12 @@ namespace Clicco.Infrastructure.Context
     {
         public CliccoContext(DbContextOptions<CliccoContext> options) : base(options)
         {
-            
+
         }
 
         public CliccoContext()
         {
-            
+
         }
 
         public DbSet<Review> Reviews { get; set; }
@@ -22,6 +22,7 @@ namespace Clicco.Infrastructure.Context
         public DbSet<Menu> Menus { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<TransactionDetail> TransactionsDetails { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
@@ -29,6 +30,9 @@ namespace Clicco.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AddressEntityConfiguration).Assembly);
+
+            modelBuilder.Entity<TransactionDetailProduct>()
+                .HasKey(o => new { o.ProductId, o.TransactionDetailId });
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

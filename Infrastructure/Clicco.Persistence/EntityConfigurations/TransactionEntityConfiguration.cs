@@ -23,8 +23,8 @@ namespace Clicco.Infrastructure.EntityConfigurations
                 .HasMaxLength(50)
                 .IsRequired();
 
-            builder.Property(x => x.TransactionStatus)
-                .IsRequired();
+            //builder.Property(x => x.TransactionStatus)
+            //    .IsRequired();
 
             builder.Property(x => x.CreatedDate)
                 .IsRequired();
@@ -32,8 +32,8 @@ namespace Clicco.Infrastructure.EntityConfigurations
             builder.Property(x => x.DeliveryDate)
                 .IsRequired();
 
-            builder.Property(x => x.UserId)
-                .IsRequired();
+            //builder.Property(x => x.UserId)
+            //    .IsRequired();
 
             builder.Property(x => x.AddressId)
                 .IsRequired();
@@ -48,6 +48,10 @@ namespace Clicco.Infrastructure.EntityConfigurations
             builder.HasOne(x => x.Coupon)
                 .WithOne(x => x.Transaction)
                 .HasForeignKey<Transaction>(x => x.CouponId);
+
+            builder.HasOne(x => x.TransactionDetail)
+                .WithOne(x => x.Transaction)
+                .HasForeignKey<TransactionDetail>(x => x.TransactionId);
         }
     }
 }

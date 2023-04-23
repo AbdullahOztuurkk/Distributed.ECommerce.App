@@ -1,5 +1,4 @@
 ﻿using Clicco.Application.Features.Commands;
-using Clicco.Application.Features.Commands.Reviews;
 using FluentValidation;
 
 namespace Clicco.Application.Validations.Reviews

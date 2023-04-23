@@ -1,6 +1,4 @@
-﻿using Clicco.Domain.Model;
-
-namespace Clicco.Domain.Model.Exceptions
+﻿namespace Clicco.Domain.Model.Exceptions
 {
     public class CustomErrors
     {
@@ -8,7 +6,7 @@ namespace Clicco.Domain.Model.Exceptions
         public static CustomError UnexceptedError = new("E_100", "Unexcepted error occurred!");
 
         #region NoContent Errors
-        
+
         public static CustomError UserNotFound = new("E_200", "User not found!");
         public static CustomError MenuNotFound = new("E_201", "Menu not found!");
         public static CustomError CategoryNotFound = new("E_202", "Category not found!");
@@ -19,6 +17,7 @@ namespace Clicco.Domain.Model.Exceptions
         public static CustomError CouponNotFound = new("E_207", "Coupon not found!");
         public static CustomError ParentCategoryNotFound = new("E_208", "Main category not found!");
         public static CustomError VendorNotFound = new("E_209", "Vendor not found!");
+        public static CustomError TransactionDetailNotFound = new("E_210", "Transaction detail not found!");
 
         #endregion
 
