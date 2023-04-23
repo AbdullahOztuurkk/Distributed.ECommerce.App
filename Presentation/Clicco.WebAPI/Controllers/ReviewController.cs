@@ -1,5 +1,4 @@
 ﻿using Clicco.Application.Features.Commands;
-using Clicco.Application.Features.Commands.Reviews;
 using Clicco.Application.Features.Queries;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;

@@ -31,25 +31,6 @@ namespace Clicco.WebAPI.Controllers
             return Ok(result);
         }
 
-        // v1/api/controller/action/2012-12-31
-        //[HttpGet("GetListByDate/{date}")]
-        //[ProducesResponseType(typeof(List<Transaction>), (int)HttpStatusCode.OK)]
-        //[ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        //public async Task<IActionResult> GetTransactionsByDate(string date)
-        //{
-        //    var result = await mediator.Send(new GetTransactionsByDateQuery { Date = date });
-        //    return Ok(result);
-        //}
-
-        [HttpPost("Create")]
-        [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateTransactionCommand command)
-        {
-            var result = await mediator.Send(command);
-            return Ok(result);
-        }
-
         [HttpPut("Update")]
         [ProducesResponseType(typeof(Transaction), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
