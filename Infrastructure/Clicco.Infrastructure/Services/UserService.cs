@@ -11,7 +11,7 @@ namespace Clicco.Infrastructure.Services
         public UserService(IConfiguration configuration, HttpClient httpClient)
         {
             this.configuration = configuration;
-            baseUri = configuration["URLS:AUTH_API"];
+            baseUri = configuration["URLS:AUTH_SERVICE_API"];
             this.httpClient = httpClient;
         }
         public async Task<bool> IsExistAsync(int UserId)
