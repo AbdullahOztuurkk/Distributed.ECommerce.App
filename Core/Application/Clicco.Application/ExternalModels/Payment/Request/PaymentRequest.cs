@@ -1,4 +1,4 @@
-﻿namespace Clicco.Application.ExternalModels.Request
+﻿namespace Clicco.Application.ExternalModels.Payment.Request
 {
     public class PaymentRequest
     {

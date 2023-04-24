@@ -1,5 +1,5 @@
-﻿using Clicco.Application.ExternalModels.Request;
-using Clicco.Application.ExternalModels.Response;
+﻿using Clicco.Application.ExternalModels.Payment.Request;
+using Clicco.Application.ExternalModels.Payment.Response;
 using Clicco.Application.Interfaces.Services.External;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;

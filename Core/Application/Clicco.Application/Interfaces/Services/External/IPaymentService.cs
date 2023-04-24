@@ -1,4 +1,4 @@
-﻿using Clicco.Application.ExternalModels.Request;
+﻿using Clicco.Application.ExternalModels.Payment.Request;
 
 namespace Clicco.Application.Interfaces.Services.External
 {
