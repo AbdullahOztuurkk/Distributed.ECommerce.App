@@ -32,9 +32,6 @@ namespace Clicco.Infrastructure.EntityConfigurations
             builder.Property(x => x.DeliveryDate)
                 .IsRequired();
 
-            //builder.Property(x => x.UserId)
-            //    .IsRequired();
-
             builder.Property(x => x.AddressId)
                 .IsRequired();
 

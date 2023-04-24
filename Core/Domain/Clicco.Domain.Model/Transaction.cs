@@ -6,6 +6,7 @@ namespace Clicco.Domain.Model
     {
         public string Code { get; set; }
         public int TotalAmount { get; set; }
+        public int DiscountedAmount { get; set; }
         public string Dealer { get; set; }
         public DateTime DeliveryDate { get; set; }
         public DateTime CreatedDate { get; set; }

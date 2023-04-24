@@ -25,6 +25,8 @@
 
         public static CustomError MenuAlreadyExist = new("E_303", "Menu already exists!");
         public static CustomError CouponIsNowUsed = new("E_304", "The coupon is now used!");
+        public static CustomError CouponInvalid = new("E_305", "The coupon is invalid!");
+        public static CustomError CouponCannotUsed = new("E_306", "The coupon cannot used!");
 
         #endregion
     }
