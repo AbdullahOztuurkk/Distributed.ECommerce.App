@@ -1,4 +1,5 @@
 ﻿using Clicco.Application.Features.Commands;
+using Clicco.Application.Validations.Common;
 using Clicco.Domain.Core;
 using FluentValidation;
 
@@ -15,13 +16,9 @@ namespace Clicco.Application.Validations.Coupons
                     .MaximumLength(50)
                     .NotEmpty();
 
-                RuleFor(x => x.DiscountType)
-                    .IsInEnum()
-                    .NotEmpty();
+                RuleFor(x => x.DiscountType).SetValidator(new EnumValidator<DiscountType>());
 
-                RuleFor(x => x.Type)
-                    .IsInEnum()
-                    .NotEmpty();
+                RuleFor(x => x.Type).SetValidator(new EnumValidator<CouponType>());
 
                 RuleFor(x => x.Description)
                     .MinimumLength(5)
@@ -39,8 +36,7 @@ namespace Clicco.Application.Validations.Coupons
                 {
                     RuleFor(x => x.DiscountAmount)
                         .GreaterThan(0)
-                        .LessThanOrEqualTo(100)
-                        .NotEmpty();
+                        .LessThanOrEqualTo(100);
                 });
 
                 When(x => x.DiscountType == DiscountType.Default, () =>

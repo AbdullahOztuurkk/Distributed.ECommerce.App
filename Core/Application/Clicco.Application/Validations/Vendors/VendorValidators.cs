@@ -1,4 +1,5 @@
 ﻿using Clicco.Application.Features.Commands;
+using Clicco.Application.Validations.Common;
 using FluentValidation;
 
 namespace Clicco.Application.Validations.Transactions
@@ -14,14 +15,9 @@ namespace Clicco.Application.Validations.Transactions
                     .MaximumLength(100)
                     .NotEmpty();
 
-                RuleFor(x => x.Email)
-                    .MinimumLength(1)
-                    .MaximumLength(50)
-                    .NotEmpty();
+                RuleFor(x => x.Email).SetValidator(new EmailValidator());
 
-                RuleFor(x => x.PhoneNumber)
-                    .MaximumLength(20)
-                    .NotEmpty();
+                RuleFor(x => x.PhoneNumber).SetValidator(new PhoneNumberValidator());
 
                 RuleFor(x => x.Region)
                     .NotEmpty();
