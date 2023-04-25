@@ -1,49 +1,85 @@
 <!DOCTYPE html>
-
-<style>
-
-	table, th, td {
-		border-radius: 5px;
-		border: 1px solid #dadada;
-		border-collapse: collapse;
-	}
-
-	tr {
-		height: 40px;
-	}
-
-	td {
-		padding-left: 13px;
-	}
-
-		td:nth-child(1) {
-			font-weight: bold;
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Your Payment has been Failed!</title>
+	<style type="text/css">
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 14px;
+			line-height: 1.5;
+			color: #444444;
+			background-color: #f2f2f2;
 		}
-</style>
 
-<p style="font-weight: bold; font-size: 18px;">Your Payment was Successful!</p>
+		.container {
+			max-width: 600px;
+			margin: 15px 5px;
+			padding: 20px;
+			background-color: #ffffff;
+			border: 1px solid #cccccc;
+			border-radius: 4px;
+			box-shadow: 0px 0px 10px #cccccc;
+		}
 
-<p>Dear #FULL_NAME#,</p>
+		h1 {
+			font-size: 24px;
+			margin: 0 0 20px 0;
+			text-align: center;
+		}
 
-<p>Your payment for #PRODUCT_NAME# has been successfully completed.</p>
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 20px;
+		}
 
-<table width="650px">
-	<tr>
-		<td colspan="2">Payment Details:</td>
-	</tr>
-	<tr>
-		<td>Amount: </td>
-		<td> #PAYMENT_AMOUNT# </td>
-	</tr>
-	<tr>
-		<td>Payment Method: </td>
-		<td>#PAYMENT_METHOD# </td>
-	</tr>
-	<tr>
-		<td>Order Number: </td>
-		<td>#ORDER_NUMBER# </td>
-	</tr>
+			table th {
+				font-weight: bold;
+				background-color: #eeeeee;
+				border: 1px solid #cccccc;
+				padding: 10px;
+				text-align: left;
+			}
 
-</table>
+			table td {
+				border: 1px solid #cccccc;
+				padding: 10px;
+			}
 
-<p> Thank you for your business!</p>
+		.total {
+			font-weight: bold;
+			text-align: right;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<p style="font-weight: bold; font-size: 18px;">Your Payment was Successful!</p>
+
+		<p>Dear #FULL_NAME#,</p>
+
+		<p>Your payment for #PRODUCT_NAME# has been successfully completed.</p>
+
+		<table width="650px">
+			<tr>
+				<td colspan="2">Payment Details:</td>
+			</tr>
+			<tr>
+				<td>Amount: </td>
+				<td> #PAYMENT_AMOUNT# </td>
+			</tr>
+			<tr>
+				<td>Payment Method: </td>
+				<td>#PAYMENT_METHOD# </td>
+			</tr>
+			<tr>
+				<td>Order Number: </td>
+				<td>#ORDER_NUMBER# </td>
+			</tr>
+
+		</table>
+		<p> Thank you for your business!</p>
+	</div>
+</body>
+</html>
