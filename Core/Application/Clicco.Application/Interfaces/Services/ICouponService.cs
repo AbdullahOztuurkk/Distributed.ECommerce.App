@@ -6,6 +6,8 @@ namespace Clicco.Application.Interfaces.Services
     {
         Task CheckTransactionId(int transactionId);
         Task IsAvailable(int transactionId, Coupon coupon);
+        Task IsAvailable(Transaction transaction, Coupon coupon);
         Task Apply(int transactionId, Coupon coupon);
+        Task Apply(Transaction transaction, Coupon coupon);
     }
 }

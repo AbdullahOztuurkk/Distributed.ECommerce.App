@@ -3,6 +3,7 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
+using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
@@ -10,7 +11,7 @@ namespace Clicco.Application.Features.Commands
     public class ApplyCouponToTransactionCommand : IRequest<BaseResponse>
     {
         public int CouponId { get; set; }
-        public int TransactionId { get; set; }
+        public Transaction Transaction { get; set; }
     }
 
     public class ApplyCouponToTransactionCommandHandler : IRequestHandler<ApplyCouponToTransactionCommand, BaseResponse>
@@ -30,13 +31,12 @@ namespace Clicco.Application.Features.Commands
         public async Task<BaseResponse> Handle(ApplyCouponToTransactionCommand request, CancellationToken cancellationToken)
         {
             await couponService.CheckSelfId(request.CouponId);
-            await couponService.CheckTransactionId(request.TransactionId);
 
             var coupon = await couponRepository.GetByIdAsync(request.CouponId);
 
-            await couponService.IsAvailable(request.TransactionId, coupon);
+            await couponService.IsAvailable(request.Transaction, coupon);
 
-            await couponService.Apply(request.TransactionId, coupon);
+            await couponService.Apply(request.Transaction, coupon);
 
             var activeCoupons = await cacheManager.GetListAsync(CacheKeys.ActiveCoupons);
 

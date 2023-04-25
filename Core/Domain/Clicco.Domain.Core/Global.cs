@@ -2,16 +2,16 @@
 {
     public enum CouponType
     {
-        Product,
-        Category,
-        Dealer
+        Product = 0,
+        Category = 1,
+        Dealer = 2,
     }
 
     public enum DiscountType
     {
-        Percentage,
-        Default
-    }
+        Percentage = 0,
+        Default = 1,
+    } 
 
     public enum TransactionStatus
     {

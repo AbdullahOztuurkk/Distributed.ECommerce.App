@@ -22,6 +22,7 @@ namespace Clicco.Application.Features.Queries
 
         public async Task<List<CouponViewModel>> Handle(GetAllCouponsQuery request, CancellationToken cancellationToken)
         {
+            var result = await couponRepository.Get(x => x.IsActive == true);
             return mapper.Map<List<CouponViewModel>>(await couponRepository.Get(x => x.IsActive == true));
         }
     }

@@ -32,12 +32,37 @@ namespace Clicco.Persistence.Services
 
         public async Task IsAvailable(int transactionId, Coupon coupon)
         {
-            var transaction = await transactionRepository.GetByIdAsync(transactionId, 
+            var transaction = await transactionRepository.GetByIdAsync(transactionId,
                 x => x.TransactionDetail,
                 x => x.TransactionDetail.TransactionDetailProducts);
 
             ThrowExceptionIfNull(transaction, CustomErrors.TransactionNotFound);
 
+            await CheckCouponAvailableForTransaction(transaction, coupon);
+        }
+
+        public async Task IsAvailable(Transaction transaction, Coupon coupon)
+        {
+            await CheckCouponAvailableForTransaction(transaction, coupon);
+        }
+
+        public async Task Apply(int transactionId, Coupon coupon)
+        {
+            var transaction = await transactionRepository.GetByIdAsync(transactionId);
+
+            ThrowExceptionIfNull(transaction, CustomErrors.TransactionNotFound);
+
+            await ApplyCouponForTransaction(transaction, coupon);
+        }
+
+        public async Task Apply(Transaction transaction, Coupon coupon)
+        {
+            await ApplyCouponForTransaction(transaction, coupon);
+        }
+
+        #region Private
+        private async Task CheckCouponAvailableForTransaction(Transaction transaction, Coupon coupon)
+        {
             if (!coupon.IsDeleted && coupon.IsActive && coupon.ExpirationDate < DateTime.UtcNow)
             {
                 throw new CustomException(CustomErrors.CouponInvalid);
@@ -49,17 +74,15 @@ namespace Clicco.Persistence.Services
             {
                 throw new CustomException(CustomErrors.CouponCannotUsed);
             }
+
+            await Task.CompletedTask;
         }
 
-        public async Task Apply(int transactionId, Coupon coupon)
+        private async Task ApplyCouponForTransaction(Transaction transaction, Coupon coupon)
         {
-            var transaction = await transactionRepository.GetByIdAsync(transactionId);
-
-            ThrowExceptionIfNull(transaction, CustomErrors.TransactionNotFound);
-
-            if(coupon.DiscountType == DiscountType.Default)
+            if (coupon.DiscountType == DiscountType.Default)
             {
-                if(coupon.DiscountAmount >= transaction.TotalAmount)
+                if (coupon.DiscountAmount >= transaction.TotalAmount)
                 {
                     transaction.DiscountedAmount = 0;
                 }
@@ -69,7 +92,7 @@ namespace Clicco.Persistence.Services
                 }
             }
 
-            if(coupon.DiscountType == DiscountType.Percentage)
+            if (coupon.DiscountType == DiscountType.Percentage)
             {
                 transaction.DiscountedAmount = transaction.TotalAmount * (coupon.DiscountAmount / 100);
             }
@@ -79,5 +102,7 @@ namespace Clicco.Persistence.Services
             transactionRepository.Update(transaction);
             await transactionRepository.SaveChangesAsync();
         }
+
+        #endregion
     }
 }

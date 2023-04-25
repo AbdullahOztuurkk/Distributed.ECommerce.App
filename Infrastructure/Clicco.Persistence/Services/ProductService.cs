@@ -9,10 +9,15 @@ namespace Clicco.Persistence.Services
     {
         private readonly IProductRepository productRepository;
         private readonly ICategoryRepository categoryRepository;
-        public ProductService(ICategoryRepository categoryRepository, IProductRepository productRepository)
+        private readonly IVendorRepository vendorRepository;
+        public ProductService(
+            ICategoryRepository categoryRepository,
+            IProductRepository productRepository,
+            IVendorRepository vendorRepository)
         {
             this.categoryRepository = categoryRepository;
             this.productRepository = productRepository;
+            this.vendorRepository = vendorRepository;
         }
 
         public async Task CheckCategoryId(int categoryId)
@@ -25,6 +30,12 @@ namespace Clicco.Persistence.Services
         {
             var result = await productRepository.GetByIdAsync(entityId);
             ThrowExceptionIfNull(result, err ?? CustomErrors.ProductNotFound);
+        }
+
+        public async Task CheckVendorId(int vendorId)
+        {
+            var result = await vendorRepository.GetByIdAsync(vendorId);
+            ThrowExceptionIfNull(result, CustomErrors.VendorNotFound);
         }
     }
 }

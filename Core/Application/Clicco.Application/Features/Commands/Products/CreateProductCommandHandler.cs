@@ -16,6 +16,7 @@ namespace Clicco.Application.Features.Commands
         public int Quantity { get; set; }
         public int UnitPrice { get; set; }
         public int CategoryId { get; set; }
+        public int VendorId { get; set; }
 
     }
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, BaseResponse>
@@ -32,6 +33,7 @@ namespace Clicco.Application.Features.Commands
         public async Task<BaseResponse> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             await productService.CheckCategoryId(request.CategoryId);
+            await productService.CheckVendorId(request.VendorId);
 
             var product = mapper.Map<Product>(request);
             //product.SlugUrl = product.Name.ToSeoFriendlyUrl();

@@ -86,7 +86,7 @@ namespace Clicco.Infrastructure.Repositories
                 query = query.Include(include);
             }
 
-            return await query.SingleOrDefaultAsync();
+            return await query.SingleOrDefaultAsync(expression);
         }
 
         public async Task<int> SaveChangesAsync()

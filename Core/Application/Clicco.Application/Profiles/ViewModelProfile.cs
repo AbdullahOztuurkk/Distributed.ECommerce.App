@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Model;
 
 namespace Clicco.Application.Profiles
@@ -13,8 +14,8 @@ namespace Clicco.Application.Profiles
             CreateMap<Category,CategoryViewModel>();
 
             CreateMap<Coupon, CouponViewModel>()
-                .ForMember(x => x.DiscountType, opt => opt.MapFrom(o => Enum.GetName(o.DiscountType)))
-                .ForMember(x => x.Type, opt => opt.MapFrom(o => Enum.GetName(o.Type)));
+                .ForMember(x => x.DiscountType, opt => opt.MapFrom(o => Enum.ToObject(typeof(DiscountType), (int)o.DiscountType)))
+                .ForMember(x => x.Type, opt => opt.MapFrom(o => Enum.ToObject(typeof(CouponType), (int)o.Type)));
 
             CreateMap<Menu, MenuViewModel>();
 
