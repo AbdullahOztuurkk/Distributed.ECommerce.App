@@ -24,6 +24,8 @@
 
         }
 
+        public const string EmailExchangeName = "email_exchange";
+
         public class QueueNames
         {
             public const string RegistrationEmailQueue = "registration-email-queue";

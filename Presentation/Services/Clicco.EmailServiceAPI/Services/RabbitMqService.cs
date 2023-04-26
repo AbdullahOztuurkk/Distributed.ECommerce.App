@@ -28,6 +28,8 @@ namespace Clicco.EmailServiceAPI.Services
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
+
+            _channel.ExchangeDeclare(exchange: EmailExchangeName, type: ExchangeType.Direct, durable: true);
         }
 
         public void Dispose()
@@ -38,9 +40,9 @@ namespace Clicco.EmailServiceAPI.Services
 
         public Task PushMessage<TModel>(TModel model) where TModel : EmailTemplateModel
         {
-            var queueName = GetQueueByEmailType(model.EmailType);
+            var routingKey = typeof(TModel).Name;
 
-            _channel.QueueDeclare(queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            //_channel.QueueDeclare(queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
             var message = JsonSerializer.Serialize(model);
             var body = Encoding.UTF8.GetBytes(message);
@@ -48,14 +50,18 @@ namespace Clicco.EmailServiceAPI.Services
             var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
 
-            _channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: properties, body: body);
+            _channel.BasicPublish(exchange: EmailExchangeName, routingKey: routingKey, basicProperties: properties, body: body);
 
             return Task.CompletedTask;
         }
 
         public Task ReceiveMessages<TModel>(string queueName, Action<TModel> messageHandler) where TModel : EmailTemplateModel
         {
+            var routingKey = typeof(TModel).Name;
+
             _channel.QueueDeclare(queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
+
+            _channel.QueueBind(queue: queueName, exchange: EmailExchangeName, routingKey: routingKey);
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, ea) =>

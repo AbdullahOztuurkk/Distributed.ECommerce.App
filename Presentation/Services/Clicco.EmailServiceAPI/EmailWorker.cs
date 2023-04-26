@@ -1,5 +1,6 @@
 ﻿using Clicco.EmailServiceAPI.Model;
 using Clicco.EmailServiceAPI.Services.Contracts;
+using System.Reflection;
 using static Clicco.EmailServiceAPI.Model.Common.Global;
 
 namespace Clicco.EmailServiceAPI
@@ -10,7 +11,7 @@ namespace Clicco.EmailServiceAPI
         private readonly ILogger<EmailWorker> logger;
         private readonly IEmailService emailService;
 
-        public EmailWorker(IServiceProvider serviceProvider,ILogger<EmailWorker> logger)
+        public EmailWorker(IServiceProvider serviceProvider, ILogger<EmailWorker> logger)
         {
             var scope = serviceProvider.CreateScope().ServiceProvider;
             queueService = scope.GetRequiredService<IQueueService>();
@@ -18,21 +19,46 @@ namespace Clicco.EmailServiceAPI
             this.logger = logger;
         }
 
-        private async Task ReceiveAndSendEmailAsync<T>(string queueName, string logMessage) where T : EmailTemplateModel
+        private readonly List<string> queueNames = new List<string> 
+        { 
+            QueueNames.RegistrationEmailQueue,
+            QueueNames.SuccessPaymentEmailQueue,
+            QueueNames.FailedPaymentEmailQueue,
+            QueueNames.ForgotPasswordEmailQueue
+        };
+
+        private readonly List<Type> emailTemplateTypes = new List<Type> 
+        { 
+            typeof(RegistrationEmailTemplateModel),
+            typeof(SuccessPaymentEmailTemplateModel),
+            typeof(FailedPaymentEmailTemplateModel),
+            typeof(ForgotPasswordEmailTemplateModel)
+        };
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            for (int i = 0; i < queueNames.Count; i++)
+            {
+                Type emailTemplateType = emailTemplateTypes[i];
+                string queueName = queueNames[i];
+
+                object emailTemplate = Activator.CreateInstance(emailTemplateType);
+
+                MethodInfo method = typeof(EmailWorker)
+                    .GetMethod(nameof(ReceiveAndSendEmailAsync), BindingFlags.NonPublic | BindingFlags.Instance)
+                    .MakeGenericMethod(emailTemplateType);
+
+                await (Task)method.Invoke(this, new object[] { queueName, emailTemplate });
+            }
+        }
+
+        private async Task ReceiveAndSendEmailAsync<T>(string queueName, T model) where T : EmailTemplateModel
         {
             await queueService.ReceiveMessages<T>(queueName, async model =>
             {
                 await emailService.SendEmailAsync(model);
-                logger.LogInformation($"{logMessage} {model.To} at {DateTime.Now}");
+                logger.LogInformation($"Send {model.EmailType} email to {model.To} at {DateTime.Now}");
             });
-        }
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            await ReceiveAndSendEmailAsync<RegistrationEmailTemplateModel>(QueueNames.RegistrationEmailQueue, "Send registration email to");
-            await ReceiveAndSendEmailAsync<SuccessPaymentEmailTemplateModel>(QueueNames.SuccessPaymentEmailQueue, "Send success payment email to");
-            await ReceiveAndSendEmailAsync<FailedPaymentEmailTemplateModel>(QueueNames.FailedPaymentEmailQueue, "Send failed payment email to");
-            await ReceiveAndSendEmailAsync<ForgotPasswordEmailTemplateModel>(QueueNames.ForgotPasswordEmailQueue, "Send forgot password email with reset link to");
         }
     }
 }
