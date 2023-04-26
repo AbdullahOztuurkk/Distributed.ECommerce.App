@@ -77,16 +77,5 @@ namespace Clicco.EmailServiceAPI.Services
 
             return Task.CompletedTask;
         }
-
-        private string GetQueueByEmailType(EmailType emailType)
-        {
-            return emailType switch
-            {
-                EmailType.NewUser => QueueNames.RegistrationEmailQueue,
-                EmailType.SuccessPayment => QueueNames.SuccessPaymentEmailQueue,
-                EmailType.FailedPayment => QueueNames.FailedPaymentEmailQueue,
-                EmailType.ForgotPassword => QueueNames.ForgotPasswordEmailQueue
-            };
-        }
     }
 }
