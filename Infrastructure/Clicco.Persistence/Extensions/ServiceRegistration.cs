@@ -31,8 +31,6 @@ namespace Clicco.Infrastructure.Extensions
             services.AddHttpContextAccessor();
 
             #region Repositories
-
-            services.AddScoped<ITransactionDetailProductRepository,TransactionDetailProductRepository>();
             
             services.AddScoped<ITransactionDetailRepository,TransactionDetailRepository>();
 
@@ -55,8 +53,6 @@ namespace Clicco.Infrastructure.Extensions
             #endregion
 
             #region Services
-
-            services.AddScoped<ITransactionDetailProductService, TransactionDetailProductService>();
 
             services.AddScoped<ITransactionDetailService, TransactionDetailService>();
 

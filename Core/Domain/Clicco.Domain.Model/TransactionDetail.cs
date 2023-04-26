@@ -7,7 +7,8 @@ namespace Clicco.Domain.Model
         public TransactionStatus TransactionStatus { get; set; } = TransactionStatus.Pending;
         public bool IsDeleted { get; set; } = false;
 
-        public ICollection<TransactionDetailProduct> TransactionDetailProducts { get; set; }
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
         public Transaction Transaction { get; set; }
         public int TransactionId { get; set; }
     }

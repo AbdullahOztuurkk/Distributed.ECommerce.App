@@ -34,7 +34,7 @@ namespace Clicco.Persistence.Services
         {
             var transaction = await transactionRepository.GetByIdAsync(transactionId,
                 x => x.TransactionDetail,
-                x => x.TransactionDetail.TransactionDetailProducts);
+                x => x.TransactionDetail.Product);
 
             ThrowExceptionIfNull(transaction, CustomErrors.TransactionNotFound);
 
@@ -68,9 +68,9 @@ namespace Clicco.Persistence.Services
                 throw new CustomException(CustomErrors.CouponInvalid);
             }
 
-            if (!(coupon.Type == CouponType.Product && transaction.TransactionDetail.TransactionDetailProducts.Any(x => x.ProductId == coupon.TypeId)) ||
-                !(coupon.Type == CouponType.Category && transaction.TransactionDetail.TransactionDetailProducts.Any(x => x.Product.CategoryId == coupon.TypeId)) ||
-                !(coupon.Type == CouponType.Dealer && transaction.TransactionDetail.TransactionDetailProducts.Any(x => x.Product.VendorId == coupon.TypeId)))
+            if (!(coupon.Type == CouponType.Product && transaction.TransactionDetail.ProductId == coupon.TypeId) ||
+                !(coupon.Type == CouponType.Category && transaction.TransactionDetail.Product.CategoryId == coupon.TypeId) ||
+                !(coupon.Type == CouponType.Dealer && transaction.TransactionDetail.Product.VendorId == coupon.TypeId))
             {
                 throw new CustomException(CustomErrors.CouponCannotUsed);
             }
