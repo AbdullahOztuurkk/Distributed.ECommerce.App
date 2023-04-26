@@ -19,40 +19,18 @@ namespace Clicco.EmailServiceAPI
             this.logger = logger;
         }
 
-        private readonly List<string> queueNames = new List<string> 
-        { 
-            QueueNames.RegistrationEmailQueue,
-            QueueNames.SuccessPaymentEmailQueue,
-            QueueNames.FailedPaymentEmailQueue,
-            QueueNames.ForgotPasswordEmailQueue
-        };
-
-        private readonly List<Type> emailTemplateTypes = new List<Type> 
-        { 
-            typeof(RegistrationEmailTemplateModel),
-            typeof(SuccessPaymentEmailTemplateModel),
-            typeof(FailedPaymentEmailTemplateModel),
-            typeof(ForgotPasswordEmailTemplateModel)
-        };
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            for (int i = 0; i < queueNames.Count; i++)
-            {
-                Type emailTemplateType = emailTemplateTypes[i];
-                string queueName = queueNames[i];
-
-                object emailTemplate = Activator.CreateInstance(emailTemplateType);
-
-                MethodInfo method = typeof(EmailWorker)
-                    .GetMethod(nameof(ReceiveAndSendEmailAsync), BindingFlags.NonPublic | BindingFlags.Instance)
-                    .MakeGenericMethod(emailTemplateType);
-
-                await (Task)method.Invoke(this, new object[] { queueName, emailTemplate });
-            }
+            await Task.WhenAll
+            (
+                ProcessSendEmailOperationAsync<RegistrationEmailTemplateModel>(QueueNames.RegistrationEmailQueue),
+                ProcessSendEmailOperationAsync<ForgotPasswordEmailTemplateModel>(QueueNames.ForgotPasswordEmailQueue),
+                ProcessSendEmailOperationAsync<SuccessPaymentEmailTemplateModel>(QueueNames.SuccessPaymentEmailQueue),
+                ProcessSendEmailOperationAsync<FailedPaymentEmailTemplateModel>(QueueNames.FailedPaymentEmailQueue)
+            );
         }
 
-        private async Task ReceiveAndSendEmailAsync<T>(string queueName, T model) where T : EmailTemplateModel
+        private async Task ProcessSendEmailOperationAsync<T>(string queueName) where T : EmailTemplateModel
         {
             await queueService.ReceiveMessages<T>(queueName, async model =>
             {
