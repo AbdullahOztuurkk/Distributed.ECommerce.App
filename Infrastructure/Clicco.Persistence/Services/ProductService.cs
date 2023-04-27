@@ -37,5 +37,10 @@ namespace Clicco.Persistence.Services
             var result = await vendorRepository.GetByIdAsync(vendorId);
             ThrowExceptionIfNull(result, CustomErrors.VendorNotFound);
         }
+
+        public async Task<Product> GetAsync(int productId)
+        {
+            return await productRepository.GetByIdAsync(productId, x => x.Vendor);
+        }
     }
 }

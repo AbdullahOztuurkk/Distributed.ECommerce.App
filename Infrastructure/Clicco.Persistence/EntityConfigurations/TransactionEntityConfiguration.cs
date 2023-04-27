@@ -35,6 +35,9 @@ namespace Clicco.Infrastructure.EntityConfigurations
             builder.Property(x => x.AddressId)
                 .IsRequired();
 
+            builder.Property(x => x.UserId)
+                .IsRequired();
+
             builder.Property(x => x.TotalAmount)
                 .IsRequired();
 

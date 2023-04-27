@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Clicco.PaymentServiceAPI.Controllers
 {
     [ApiController]
-    [Route("api/payments/[action]")]
+    [Route("api/payments")]
     public class PaymentController : ControllerBase
     {
         private readonly IBankServiceFactory bankServiceFactory;
@@ -15,6 +15,7 @@ namespace Clicco.PaymentServiceAPI.Controllers
         }
 
         [HttpPost]
+        [Route("Pay")]
         public async Task<IActionResult> Pay(PaymentRequest request)
         {
             var bankService = bankServiceFactory.CreateBankService(request.BankId);
@@ -24,6 +25,7 @@ namespace Clicco.PaymentServiceAPI.Controllers
         }
 
         [HttpPost]
+        [Route("Provision")]
         public async Task<IActionResult> Provision(PaymentRequest request)
         {
             var bankService = bankServiceFactory.CreateBankService(request.BankId);
@@ -33,6 +35,7 @@ namespace Clicco.PaymentServiceAPI.Controllers
         }
 
         [HttpPost]
+        [Route("Cancel")]
         public async Task<IActionResult> Cancel(PaymentRequest request)
         {
             var bankService = bankServiceFactory.CreateBankService(request.BankId);
@@ -42,6 +45,7 @@ namespace Clicco.PaymentServiceAPI.Controllers
         }
 
         [HttpPost]
+        [Route("Refund")]
         public async Task<IActionResult> Refund(PaymentRequest request)
         {
             var bankService = bankServiceFactory.CreateBankService(request.BankId);

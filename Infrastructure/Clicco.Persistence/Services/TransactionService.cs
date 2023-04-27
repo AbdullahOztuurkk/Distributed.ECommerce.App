@@ -18,6 +18,13 @@ namespace Clicco.Persistence.Services
             this.transactionRepository = transactionRepository;
             this.userService = userService;
         }
+
+        public async Task AddAsync(Transaction transaction)
+        {
+            await transactionRepository.AddAsync(transaction);
+            await transactionRepository.SaveChangesAsync();
+        }
+
         public async Task CheckAddressIdAsync(int addressId)
         {
             var result = await addressRepository.GetByIdAsync(addressId);

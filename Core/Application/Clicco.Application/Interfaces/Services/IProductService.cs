@@ -6,5 +6,6 @@ namespace Clicco.Application.Interfaces.Services
     {
         Task CheckCategoryId(int categoryId);
         Task CheckVendorId(int vendorId);
+        Task<Product> GetAsync(int productId);
     }
 }

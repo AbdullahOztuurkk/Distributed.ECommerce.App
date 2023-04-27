@@ -14,6 +14,8 @@ namespace Clicco.Infrastructure.Extensions
 
             services.AddScoped<IPaymentService, PaymentService>();
 
+            services.AddScoped<IEmailService, EmailService>();
+
             return services;
         }
     }

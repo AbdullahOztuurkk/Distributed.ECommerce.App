@@ -1,9 +1,8 @@
 ﻿using Clicco.Application.ExternalModels.Payment.Request;
 using Clicco.Application.ExternalModels.Payment.Response;
 using Clicco.Application.Interfaces.Services.External;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace Clicco.Infrastructure.Services
 {
@@ -20,31 +19,31 @@ namespace Clicco.Infrastructure.Services
             this.httpClient = httpClient;
         }
 
-        public async Task<bool> Cancel(PaymentRequest paymentRequest)
+        public async Task<PaymentResult> Cancel(PaymentBankRequest paymentRequest)
         {
             return await SendRequest($"{baseUri}/api/payments/cancel", paymentRequest);
         }
 
-        public async Task<bool> Pay(PaymentRequest paymentRequest)
+        public async Task<PaymentResult> Pay(PaymentBankRequest paymentRequest)
         {
             return await SendRequest($"{baseUri}/api/payments/pay", paymentRequest);
         }
 
-        public async Task<bool> Provision(PaymentRequest paymentRequest)
+        public async Task<PaymentResult> Provision(PaymentBankRequest paymentRequest)
         {
             return await SendRequest($"{baseUri}/api/payments/provision", paymentRequest);
         }
 
-        public async Task<bool> Refund(PaymentRequest paymentRequest)
+        public async Task<PaymentResult> Refund(PaymentBankRequest paymentRequest)
         {
             return await SendRequest($"{baseUri}/api/payments/refund", paymentRequest);
         }
 
-        private async Task<bool> SendRequest(string url,PaymentRequest paymentRequest)
+        private async Task<PaymentResult> SendRequest(string url,PaymentBankRequest paymentRequest)
         {
-            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(url, paymentRequest);
-            PaymentResult paymentResult = await httpResponse.Content.ReadAsAsync<PaymentResult>();
-            return paymentResult.IsSuccess;
+            var response = await httpClient.PostAsJsonAsync(url, paymentRequest);
+            var result = await response.Content.ReadAsAsync<PaymentResult>();
+            return result;
         }
     }
 }

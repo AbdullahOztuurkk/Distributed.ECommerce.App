@@ -11,8 +11,10 @@ namespace Clicco.Domain.Model
         public DateTime DeliveryDate { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public TransactionStatus TransactionStatus { get; set; } = TransactionStatus.Pending;
 
         //Relationship
+        public int UserId { get; set; }
         public Address Address { get; set; }
         public int AddressId { get; set; }
         public Coupon Coupon { get; set; }

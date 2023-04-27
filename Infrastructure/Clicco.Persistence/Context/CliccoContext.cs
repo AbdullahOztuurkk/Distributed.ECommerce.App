@@ -22,7 +22,7 @@ namespace Clicco.Infrastructure.Context
         public DbSet<Menu> Menus { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<TransactionDetail> TransactionsDetails { get; set; }
+        public DbSet<TransactionDetail> TransactionDetails { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Vendor> Vendors { get; set; }

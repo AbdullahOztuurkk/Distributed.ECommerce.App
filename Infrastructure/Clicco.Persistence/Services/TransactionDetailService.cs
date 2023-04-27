@@ -14,6 +14,12 @@ namespace Clicco.Persistence.Services
             this.transactionDetailRepository = transactionDetailRepository;
         }
 
+        public async Task AddAsync(TransactionDetail transactionDetail)
+        {
+            await transactionDetailRepository.AddAsync(transactionDetail);
+            await transactionDetailRepository.SaveChangesAsync();
+        }
+
         public override async Task CheckSelfId(int entityId, CustomError err = null)
         {
             var result = await transactionDetailRepository.GetByIdAsync(entityId);
