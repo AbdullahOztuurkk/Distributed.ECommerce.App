@@ -1,7 +1,7 @@
 using Clicco.Application.Features.Commands;
 using Clicco.Application.Features.Queries;
+using Clicco.Application.ViewModels;
 using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +23,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<Address>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<AddressViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
             var result = await mediator.Send(new GetAllAddressesQuery());
@@ -32,7 +32,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(Address), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AddressViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
@@ -43,7 +43,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("GetByUserId")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(Address), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AddressViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetAddressByUserId(int userId)
         {
@@ -61,7 +61,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(Address), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AddressViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateAddressCommand command)
         {

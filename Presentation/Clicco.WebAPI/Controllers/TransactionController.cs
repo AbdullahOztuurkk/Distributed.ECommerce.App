@@ -1,7 +1,7 @@
 ﻿using Clicco.Application.Features.Commands;
 using Clicco.Application.Features.Queries;
+using Clicco.Application.ViewModels;
 using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +22,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Transaction), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(TransactionViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
@@ -32,7 +32,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(Transaction), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(TransactionViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateTransactionCommand command)
         {

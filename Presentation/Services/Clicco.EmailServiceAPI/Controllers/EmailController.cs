@@ -1,6 +1,7 @@
 using Clicco.EmailServiceAPI.Model;
 using Clicco.EmailServiceAPI.Model.Extensions;
 using Clicco.EmailServiceAPI.Model.Request;
+using Clicco.EmailServiceAPI.Model.Response;
 using Clicco.EmailServiceAPI.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,25 +21,30 @@ namespace Clicco.EmailServiceAPI.Controllers
         [HttpPost]
         public IActionResult SendRegistrationEmail([FromBody] RegistrationEmailRequest model)
         {
-            return Ok(queueService.PushMessage(model.ConvertToEmailModel()));
+            queueService.PushMessage(model.ConvertToEmailModel());
+            return Ok(new EmailResponse(model.To).ToString());
         }
 
         [HttpPost]
         public IActionResult SendSuccessPaymentEmail([FromBody] PaymentSuccessEmailRequest model)
         {
-            return Ok(queueService.PushMessage(model.ConvertToEmailModel()));
+            queueService.PushMessage(model.ConvertToEmailModel());
+            return Ok(new EmailResponse(model.To).ToString());
+
         }
 
         [HttpPost]
         public IActionResult SendFailedPaymentEmail([FromBody] PaymentFailedEmailRequest model)
         {
-            return Ok(queueService.PushMessage(model.ConvertToEmailModel()));
+            queueService.PushMessage(model.ConvertToEmailModel());
+            return Ok(new EmailResponse(model.To).ToString());
         }
 
         [HttpPost]
         public IActionResult SendForgotPasswordEmail([FromBody] ForgotPasswordEmailRequest model)
         {
-            return Ok(queueService.PushMessage(model.ConvertToEmailModel()));
+            queueService.PushMessage(model.ConvertToEmailModel());
+            return Ok(new EmailResponse(model.To).ToString());
         }
     }
 }

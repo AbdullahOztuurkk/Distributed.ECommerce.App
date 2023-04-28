@@ -1,7 +1,7 @@
 ﻿using Clicco.Application.Features.Commands;
 using Clicco.Application.Features.Queries;
+using Clicco.Application.ViewModels;
 using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +23,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<Category>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<CategoryViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
             var result = await mediator.Send(new GetAllCategoriesQuery());
@@ -32,7 +32,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(Category), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CategoryViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
@@ -43,7 +43,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("GetByUrl/{url}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(Category), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CategoryViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetCategoryByUrl(string url)
         {
@@ -61,7 +61,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(Category), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CategoryViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateCategoryCommand command)
         {

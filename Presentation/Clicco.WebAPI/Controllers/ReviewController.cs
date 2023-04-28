@@ -1,7 +1,7 @@
 ﻿using Clicco.Application.Features.Commands;
 using Clicco.Application.Features.Queries;
+using Clicco.Application.ViewModels;
 using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +23,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(Review), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ReviewViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
@@ -35,7 +35,7 @@ namespace Clicco.WebAPI.Controllers
         // v1/api/controller/action/2012-12-31
         [HttpGet("GetByProductId/{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<Review>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<ReviewViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetMenuByUrl(int id)
         {
@@ -53,7 +53,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(Menu), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ReviewViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateReviewCommand command)
         {

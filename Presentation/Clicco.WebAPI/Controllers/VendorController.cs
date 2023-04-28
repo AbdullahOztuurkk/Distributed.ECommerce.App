@@ -1,7 +1,7 @@
 ﻿using Clicco.Application.Features.Commands;
 using Clicco.Application.Features.Queries;
+using Clicco.Application.ViewModels;
 using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +20,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<Vendor>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<VendorViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
             var addresses = await mediator.Send(new GetAllVendorsQuery());
@@ -28,7 +28,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Vendor), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VendorViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
@@ -47,7 +47,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(Vendor), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VendorViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateVendorCommand command)
         {

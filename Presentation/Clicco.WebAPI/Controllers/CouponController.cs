@@ -1,5 +1,6 @@
 ﻿using Clicco.Application.Features.Commands;
 using Clicco.Application.Features.Queries;
+using Clicco.Application.ViewModels;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
@@ -23,7 +24,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<Coupon>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<CouponViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
             var result = await mediator.Send(new GetAllCouponsQuery());
@@ -32,7 +33,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(Coupon), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CouponViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
@@ -44,7 +45,7 @@ namespace Clicco.WebAPI.Controllers
         // v1/api/controller/action/2012-12-31
         [HttpGet("GetListByDate/{date}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<Coupon>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<CouponViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetCouponsByDate(string date)
         {
@@ -63,7 +64,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(Coupon), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CouponViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateCouponCommand command)
         {

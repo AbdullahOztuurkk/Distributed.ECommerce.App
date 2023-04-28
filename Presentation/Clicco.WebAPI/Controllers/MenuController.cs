@@ -1,7 +1,7 @@
 ﻿using Clicco.Application.Features.Commands;
 using Clicco.Application.Features.Queries;
+using Clicco.Application.ViewModels;
 using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Model;
 using Clicco.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +23,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<Menu>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<MenuViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
             var result = await mediator.Send(new GetAllMenusQuery());
@@ -32,7 +32,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(Coupon), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MenuViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
@@ -44,7 +44,7 @@ namespace Clicco.WebAPI.Controllers
         // v1/api/controller/action/clicco-e-commerce-menu-url
         [HttpGet("GetByUrl/{url}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<Menu>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<MenuViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetMenuByUrl(string url)
         {
@@ -62,7 +62,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(Menu), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MenuViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateMenuCommand command)
         {
