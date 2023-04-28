@@ -1,6 +1,7 @@
 ﻿using Clicco.Application.ExternalModels.Email;
 using Clicco.Application.ExternalModels.Payment.Request;
 using Clicco.Application.Features.Commands;
+using Clicco.Application.Helpers.Contracts;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.Interfaces.Services.External;
 using Clicco.Domain.Core;
@@ -23,6 +24,7 @@ namespace Clicco.WebAPI.Controllers
         private readonly ITransactionService transactionService;
         private readonly ITransactionDetailService transactionDetailService;
         private readonly IEmailService emailService;
+        private readonly IClaimHelper claimHelper;
         private readonly IMediator mediator;
         public PaymentController(
             IPaymentService paymentService,
@@ -31,7 +33,8 @@ namespace Clicco.WebAPI.Controllers
             ITransactionService transactionService,
             ITransactionDetailService transactionDetailService,
             IProductService productService,
-            IEmailService emailService)
+            IEmailService emailService,
+            IClaimHelper claimHelper)
         {
             this.paymentService = paymentService;
             this.couponService = couponService;
@@ -40,6 +43,7 @@ namespace Clicco.WebAPI.Controllers
             this.transactionDetailService = transactionDetailService;
             this.productService = productService;
             this.emailService = emailService;
+            this.claimHelper = claimHelper;
         }
 
         //TODO: Code Smell
@@ -74,7 +78,7 @@ namespace Clicco.WebAPI.Controllers
             transaction.DeliveryDate = DateTime.UtcNow.AddDays(7);
             transaction.TotalAmount = product.UnitPrice * product.Quantity;
             transaction.DiscountedAmount = transaction.TotalAmount;
-            transaction.UserId = 5;
+            transaction.UserId = claimHelper.GetUserId();
 
             try
             {
@@ -97,11 +101,11 @@ namespace Clicco.WebAPI.Controllers
                     await emailService.SendSuccessPaymentEmailAsync(new PaymentSuccessEmailRequest
                     {
                         Amount = transaction.DiscountedAmount == transaction.TotalAmount ? transaction.TotalAmount.ToString() : transaction.DiscountedAmount.ToString(),
-                        FullName = "Abdullah Öztürk",
+                        FullName = claimHelper.GetUserName(),
                         OrderNumber = transaction.Code,
                         PaymentMethod = "Credit / Bank Card",
                         ProductName = product.Name,
-                        To = "abdullahozturk99@gmail.com"
+                        To = claimHelper.GetUserEmail(),
                     });
                 }
                 else
@@ -133,11 +137,11 @@ namespace Clicco.WebAPI.Controllers
             await emailService.SendFailedPaymentEmailAsync(new PaymentFailedEmailRequest
             {
                 Amount = transaction.TotalAmount.ToString(),
-                FullName = "Abdullah Öztürk",
+                FullName = claimHelper.GetUserName(),
                 OrderNumber = transaction.Code,
                 PaymentMethod = "Credit / Bank Card",
                 ProductName = product.Name,
-                To = "abdullahozturk99@gmail.com",
+                To = claimHelper.GetUserEmail(),
                 Error = errorMessage
             });
         }

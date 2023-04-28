@@ -1,4 +1,6 @@
 ﻿using Clicco.Application.Behaviours;
+using Clicco.Application.Helpers;
+using Clicco.Application.Helpers.Contracts;
 using Clicco.Application.Profiles;
 using FluentValidation;
 using MediatR;
@@ -23,6 +25,8 @@ namespace Clicco.Application.Extensions
                 cfg.AddProfile<GeneralProfile>();
                 cfg.AddProfile<ViewModelProfile>();
             });
+
+            services.AddScoped<IClaimHelper, ClaimHelper>();
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             return services;

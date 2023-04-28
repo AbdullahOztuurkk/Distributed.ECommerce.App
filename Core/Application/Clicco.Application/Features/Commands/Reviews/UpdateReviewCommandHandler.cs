@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Clicco.Application.Helpers.Contracts;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
@@ -21,12 +22,14 @@ namespace Clicco.Application.Features.Commands
         private readonly IReviewRepository reviewRepository;
         private readonly IMapper mapper;
         private readonly IReviewService reviewService;
+        private readonly IClaimHelper claimHelper;
 
-        public UpdateReviewCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IReviewService reviewService)
+        public UpdateReviewCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IReviewService reviewService, IClaimHelper claimHelper)
         {
             this.reviewRepository = reviewRepository;
             this.mapper = mapper;
             this.reviewService = reviewService;
+            this.claimHelper = claimHelper;
         }
 
         public async Task<ReviewViewModel> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
@@ -35,6 +38,7 @@ namespace Clicco.Application.Features.Commands
             await reviewService.CheckProductIdAsync(request.ProductId);
 
             var review = mapper.Map<Review>(request);
+            review.UserId = claimHelper.GetUserId();
             reviewRepository.Update(review);
             await reviewRepository.SaveChangesAsync();
             return mapper.Map<ReviewViewModel>(review);

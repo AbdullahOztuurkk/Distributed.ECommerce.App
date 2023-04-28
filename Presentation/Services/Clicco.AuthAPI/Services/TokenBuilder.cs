@@ -22,7 +22,7 @@ namespace Clicco.AuthAPI.Services
             var key = Encoding.UTF8.GetBytes(Configuration["AUTH_API_KEY"]);
             var claimIdentity = new ClaimsIdentity(new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, string.Join(' ',user.FirstName,user.LastName)),
             });

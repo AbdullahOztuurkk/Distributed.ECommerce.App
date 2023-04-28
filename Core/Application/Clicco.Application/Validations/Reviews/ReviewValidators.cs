@@ -27,8 +27,7 @@ namespace Clicco.Application.Validations.Reviews
                     .NotEmpty();
 
                 RuleFor(x => x.UserId)
-                    .GreaterThan(0)
-                    .NotEmpty();
+                    .GreaterThan(0);
             }
         }
 

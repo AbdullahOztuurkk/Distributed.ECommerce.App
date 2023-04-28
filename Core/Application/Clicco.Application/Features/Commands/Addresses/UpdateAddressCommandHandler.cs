@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Clicco.Application.Helpers.Contracts;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
@@ -17,29 +18,33 @@ namespace Clicco.Application.Features.Commands
         public string State { get; set; }
         public string Country { get; set; }
         public string ZipCode { get; set; }
+        public int? UserId { get; set; }
     }
     public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, AddressViewModel>
     {
         private readonly IAddressRepository addressRepository;
         private readonly IMapper mapper;
         private readonly IAddressService addressService;
-        private readonly IHttpContextAccessor contextAccessor;
-
-        public UpdateAddressCommandHandler(IAddressRepository addressRepository, IMapper mapper, IAddressService addressService, IHttpContextAccessor contextAccessor)
+        private readonly IClaimHelper claimHelper;
+        public UpdateAddressCommandHandler(IAddressRepository addressRepository, IMapper mapper, IAddressService addressService, IClaimHelper claimHelper)
         {
             this.addressRepository = addressRepository;
             this.mapper = mapper;
             this.addressService = addressService;
-            this.contextAccessor = contextAccessor;
+            this.claimHelper = claimHelper;
         }
 
         public async Task<AddressViewModel> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
         {
             await addressService.CheckSelfId(request.Id);
 
+            if (request.UserId.HasValue)
+                await addressService.CheckUserIdAsync(request.UserId.Value);
+
             var address = mapper.Map<Address>(request);
-            //Todo: code smell
-            address.UserId = Convert.ToInt32(contextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.UniqueName).Value);
+            address.UserId = request.UserId.HasValue
+                ? request.UserId.Value
+                : claimHelper.GetUserId();
             addressRepository.Update(address);
             await addressRepository.SaveChangesAsync();
             return mapper.Map<AddressViewModel>(address);
