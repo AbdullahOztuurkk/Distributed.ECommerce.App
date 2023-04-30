@@ -6,6 +6,10 @@ namespace Clicco.Application.Interfaces.Services
     {
         Task CheckUserIdAsync(int userId);
         Task CheckAddressIdAsync(int addressId);
-        Task AddAsync(Transaction transaction);
+        Task CheckCouponIdAsync(int couponId);
+        Task CheckProductIdAsync(int productId);
+        Task<Product> GetProductByIdAsync(int productId);
+        Task<Coupon> GetCouponByIdAsync(int couponId);
+
     }
 }

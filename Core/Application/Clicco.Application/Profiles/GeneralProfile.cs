@@ -31,7 +31,7 @@ namespace Clicco.Application.Profiles
             CreateMap<UpdateReviewCommand, Review>();
             CreateMap<DeleteReviewCommand, Review>();
 
-            CreateMap<CreateTransactionCommand, Transaction>();
+            //CreateMap<CreateTransactionCommand, Transaction>();
             CreateMap<DeleteTransactionCommand, Transaction>();
             CreateMap<UpdateTransactionCommand, Transaction>();
 
