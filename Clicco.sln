@@ -34,7 +34,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.AuthServiceAPI", "Pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.EmailServiceAPI", "Presentation\Services\Clicco.EmailServiceAPI\Clicco.EmailServiceAPI.csproj", "{13A94D9E-C0D5-48A1-90CD-019AE391E1D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clicco.PaymentServiceAPI", "Presentation\Services\Clicco.PaymentServiceAPI\Clicco.PaymentServiceAPI.csproj", "{F0AC40EA-64CA-461A-A8B1-77EAFC65E194}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.PaymentServiceAPI", "Presentation\Services\Clicco.PaymentServiceAPI\Clicco.PaymentServiceAPI.csproj", "{F0AC40EA-64CA-461A-A8B1-77EAFC65E194}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clicco.InvoiceServiceAPI", "Presentation\Services\Clicco.InvoiceServiceAPI\Clicco.InvoiceServiceAPI.csproj", "{DC6D11E7-269E-4B59-A36D-CCD39A37F69F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,6 +80,10 @@ Global
 		{F0AC40EA-64CA-461A-A8B1-77EAFC65E194}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0AC40EA-64CA-461A-A8B1-77EAFC65E194}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0AC40EA-64CA-461A-A8B1-77EAFC65E194}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC6D11E7-269E-4B59-A36D-CCD39A37F69F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC6D11E7-269E-4B59-A36D-CCD39A37F69F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC6D11E7-269E-4B59-A36D-CCD39A37F69F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC6D11E7-269E-4B59-A36D-CCD39A37F69F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +101,7 @@ Global
 		{89D4E990-B80C-4721-9126-51EE40273944} = {B0555D1C-2430-4915-BBD7-7A89283C6DF3}
 		{13A94D9E-C0D5-48A1-90CD-019AE391E1D3} = {B0555D1C-2430-4915-BBD7-7A89283C6DF3}
 		{F0AC40EA-64CA-461A-A8B1-77EAFC65E194} = {B0555D1C-2430-4915-BBD7-7A89283C6DF3}
+		{DC6D11E7-269E-4B59-A36D-CCD39A37F69F} = {B0555D1C-2430-4915-BBD7-7A89283C6DF3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5ED189FF-6738-48AA-BACA-CB01FD6FD628}

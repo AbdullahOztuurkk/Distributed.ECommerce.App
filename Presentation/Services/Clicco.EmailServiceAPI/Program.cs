@@ -1,6 +1,6 @@
 using Clicco.EmailServiceAPI;
+using Clicco.EmailServiceAPI.Configurations;
 using Clicco.EmailServiceAPI.Extensions;
-using Clicco.EmailServiceAPI.Model.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 

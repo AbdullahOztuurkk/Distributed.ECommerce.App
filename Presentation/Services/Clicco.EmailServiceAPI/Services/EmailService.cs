@@ -1,9 +1,9 @@
 ﻿using Clicco.EmailServiceAPI.Model;
-using Clicco.EmailServiceAPI.Model.Configurations;
 using Clicco.EmailServiceAPI.Services.Contracts;
 using Microsoft.Extensions.Options;
 using System.Net.Mail;
 using System.Net;
+using Clicco.EmailServiceAPI.Configurations;
 
 namespace Clicco.EmailServiceAPI.Services
 {

@@ -1,4 +1,4 @@
-﻿namespace Clicco.EmailServiceAPI.Model.Configurations
+﻿namespace Clicco.EmailServiceAPI.Configurations
 {
     public class RabbitMqSettings
     {

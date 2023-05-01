@@ -1,6 +1,7 @@
-﻿using Clicco.EmailServiceAPI.Model.Request;
+﻿using Clicco.EmailServiceAPI.Model;
+using Clicco.EmailServiceAPI.Model.Request;
 
-namespace Clicco.EmailServiceAPI.Model.Extensions
+namespace Clicco.EmailServiceAPI.Extensions
 {
     public static class EmailModelMappers
     {

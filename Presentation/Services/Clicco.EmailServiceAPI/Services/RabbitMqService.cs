@@ -1,5 +1,5 @@
-﻿using Clicco.EmailServiceAPI.Model;
-using Clicco.EmailServiceAPI.Model.Configurations;
+﻿using Clicco.EmailServiceAPI.Configurations;
+using Clicco.EmailServiceAPI.Model;
 using Clicco.EmailServiceAPI.Services.Contracts;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;

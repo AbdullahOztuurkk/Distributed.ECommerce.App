@@ -1,5 +1,5 @@
+using Clicco.EmailServiceAPI.Extensions;
 using Clicco.EmailServiceAPI.Model;
-using Clicco.EmailServiceAPI.Model.Extensions;
 using Clicco.EmailServiceAPI.Model.Request;
 using Clicco.EmailServiceAPI.Model.Response;
 using Clicco.EmailServiceAPI.Services.Contracts;
