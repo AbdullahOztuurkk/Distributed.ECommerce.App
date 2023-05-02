@@ -1,4 +1,4 @@
-﻿using Clicco.Application.ExternalModels.Email;
+﻿using Clicco.Domain.Shared.Models.Email;
 
 namespace Clicco.Application.Interfaces.Services.External
 {
@@ -6,5 +6,6 @@ namespace Clicco.Application.Interfaces.Services.External
     {
         Task<bool> SendSuccessPaymentEmailAsync(PaymentSuccessEmailRequest request);
         Task<bool> SendFailedPaymentEmailAsync(PaymentFailedEmailRequest request);
+        Task<bool> SendInvoiceEmailAsync(object request);
     }
 }

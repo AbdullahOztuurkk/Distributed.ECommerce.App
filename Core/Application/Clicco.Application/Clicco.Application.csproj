@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Domain\Clicco.Domain.Model\Clicco.Domain.Model.csproj" />
+    <ProjectReference Include="..\..\Domain\Clicco.Domain.Shared\Clicco.Domain.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +20,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.15" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ExternalModels\" />
   </ItemGroup>
 
 </Project>

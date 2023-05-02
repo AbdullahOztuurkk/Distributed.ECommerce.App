@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Clicco.Domain.Shared.Models.Invoice;
+using System.ComponentModel.DataAnnotations;
+using static Clicco.Domain.Shared.Global;
 using static Clicco.EmailServiceAPI.Model.Common.Global;
 
 namespace Clicco.EmailServiceAPI.Model
@@ -91,5 +93,28 @@ namespace Clicco.EmailServiceAPI.Model
 
         [DisplayElement("#ERROR#")]
         public string Error { get; set; }
+    }
+
+    public class InvoiceEmailTemplateModel : EmailTemplateModel
+    {
+        public InvoiceEmailTemplateModel()
+        {
+            EmailType = EmailType.Invoice;
+        }
+
+        [CustomElement]
+        public InvoiceTransaction Transaction { get; set; }
+
+        [CustomElement]
+        public InvoiceProduct Product { get; set; }
+
+        [CustomElement]
+        public InvoiceVendor Vendor { get; set; }
+
+        [CustomElement]
+        public InvoiceAddress Address { get; set; }
+
+        [CustomElement]
+        public InvoiceCoupon Coupon { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Clicco.InvoiceServiceAPI.Data.Models;
+﻿using Clicco.Domain.Shared.Models.Invoice;
+using Clicco.InvoiceServiceAPI.Data.Models;
 using Clicco.InvoiceServiceAPI.Data.Repositories.Contracts;
 using Clicco.InvoiceServiceAPI.Services.Contracts;
 
@@ -15,10 +16,19 @@ namespace Clicco.InvoiceServiceAPI.Services
             this.emailService = emailService;
         }
 
-        public async Task<InvoiceResult> CreateAsync(Invoice invoice)
+        public async Task<InvoiceResult> CreateAsync(CreateInvoiceRequest invoice)
         {
-            await invoiceRepository.CreateAsync(invoice);
-            return new SuccessInvoiceResult("Invoice has been created successfully!");
+            var invoiceModel = new Invoice
+            {
+                Address = invoice.Address,
+                Coupon = invoice.Coupon,
+                Product = invoice.Product,
+                Transaction = invoice.Transaction,
+                Vendor = invoice.Vendor
+            };
+
+            var result = await invoiceRepository.CreateAsync(invoiceModel);
+            return result != null ? new SuccessInvoiceResult() : new FailedInvoiceResult("Error Occurred!");
         }
 
         public async Task<InvoiceResult> SendInvoiceEmail(int transactionId)

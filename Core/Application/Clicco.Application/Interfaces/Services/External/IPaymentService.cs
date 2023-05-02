@@ -1,5 +1,4 @@
-﻿using Clicco.Application.ExternalModels.Payment.Request;
-using Clicco.Application.ExternalModels.Payment.Response;
+﻿using Clicco.Domain.Shared.Models.Payment;
 
 namespace Clicco.Application.Interfaces.Services.External
 {

@@ -8,20 +8,7 @@
             ForgotPassword = 20,
             SuccessPayment = 30,
             FailedPayment = 40,
-        }
-
-        public class DisplayElementAttribute : Attribute
-        {
-            public string ParameterName { get; private set; }
-            public DisplayElementAttribute(string parameterName)
-            {
-                ParameterName = parameterName;
-            }
-        }
-
-        public class ExcludeAttribute : Attribute
-        {
-
+            Invoice = 50,
         }
 
         public const string EmailExchangeName = "email_exchange";
@@ -32,7 +19,7 @@
             public const string SuccessPaymentEmailQueue = "success-payment-email-queue";
             public const string FailedPaymentEmailQueue = "failed-payment-email-queue";
             public const string ForgotPasswordEmailQueue = "forgot-password-email-queue";
-
+            public const string InvoiceEmailQueue = "invoice-email-queue";
         }
     }
 }

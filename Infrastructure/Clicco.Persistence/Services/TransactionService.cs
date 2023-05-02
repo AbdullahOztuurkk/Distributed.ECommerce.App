@@ -59,6 +59,11 @@ namespace Clicco.Persistence.Services
                 throw new CustomException(CustomErrors.UserNotFound);
         }
 
+        public async Task<Address> GetAddressByIdAsync(int addressId)
+        {
+            return await addressRepository.GetByIdAsync(addressId);
+        }
+
         public async Task<Coupon> GetCouponByIdAsync(int couponId)
         {
             return await couponRepository.GetByIdAsync(couponId);

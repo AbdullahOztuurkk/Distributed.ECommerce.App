@@ -1,12 +1,12 @@
+using Clicco.Domain.Shared.Models.Email;
 using Clicco.EmailServiceAPI.Extensions;
-using Clicco.EmailServiceAPI.Model;
-using Clicco.EmailServiceAPI.Model.Request;
 using Clicco.EmailServiceAPI.Model.Response;
 using Clicco.EmailServiceAPI.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clicco.EmailServiceAPI.Controllers
 {
+    //Todo: Code Smell
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class EmailController : ControllerBase
@@ -42,6 +42,13 @@ namespace Clicco.EmailServiceAPI.Controllers
 
         [HttpPost]
         public IActionResult SendForgotPasswordEmail([FromBody] ForgotPasswordEmailRequest model)
+        {
+            queueService.PushMessage(model.ConvertToEmailModel());
+            return Ok(new EmailResponse(model.To).ToString());
+        }
+
+        [HttpPost]
+        public IActionResult SendInvoiceEmail([FromBody] InvoiceEmailRequest model)
         {
             queueService.PushMessage(model.ConvertToEmailModel());
             return Ok(new EmailResponse(model.To).ToString());

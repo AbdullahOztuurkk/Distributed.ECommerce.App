@@ -1,6 +1,5 @@
-﻿using Clicco.Application.ExternalModels.Payment.Request;
-using Clicco.Application.ExternalModels.Payment.Response;
-using Clicco.Application.Interfaces.Services.External;
+﻿using Clicco.Application.Interfaces.Services.External;
+using Clicco.Domain.Shared.Models.Payment;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
 

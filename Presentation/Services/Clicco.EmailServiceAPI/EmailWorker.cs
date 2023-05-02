@@ -26,7 +26,8 @@ namespace Clicco.EmailServiceAPI
                 ProcessSendEmailOperationAsync<RegistrationEmailTemplateModel>(QueueNames.RegistrationEmailQueue),
                 ProcessSendEmailOperationAsync<ForgotPasswordEmailTemplateModel>(QueueNames.ForgotPasswordEmailQueue),
                 ProcessSendEmailOperationAsync<SuccessPaymentEmailTemplateModel>(QueueNames.SuccessPaymentEmailQueue),
-                ProcessSendEmailOperationAsync<FailedPaymentEmailTemplateModel>(QueueNames.FailedPaymentEmailQueue)
+                ProcessSendEmailOperationAsync<FailedPaymentEmailTemplateModel>(QueueNames.FailedPaymentEmailQueue),
+                ProcessSendEmailOperationAsync<InvoiceEmailTemplateModel>(QueueNames.InvoiceEmailQueue)
             );
         }
 

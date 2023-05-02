@@ -1,3 +1,4 @@
+using Clicco.Domain.Shared.Models.Invoice;
 using Clicco.InvoiceServiceAPI.Data.Models;
 using Clicco.InvoiceServiceAPI.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ namespace Clicco.InvoiceServiceAPI.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> CreateInvoice(Invoice invoice)
+        public async Task<IActionResult> CreateInvoice(CreateInvoiceRequest invoice)
         {
             var result = await invoiceService.CreateAsync(invoice);
             return result.IsSuccess ? Ok(result) : BadRequest(result);

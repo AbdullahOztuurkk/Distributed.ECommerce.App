@@ -12,8 +12,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddEmailServices();
 
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-builder.Services.Configure<RabbitMqSettings>(builder.Configuration.GetSection("RabbitMqSettings"));
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameof(EmailSettings)));
+builder.Services.Configure<RabbitMqSettings>(builder.Configuration.GetSection(nameof(RabbitMqSettings)));
 builder.Services.AddHostedService<EmailWorker>();
 
 var app = builder.Build(); 

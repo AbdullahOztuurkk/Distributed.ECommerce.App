@@ -1,5 +1,5 @@
-﻿using Clicco.Application.ExternalModels.Email;
-using Clicco.Application.Interfaces.Services.External;
+﻿using Clicco.Application.Interfaces.Services.External;
+using Clicco.Domain.Shared.Models.Email;
 using Microsoft.Extensions.Configuration;
 
 namespace Clicco.Infrastructure.Services
@@ -19,6 +19,12 @@ namespace Clicco.Infrastructure.Services
         public async Task<bool> SendFailedPaymentEmailAsync(PaymentFailedEmailRequest request)
         {
             var response = await httpClient.PostAsJsonAsync($"{baseUri}/api/Email/SendFailedPaymentEmail", request);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> SendInvoiceEmailAsync(object request)
+        {
+            var response = await httpClient.PostAsJsonAsync($"{baseUri}/api/Email/SendInvoiceEmail", request);
             return response.IsSuccessStatusCode;
         }
 

@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using Clicco.Application.ExternalModels.Email;
-using Clicco.Application.ExternalModels.Payment.Request;
-using Clicco.Application.ExternalModels.Payment.Response;
-using Clicco.Application.Helpers.Contracts;
+﻿using Clicco.Application.Helpers.Contracts;
 using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
@@ -10,6 +6,8 @@ using Clicco.Application.Interfaces.Services.External;
 using Clicco.Domain.Core;
 using Clicco.Domain.Model;
 using Clicco.Domain.Model.Exceptions;
+using Clicco.Domain.Shared.Models.Email;
+using Clicco.Domain.Shared.Models.Payment;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands.Payment
@@ -19,26 +17,25 @@ namespace Clicco.Application.Features.Commands.Payment
     {
         private readonly ITransactionRepository transactionRepository;
         private readonly ITransactionDetailRepository transactionDetailRepository;
-        private readonly IMapper mapper;
         private readonly ITransactionService transactionService;
         private readonly ICouponService couponService;
         private readonly IPaymentService paymentService;
         private readonly IClaimHelper claimHelper;
         private readonly IEmailService emailService;
         private readonly ICacheManager cacheManager;
+        private readonly IInvoiceService invoiceService;
         public CreateTransactionCommandHandler(
             ITransactionRepository transactionRepository,
-            IMapper mapper,
             ITransactionService transactionService,
             IPaymentService paymentService,
             IClaimHelper claimHelper,
             ITransactionDetailRepository transactionDetailRepository,
             IEmailService emailService,
             ICacheManager cacheManager,
-            ICouponService couponService)
+            ICouponService couponService,
+            IInvoiceService invoiceService)
         {
             this.transactionRepository = transactionRepository;
-            this.mapper = mapper;
             this.transactionService = transactionService;
             this.paymentService = paymentService;
             this.claimHelper = claimHelper;
@@ -46,6 +43,7 @@ namespace Clicco.Application.Features.Commands.Payment
             this.emailService = emailService;
             this.cacheManager = cacheManager;
             this.couponService = couponService;
+            this.invoiceService = invoiceService;
         }
         public async Task<PaymentResult> Handle(PaymentRequest request, CancellationToken cancellationToken)
         {
@@ -56,6 +54,8 @@ namespace Clicco.Application.Features.Commands.Payment
             await transactionService.CheckAddressIdAsync(request.AddressId);
 
             var product = await transactionService.GetProductByIdAsync(request.ProductId);
+
+            var address = await transactionService.GetAddressByIdAsync(request.AddressId);
 
             var bankRequest = new PaymentBankRequest
             {
@@ -91,13 +91,6 @@ namespace Clicco.Application.Features.Commands.Payment
                     };
                     await transactionRepository.AddAsync(transaction);
                     await transactionRepository.SaveChangesAsync();
-                    //var TransactionDetail = new TransactionDetail
-                    //{
-                    //    TransactionId = transaction.Id,
-                    //    ProductId = product.Id,
-                    //};
-                    //await transactionDetailRepository.AddAsync(TransactionDetail);
-                    //transaction.TransactionDetail = TransactionDetail;
                     await transactionDetailRepository.SaveChangesAsync();
                     transaction.TransactionDetailId = transaction.TransactionDetail.Id;
 
@@ -120,7 +113,7 @@ namespace Clicco.Application.Features.Commands.Payment
                     }
 
                     await transactionRepository.SaveChangesAsync();
-                    
+
                     await emailService.SendSuccessPaymentEmailAsync(new PaymentSuccessEmailRequest
                     {
                         Amount = transaction.DiscountedAmount == transaction.TotalAmount ? transaction.TotalAmount.ToString() : transaction.DiscountedAmount.ToString(),
@@ -130,6 +123,8 @@ namespace Clicco.Application.Features.Commands.Payment
                         ProductName = product.Name,
                         To = claimHelper.GetUserEmail(),
                     });
+
+                    await invoiceService.CreateInvoice(transaction, product, address);
 
                 }
                 else
@@ -141,7 +136,7 @@ namespace Clicco.Application.Features.Commands.Payment
             {
                 await FailedPayment(product, transaction, CustomErrors.UnexceptedError.ErrorMessage);
             }
-
+            //Todo: Probably catch block is dead code due of exception middleware.
 
             return result.IsSuccess ? new SuccessPaymentResult() : new FailedPaymentResult(result.Message);
         }

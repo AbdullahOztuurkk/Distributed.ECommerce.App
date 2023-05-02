@@ -1,4 +1,4 @@
-﻿namespace Clicco.Application.ExternalModels.Payment.Response
+﻿namespace Clicco.Domain.Shared.Models.Payment
 {
     public class PaymentResult
     {

@@ -1,4 +1,4 @@
-﻿using Clicco.Application.ExternalModels.Payment.Request;
+﻿using Clicco.Domain.Shared.Models.Payment;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

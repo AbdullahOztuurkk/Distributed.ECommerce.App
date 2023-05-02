@@ -1,7 +1,7 @@
 ﻿using Clicco.EmailServiceAPI.Model;
 using Clicco.EmailServiceAPI.Services.Contracts;
 using System.Reflection;
-using static Clicco.EmailServiceAPI.Model.Common.Global;
+using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.EmailServiceAPI.Services
 {
@@ -23,14 +23,35 @@ namespace Clicco.EmailServiceAPI.Services
             {
                 var excludedAttr = property.GetCustomAttribute<ExcludeAttribute>();
                 var displayAttr = property.GetCustomAttribute<DisplayElementAttribute>();
+                var customElementAttr = property.GetCustomAttribute<CustomElementAttribute>();
+
                 if (excludedAttr != null)
                     continue;
 
-                if (displayAttr != null)
+                if (customElementAttr == null)
                 {
-                    string parameterName = displayAttr.ParameterName;
-                    object propertyValue = property.GetValue(model);
-                    htmlTemplate =  htmlTemplate.Replace(parameterName, propertyValue.ToString());
+                    if (displayAttr != null)
+                    {
+                        string parameterName = displayAttr.ParameterName;
+                        object propertyValue = property.GetValue(model);
+                        htmlTemplate = htmlTemplate.Replace(parameterName, propertyValue == null ? string.Empty : propertyValue.ToString());
+                    }
+                }
+                else
+                {
+                    var propertyInfos = property.PropertyType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+                    foreach (var propInfo in propertyInfos)
+                    {
+                        displayAttr = propInfo.GetCustomAttribute<DisplayElementAttribute>();
+
+                        if (displayAttr != null)
+                        {
+                            string parameterName = displayAttr.ParameterName;
+                            object propertyValue = propInfo.GetValue(property.GetValue(model));
+                            htmlTemplate = htmlTemplate.Replace(parameterName, propertyValue == null ? string.Empty : propertyValue.ToString());
+                        }
+                    }
                 }
             }
 

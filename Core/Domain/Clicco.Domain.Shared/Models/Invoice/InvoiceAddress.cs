@@ -1,6 +1,6 @@
-﻿namespace Clicco.InvoiceServiceAPI.Data.Models
+﻿namespace Clicco.Domain.Shared.Models.Invoice
 {
-    public class Address
+    public class InvoiceAddress
     {
         public string City { get; set; }
         public string Street { get; set; }

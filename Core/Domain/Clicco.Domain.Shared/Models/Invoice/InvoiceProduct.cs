@@ -1,6 +1,6 @@
-﻿namespace Clicco.InvoiceServiceAPI.Data.Models
+﻿namespace Clicco.Domain.Shared.Models.Invoice
 {
-    public class Product : IMongoDbCollectionEntity
+    public class InvoiceProduct
     {
         public string Name { get; set; }
         public string Code { get; set; }

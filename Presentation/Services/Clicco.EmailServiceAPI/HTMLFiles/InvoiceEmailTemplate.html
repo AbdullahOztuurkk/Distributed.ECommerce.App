@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Transaction Details</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #444444;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 15px 5px;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            box-shadow: 0px 0px 10px #cccccc;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 0 0 20px 0;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+            table th {
+                font-weight: bold;
+                background-color: #eeeeee;
+                border: 1px solid #cccccc;
+                padding: 10px;
+                text-align: left;
+            }
+
+            table td {
+                border: 1px solid #cccccc;
+                padding: 10px;
+            }
+
+        .total {
+            font-weight: bold;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Transaction Details</h1>
+        <h2>Transaction</h2>
+        <table>
+            <tr>
+                <th>Code:</th>
+                <td>#TRANSACTION_CODE#</td>
+            </tr>
+            <tr>
+                <th>Total Amount:</th>
+                <td>#TRANSACTION_TOTAL_AMOUNT#</td>
+            </tr>
+            <tr>
+                <th>Discount Amount:</th>
+                <td>#TRANSACTION_DISCOUNT_AMOUNT#</td>
+            </tr>
+            <tr>
+                <th>Dealer Name:</th>
+                <td>#TRANSACTION_DEALER_NAME#</td>
+            </tr>
+            <tr>
+                <th>Created Date:</th>
+                <td>#TRANSACTION_CREATED_DATE#</td>
+            </tr>
+            <tr>
+                <th>Delivery Date:</th>
+                <td>#TRANSACTION_DELIVERY_DATE#</td>
+            </tr>
+            <tr>
+                <th>Transaction Status:</th>
+                <td>#TRANSACTION_STATUS#</td>
+            </tr>
+        </table>
+        <h2>Product</h2>
+        <table>
+            <tr>
+                <th>Name:</th>
+                <td>#PRODUCT_NAME#</td>
+            </tr>
+            <tr>
+                <th>Code:</th>
+                <td>#PRODUCT_CODE#</td>
+            </tr>
+            <tr>
+                <th>Description:</th>
+                <td>#PRODUCT_DESCRIPTION#</td>
+            </tr>
+            <tr>
+                <th>Quantity:</th>
+                <td>#PRODUCT_QUANTITY#</td>
+            </tr>
+            <tr>
+                <th>Unit Price:</th>
+                <td>#PRODUCT_UNIT_PRICE#</td>
+            </tr>
+            <tr>
+                <th>Slug URL:</th>
+                <td>#PRODUCT_SLUG#</td>
+            </tr>
+        </table>
+        <h2>Vendor Information</h2>
+        <table>
+            <tr>
+                <th>Name:</th>
+                <td>#VENDOR_NAME#</td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td>#VENDOR_EMAIL#</td>
+            </tr>
+            <tr>
+                <th>Address:</th>
+                <td>#VENDOR_ADDRESS#</td>
+            </tr>
+        </table>
+        <h2>Coupon Information</h2>
+        <table>
+            <tr>
+                <th>Name:</th>
+                <td>#COUPON_NAME#</td>
+            </tr>
+            <tr>
+                <th>Description:</th>
+                <td>#COUPON_DESCRIPTION#</td>
+            </tr>
+            <tr>
+                <th>Type:</th>
+                <td>#COUPON_TYPE#</td>
+            </tr>
+            <tr>
+                <th>Expiration Date:</th>
+                <td>#COUPON_EXPIRATION_DATE#</td>
+            </tr>
+            <tr>
+                <th>Discount Amount:</th>
+                <td>#COUPON_DISCOUNT_AMOUNT#</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

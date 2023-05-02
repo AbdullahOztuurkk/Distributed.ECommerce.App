@@ -1,9 +1,8 @@
-﻿using Clicco.Application.ExternalModels.Payment.Response;
-using MediatR;
+﻿using MediatR;
 
-namespace Clicco.Application.ExternalModels.Payment.Request
+namespace Clicco.Domain.Shared.Models.Payment
 {
-    public  class PaymentRequest : IRequest<PaymentResult>
+    public class PaymentRequest : IRequest<PaymentResult>
     {
         public int BankId { get; set; }
         public int TotalAmount { get; set; }
@@ -11,6 +10,6 @@ namespace Clicco.Application.ExternalModels.Payment.Request
         public int AddressId { get; set; }
         public int? CouponId { get; set; }
         public CardInformation CardInformation { get; set; }
-        public int ProductId { get; set; } 
+        public int ProductId { get; set; }
     }
 }

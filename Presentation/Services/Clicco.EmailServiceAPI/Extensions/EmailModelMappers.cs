@@ -1,5 +1,5 @@
-﻿using Clicco.EmailServiceAPI.Model;
-using Clicco.EmailServiceAPI.Model.Request;
+﻿using Clicco.Domain.Shared.Models.Email;
+using Clicco.EmailServiceAPI.Model;
 
 namespace Clicco.EmailServiceAPI.Extensions
 {
@@ -48,6 +48,18 @@ namespace Clicco.EmailServiceAPI.Extensions
                 PaymentMethod = request.PaymentMethod,
                 ProductName = request.ProductName,
                 Error = request.Error
+            };
+        }
+        public static InvoiceEmailTemplateModel ConvertToEmailModel(this InvoiceEmailRequest request)
+        {
+            return new InvoiceEmailTemplateModel()
+            {
+                To = request.To,
+                Transaction = request.Transaction,
+                Address = request.Address,
+                Coupon = request.Coupon,
+                Product = request.Product,
+                Vendor = request.Vendor,
             };
         }
     }

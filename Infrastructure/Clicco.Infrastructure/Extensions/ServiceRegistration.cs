@@ -8,13 +8,11 @@ namespace Clicco.Infrastructure.Extensions
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
-            services.AddHttpClient();
-
-            services.AddScoped<IUserService, UserService>();
-
-            services.AddScoped<IPaymentService, PaymentService>();
-
-            services.AddScoped<IEmailService, EmailService>();
+            services.AddHttpClient()
+                .AddScoped<IUserService, UserService>()
+                .AddScoped<IPaymentService, PaymentService>()
+                .AddScoped<IEmailService, EmailService>()
+                .AddScoped<IInvoiceService, InvoiceService>();
 
             return services;
         }

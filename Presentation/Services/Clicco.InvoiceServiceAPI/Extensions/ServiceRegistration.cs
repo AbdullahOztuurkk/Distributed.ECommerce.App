@@ -23,7 +23,7 @@ namespace Clicco.InvoiceServiceAPI.Extensions
             return services
                 .AddHttpClient()
                 .AddScoped<IInvoiceRepository, InvoiceRepository>()
-                .AddScoped<IEmailService, IEmailService>()
+                .AddScoped<IEmailService, EmailService>()
                 .AddScoped<IInvoiceService, InvoiceService>();
         }
 
