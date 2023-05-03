@@ -46,7 +46,7 @@ namespace Clicco.WebAPI.Controllers
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var result = await mediator.Send(new GetTransactionDetailByTransactionIdQuery { Id  = id });
+            var result = await mediator.Send(new GetTransactionDetailByTransactionIdQuery { Id = id });
             return Ok(result);
         }
 
@@ -56,7 +56,7 @@ namespace Clicco.WebAPI.Controllers
         public async Task<IActionResult> GetInvoiceEmailByTransactionId([FromRoute] int id)
         {
             var result = await mediator.Send(new GetInvoiceEmailByTransactionIdQuery { TransactionId = id });
-            return Ok(result);
+            return result ? Ok() : BadRequest();
         }
 
         [HttpDelete("Delete")]
