@@ -20,7 +20,7 @@ namespace Clicco.Infrastructure.Services
             this.httpClient = httpClient;
         }
 
-        public async Task<bool> CreateInvoice(Transaction transaction, Product product, Address address)
+        public async Task<bool> CreateInvoice(string BuyerEmail,Transaction transaction, Product product, Address address)
         {
             var transactionAddress = address;
             var transactionProduct = product;
@@ -29,6 +29,7 @@ namespace Clicco.Infrastructure.Services
 
             var model = new CreateInvoiceRequest
             {
+                BuyerEmail = BuyerEmail,
                 Transaction = new InvoiceTransaction
                 {
                     Code = transaction.Code,
@@ -81,9 +82,13 @@ namespace Clicco.Infrastructure.Services
                 }
             };
 
-            var fjdslkfa = JsonConvert.SerializeObject(model);
-
             var response = await httpClient.PostAsJsonAsync($"{baseUri}/api/invoices/Create", model);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> SendEmailByTransactionId(int transactionId)
+        {
+            var response = await httpClient.GetAsync($"{baseUri}/api/invoices/SendInvoiceEmail/{transactionId}");
             return response.IsSuccessStatusCode;
         }
     }

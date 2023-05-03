@@ -24,7 +24,8 @@ namespace Clicco.InvoiceServiceAPI.Services
                 Coupon = invoice.Coupon,
                 Product = invoice.Product,
                 Transaction = invoice.Transaction,
-                Vendor = invoice.Vendor
+                Vendor = invoice.Vendor,
+                BuyerEmail = invoice.BuyerEmail,
             };
 
             var result = await invoiceRepository.CreateAsync(invoiceModel);

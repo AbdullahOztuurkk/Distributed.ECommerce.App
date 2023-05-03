@@ -28,6 +28,7 @@ namespace Clicco.EmailServiceAPI.Services
             var content = templateParser.ToContent(model);
 
             var message = new MailMessage();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             message.From = new MailAddress(settings.Email);
             message.To.Add(model.To);
             message.IsBodyHtml = true;

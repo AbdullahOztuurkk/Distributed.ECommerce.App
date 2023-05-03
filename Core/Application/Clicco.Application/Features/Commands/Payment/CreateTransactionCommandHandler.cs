@@ -54,8 +54,8 @@ namespace Clicco.Application.Features.Commands.Payment
             await transactionService.CheckAddressIdAsync(request.AddressId);
 
             var product = await transactionService.GetProductByIdAsync(request.ProductId);
-
             var address = await transactionService.GetAddressByIdAsync(request.AddressId);
+            var userEmail = claimHelper.GetUserEmail();
 
             var bankRequest = new PaymentBankRequest
             {
@@ -116,15 +116,17 @@ namespace Clicco.Application.Features.Commands.Payment
 
                     await emailService.SendSuccessPaymentEmailAsync(new PaymentSuccessEmailRequest
                     {
-                        Amount = transaction.DiscountedAmount == transaction.TotalAmount ? transaction.TotalAmount.ToString() : transaction.DiscountedAmount.ToString(),
+                        Amount = transaction.TotalAmount >= transaction.DiscountedAmount
+                            ? transaction.TotalAmount.ToString()
+                            : transaction.DiscountedAmount.ToString(),
                         FullName = claimHelper.GetUserName(),
                         OrderNumber = transaction.Code,
                         PaymentMethod = "Credit / Bank Card",
                         ProductName = product.Name,
-                        To = claimHelper.GetUserEmail(),
+                        To = userEmail,
                     });
 
-                    await invoiceService.CreateInvoice(transaction, product, address);
+                    await invoiceService.CreateInvoice(userEmail, transaction, product, address);
 
                 }
                 else

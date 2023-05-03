@@ -14,5 +14,6 @@ namespace Clicco.InvoiceServiceAPI.Data.Models
         public InvoiceVendor Vendor { get; set; }
         public InvoiceAddress Address { get; set; }
         public InvoiceCoupon Coupon { get; set; }
+        public string BuyerEmail { get; set; }
     }
 }

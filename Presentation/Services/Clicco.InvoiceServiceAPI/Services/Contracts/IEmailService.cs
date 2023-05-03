@@ -1,7 +1,9 @@
-﻿namespace Clicco.InvoiceServiceAPI.Services.Contracts
+﻿using Clicco.InvoiceServiceAPI.Data.Models;
+
+namespace Clicco.InvoiceServiceAPI.Services.Contracts
 {
     public interface IEmailService
     {
-        Task<bool> SendInvoiceEmailAsync(object request);
+        Task<bool> SendInvoiceEmailAsync(Invoice request);
     }
 }

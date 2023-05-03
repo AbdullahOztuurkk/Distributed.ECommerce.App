@@ -1,5 +1,4 @@
 using Clicco.Domain.Shared.Models.Invoice;
-using Clicco.InvoiceServiceAPI.Data.Models;
 using Clicco.InvoiceServiceAPI.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,17 +16,17 @@ namespace Clicco.InvoiceServiceAPI.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> CreateInvoice(CreateInvoiceRequest invoice)
+        public async Task<IActionResult> CreateInvoice([FromBody] CreateInvoiceRequest invoice)
         {
             var result = await invoiceService.CreateAsync(invoice);
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
-        [HttpPost]
-        [Route("SendInvoiceEmail/{transactionId}")]
-        public async Task<IActionResult> SendInvoiceEmail(int transactionId)
+        [HttpGet]
+        [Route("SendInvoiceEmail/{id}")]
+        public async Task<IActionResult> SendInvoiceEmail([FromRoute] int id)
         {
-            var result = await invoiceService.SendInvoiceEmail(transactionId);
+            var result = await invoiceService.SendInvoiceEmail(id);
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
     }
