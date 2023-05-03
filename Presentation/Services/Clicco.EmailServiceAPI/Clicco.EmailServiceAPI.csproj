@@ -17,8 +17,4 @@
     <ProjectReference Include="..\..\..\Core\Domain\Clicco.Domain.Shared\Clicco.Domain.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Model\External\" />
-  </ItemGroup>
-
 </Project>

@@ -110,7 +110,7 @@
                 <td>#PRODUCT_UNIT_PRICE#</td>
             </tr>
             <tr>
-                <th>Slug URL:</th>
+                <th>URL:</th>
                 <td>#PRODUCT_SLUG#</td>
             </tr>
         </table>
@@ -129,7 +129,14 @@
                 <td>#VENDOR_ADDRESS#</td>
             </tr>
         </table>
-        <h2>Coupon Information</h2>
+        <h2>Address Information</h2>
+        <table>
+            <tr>
+                <th>Full Address:</th>
+                <td>#ADDRESS_CITY# #ADDRESS_STATE# #ADDRESS_CITY# #ADDRESS_COUNTRY# #ADDRESS_ZIPCODE#</td>
+            </tr>
+        </table>
+        <h2>Coupon Information(If Exist)</h2>
         <table>
             <tr>
                 <th>Name:</th>
@@ -138,14 +145,6 @@
             <tr>
                 <th>Description:</th>
                 <td>#COUPON_DESCRIPTION#</td>
-            </tr>
-            <tr>
-                <th>Type:</th>
-                <td>#COUPON_TYPE#</td>
-            </tr>
-            <tr>
-                <th>Expiration Date:</th>
-                <td>#COUPON_EXPIRATION_DATE#</td>
             </tr>
             <tr>
                 <th>Discount Amount:</th>
