@@ -22,8 +22,4 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.10.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ExternalModels\" />
-  </ItemGroup>
-
 </Project>

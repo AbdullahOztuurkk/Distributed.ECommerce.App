@@ -28,10 +28,10 @@ namespace Clicco.AuthAPI.Controllers
             var result = await authService.UserExistsAsync(request.Email);
             if (result)
             {
-                ModelState.AddModelError("UserName", "User already exists");
-                return BadRequest(request);
+                return BadRequest("User already exists");
             }
 
+            //Todo: Must be Validate
             var CreateToUser = new User
             {
                 Email = request.Email,
