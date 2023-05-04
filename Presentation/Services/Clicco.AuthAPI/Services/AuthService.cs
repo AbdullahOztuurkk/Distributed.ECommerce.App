@@ -3,7 +3,7 @@ using Clicco.AuthAPI.Data.Contracts;
 using Clicco.AuthAPI.Models;
 using Clicco.AuthAPI.Models.Email;
 using Clicco.AuthAPI.Services.Contracts;
-using Microsoft.AspNetCore.Identity;
+using Clicco.AuthServiceAPI.Exceptions;
 
 namespace Clicco.AuthAPI.Services
 {
@@ -22,19 +22,26 @@ namespace Clicco.AuthAPI.Services
         }
         public async Task<User> LoginAsync(string email, string password)
         {
+            bool isAdminLogin = false;
             var user = new User();
             if (email.StartsWith('#'))
             {
                 //Get original email address without # character
                 email = email.Substring(1);
-                user = await userRepository.GetSingleAsync(m => m.Email == email && m.IsSA);
+                user = await userRepository.GetSingleAsync(m => m.Email == email);
+                isAdminLogin = true;
             }
             else
                 user = await userRepository.GetSingleAsync(m => m.Email == email);
 
+            if ((isAdminLogin) && (user != null && !user.IsSA))
+            {
+                throw new AuthException("You dont have an access!");
+            }
+
             if (user == null || (user != null && !VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)))
             {
-                throw new Exception("Username or password is wrong!");
+                throw new AuthException("Username or password is wrong!");
             }
             return user;
         }
