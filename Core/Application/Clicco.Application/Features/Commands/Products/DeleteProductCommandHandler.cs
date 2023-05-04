@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Clicco.Application.Features.Queries;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
+using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
@@ -18,11 +21,13 @@ namespace Clicco.Application.Features.Commands
         private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
         private readonly IProductService productService;
-        public DeleteProductCommandHandler(IProductRepository productRepository, IMapper mapper, IProductService productService)
+        private readonly ICacheManager cacheManager;
+        public DeleteProductCommandHandler(IProductRepository productRepository, IMapper mapper, IProductService productService, ICacheManager cacheManager)
         {
             this.productRepository = productRepository;
             this.mapper = mapper;
             this.productService = productService;
+            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
@@ -31,6 +36,7 @@ namespace Clicco.Application.Features.Commands
             var product = mapper.Map<Product>(request);
             productRepository.Delete(product);
             await productRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<ProductViewModel>(request.Id));
             return new SuccessResponse("Product has been deleted!");
         }
     }

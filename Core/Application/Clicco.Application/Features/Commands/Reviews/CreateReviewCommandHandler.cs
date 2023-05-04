@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Clicco.Application.Features.Queries;
 using Clicco.Application.Helpers.Contracts;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
+using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
@@ -23,12 +26,14 @@ namespace Clicco.Application.Features.Commands
         private readonly IMapper mapper;
         private readonly IReviewService reviewService;
         private readonly IClaimHelper claimHelper;
-        public CreateReviewCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IReviewService reviewService, IClaimHelper claimHelper)
+        private readonly ICacheManager cacheManager;
+        public CreateReviewCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IReviewService reviewService, IClaimHelper claimHelper, ICacheManager cacheManager)
         {
             this.reviewRepository = reviewRepository;
             this.mapper = mapper;
             this.reviewService = reviewService;
             this.claimHelper = claimHelper;
+            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
@@ -42,6 +47,7 @@ namespace Clicco.Application.Features.Commands
                 : claimHelper.GetUserId();
             await reviewRepository.AddAsync(review);
             await reviewRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetListKey<ReviewViewModel>(request.ProductId));
             return new SuccessResponse("Review has been created!");
         }
     }

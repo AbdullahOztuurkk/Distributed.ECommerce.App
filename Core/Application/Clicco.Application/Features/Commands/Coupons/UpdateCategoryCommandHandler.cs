@@ -51,6 +51,7 @@ namespace Clicco.Application.Features.Commands
             var coupon = mapper.Map<Coupon>(request);
             couponRepository.Update(coupon);
             await couponRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<CouponViewModel>(request.Id));
             return mapper.Map<CouponViewModel>(coupon);
         }
     }

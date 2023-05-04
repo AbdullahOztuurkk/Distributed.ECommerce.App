@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Model;
 using MediatR;
 
@@ -22,12 +24,14 @@ namespace Clicco.Application.Features.Commands
         private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
         private readonly IProductService productService;
+        private readonly ICacheManager cacheManager;
 
-        public UpdateProductCommandHandler(IProductRepository productRepository, IMapper mapper, IProductService productService)
+        public UpdateProductCommandHandler(IProductRepository productRepository, IMapper mapper, IProductService productService, ICacheManager cacheManager)
         {
             this.productRepository = productRepository;
             this.mapper = mapper;
             this.productService = productService;
+            this.cacheManager = cacheManager;
         }
 
         public async Task<ProductViewModel> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
@@ -38,6 +42,7 @@ namespace Clicco.Application.Features.Commands
             var product = mapper.Map<Product>(request);
             productRepository.Update(product);
             await productRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<ProductViewModel>(request.Id));
             return mapper.Map<ProductViewModel>(product);
         }
     }

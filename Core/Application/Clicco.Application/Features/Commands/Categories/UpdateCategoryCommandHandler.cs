@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Model;
 using Clicco.Domain.Model.Exceptions;
 using MediatR;
@@ -20,12 +22,14 @@ namespace Clicco.Application.Features.Commands
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
         private readonly ICategoryService categoryService;
+        private readonly ICacheManager cacheManager;
 
-        public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, ICategoryService categoryService)
+        public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, ICategoryService categoryService, ICacheManager cacheManager)
         {
             this.categoryRepository = categoryRepository;
             this.mapper = mapper;
             this.categoryService = categoryService;
+            this.cacheManager = cacheManager;
         }
 
         public async Task<CategoryViewModel> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
@@ -39,6 +43,7 @@ namespace Clicco.Application.Features.Commands
             var category = mapper.Map<Category>(request);
             categoryRepository.Update(category);
             await categoryRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<CategoryViewModel>(request.Id));
             return mapper.Map<CategoryViewModel>(category);
         }
     }

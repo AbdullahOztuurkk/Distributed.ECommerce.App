@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
+using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.Domain.Model.Exceptions;
@@ -20,11 +23,13 @@ namespace Clicco.Application.Features.Commands
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
         private readonly ICategoryService categoryService;
-        public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, ICategoryService categoryService)
+        private readonly ICacheManager cacheManager;
+        public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, ICategoryService categoryService, ICacheManager cacheManager)
         {
             this.categoryRepository = categoryRepository;
             this.mapper = mapper;
             this.categoryService = categoryService;
+            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
@@ -37,6 +42,7 @@ namespace Clicco.Application.Features.Commands
             //category.SlugUrl = request.Name.ToSeoFriendlyUrl();
             await categoryRepository.AddAsync(category);
             await categoryRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetListKey<CategoryViewModel>());
             return new SuccessResponse("Category has been created!");
         }
     }

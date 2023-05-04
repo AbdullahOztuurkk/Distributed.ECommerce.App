@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Model;
 using MediatR;
 
@@ -23,11 +25,13 @@ namespace Clicco.Application.Features.Commands
         private readonly ITransactionRepository transactionRepository;
         private readonly IMapper mapper;
         private readonly ITransactionService transactionService;
-        public UpdateTransactionCommandHandler(ITransactionRepository transactionRepository, IMapper mapper, ITransactionService transactionService)
+        private readonly ICacheManager cacheManager;
+        public UpdateTransactionCommandHandler(ITransactionRepository transactionRepository, IMapper mapper, ITransactionService transactionService, ICacheManager cacheManager)
         {
             this.transactionRepository = transactionRepository;
             this.mapper = mapper;
             this.transactionService = transactionService;
+            this.cacheManager = cacheManager;
         }
         public async Task<TransactionViewModel> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
         {
@@ -38,6 +42,7 @@ namespace Clicco.Application.Features.Commands
             var transaction = mapper.Map<Transaction>(request);
             await transactionRepository.AddAsync(transaction);
             await transactionRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<TransactionViewModel>(request.Id));
             return mapper.Map<TransactionViewModel>(transaction);
         }
     }

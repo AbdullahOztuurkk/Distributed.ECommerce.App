@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Clicco.Application.Features.Queries;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
+using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
@@ -18,12 +21,14 @@ namespace Clicco.Application.Features.Commands
         private readonly IReviewRepository reviewRepository;
         private readonly IMapper mapper;
         private readonly IReviewService reviewService;
+        private readonly ICacheManager cacheManager;
 
-        public DeleteReviewCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IReviewService reviewService)
+        public DeleteReviewCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IReviewService reviewService, ICacheManager cacheManager)
         {
             this.reviewRepository = reviewRepository;
             this.mapper = mapper;
             this.reviewService = reviewService;
+            this.cacheManager = cacheManager;
         }
 
         public async Task<BaseResponse> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
@@ -33,6 +38,7 @@ namespace Clicco.Application.Features.Commands
             var review = mapper.Map<Review>(request);
             reviewRepository.Delete(review);
             await reviewRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<ReviewViewModel>(request.Id));
             return new SuccessResponse("Review has been deleted!");
         }
     }

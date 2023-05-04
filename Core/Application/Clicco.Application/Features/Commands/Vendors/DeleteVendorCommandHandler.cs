@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
+using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
@@ -17,12 +20,16 @@ namespace Clicco.Application.Features.Commands
         private readonly IVendorRepository vendorRepository;
         private readonly IMapper mapper;
         private readonly IVendorService vendorService;
-        public DeleteVendorCommandHandler(IVendorRepository vendorRepository, IMapper mapper, IVendorService vendorService)
+        private readonly ICacheManager cacheManager;
+
+        public DeleteVendorCommandHandler(IVendorRepository vendorRepository, IMapper mapper, IVendorService vendorService, ICacheManager cacheManager)
         {
             this.vendorRepository = vendorRepository;
             this.vendorService = vendorService;
             this.mapper = mapper;
+            this.cacheManager = cacheManager;
         }
+        
         public async Task<BaseResponse> Handle(DeleteVendorCommand request, CancellationToken cancellationToken)
         {
             await vendorService.CheckSelfId(request.Id);
@@ -30,6 +37,7 @@ namespace Clicco.Application.Features.Commands
             var vendor = mapper.Map<Vendor>(request);
             vendorRepository.Delete(vendor);
             await vendorRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<VendorViewModel>(request.Id));
             return new SuccessResponse("Transaction has been deleted!");
         }
     }

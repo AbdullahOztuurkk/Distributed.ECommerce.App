@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Clicco.Application.Helpers.Contracts;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Model;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -26,12 +28,14 @@ namespace Clicco.Application.Features.Commands
         private readonly IMapper mapper;
         private readonly IAddressService addressService;
         private readonly IClaimHelper claimHelper;
-        public UpdateAddressCommandHandler(IAddressRepository addressRepository, IMapper mapper, IAddressService addressService, IClaimHelper claimHelper)
+        //private readonly ICacheManager cacheManager;
+        public UpdateAddressCommandHandler(IAddressRepository addressRepository, IMapper mapper, IAddressService addressService, IClaimHelper claimHelper/*, ICacheManager cacheManager*/)
         {
             this.addressRepository = addressRepository;
             this.mapper = mapper;
             this.addressService = addressService;
             this.claimHelper = claimHelper;
+            //this.cacheManager = cacheManager;
         }
 
         public async Task<AddressViewModel> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
@@ -47,6 +51,7 @@ namespace Clicco.Application.Features.Commands
                 : claimHelper.GetUserId();
             addressRepository.Update(address);
             await addressRepository.SaveChangesAsync();
+            //await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<AddressViewModel>(request.Id));
             return mapper.Map<AddressViewModel>(address);
         }
     }

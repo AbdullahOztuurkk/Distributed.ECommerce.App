@@ -23,5 +23,10 @@
     public class CacheKeys
     {
         public const string ActiveCoupons = "active_coupons";
+
+        public static string GetSingleKey<T>(object key) => string.Format($"CliccoWebApi-{typeof(T).Name}-Id-{key}");
+        public static string GetListKey<T>(object key = null) => key == null 
+            ? string.Format($"CliccoWebApi-{typeof(T).Name}-List")
+            : string.Format($"CliccoWebApi-{typeof(T).Name}-List-By-{key}");
     }
 }

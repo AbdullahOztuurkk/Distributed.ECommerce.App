@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Clicco.Application.Features.Queries;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
+using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using MediatR;
 
@@ -16,12 +19,14 @@ namespace Clicco.Application.Features.Commands.Menus
         private readonly IMenuRepository menuRepository;
         private readonly IMenuService menuService;
         private readonly IMapper mapper;
+        private readonly ICacheManager cacheManager;
 
-        public DeleteMenuByCategoryIdCommandHandler(IMenuRepository menuRepository, IMenuService menuService, IMapper mapper)
+        public DeleteMenuByCategoryIdCommandHandler(IMenuRepository menuRepository, IMenuService menuService, IMapper mapper, ICacheManager cacheManager)
         {
             this.menuRepository = menuRepository;
             this.menuService = menuService;
             this.mapper = mapper;
+            this.cacheManager = cacheManager;
         }
 
         public async Task<BaseResponse> Handle(DeleteMenuByCategoryIdCommand request, CancellationToken cancellationToken)
@@ -31,6 +36,7 @@ namespace Clicco.Application.Features.Commands.Menus
             var menu = await menuRepository.GetSingleAsync(x => x.CategoryId == request.CategoryId);
             menuRepository.Delete(menu);
             await menuRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<MenuViewModel>(request.CategoryId));
             return new SuccessResponse("Menu has been deleted!");
         }
     }

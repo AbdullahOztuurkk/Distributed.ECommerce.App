@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
@@ -14,14 +16,19 @@ namespace Clicco.Application.Features.Queries
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
-        public GetAllCategoriesQueryHandler(ICategoryRepository categoryRepository, IMapper mapper)
+        private readonly ICacheManager cacheManager;
+        public GetAllCategoriesQueryHandler(ICategoryRepository categoryRepository, IMapper mapper, ICacheManager cacheManager)
         {
             this.categoryRepository = categoryRepository;
             this.mapper = mapper;
+            this.cacheManager = cacheManager;
         }
         public async Task<List<CategoryViewModel>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
-            return mapper.Map<List<CategoryViewModel>>(await categoryRepository.GetAll());
+            return await cacheManager.GetOrSetAsync(CacheKeys.GetListKey<CategoryViewModel>(), async () =>
+            {
+                return mapper.Map<List<CategoryViewModel>>(await categoryRepository.GetAll());
+            });
         }
     }
 }

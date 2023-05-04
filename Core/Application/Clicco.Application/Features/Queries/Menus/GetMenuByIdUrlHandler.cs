@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
@@ -14,14 +16,19 @@ namespace Clicco.Application.Features.Queries
     {
         private readonly IMenuRepository menuRepository;
         private readonly IMapper mapper;
-        public GetMenuByIdUrlHandler(IMenuRepository menuRepository, IMapper mapper)
+        private readonly ICacheManager cacheManager;
+        public GetMenuByIdUrlHandler(IMenuRepository menuRepository, IMapper mapper, ICacheManager cacheManager)
         {
             this.menuRepository = menuRepository;
             this.mapper = mapper;
+            this.cacheManager = cacheManager;
         }
         public async Task<MenuViewModel> Handle(GetMenuByUrlQuery request, CancellationToken cancellationToken)
         {
-            return mapper.Map<MenuViewModel>(await menuRepository.GetSingleAsync(x => x.SlugUrl == request.Url, x => x.Category));
+            return await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<MenuViewModel>(request.Url), async () =>
+            {
+                return mapper.Map<MenuViewModel>(await menuRepository.GetSingleAsync(x => x.SlugUrl == request.Url, x => x.Category));
+            });
         }
     }
 }

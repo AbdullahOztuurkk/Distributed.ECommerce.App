@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
@@ -18,16 +21,19 @@ namespace Clicco.Application.Features.Commands
     {
         private readonly IVendorRepository vendorRepository;
         private readonly IMapper mapper;
-        public CreateVendorCommandHandler(IVendorRepository vendorRepository, IMapper mapper)
+        private readonly ICacheManager cacheManager;
+        public CreateVendorCommandHandler(IVendorRepository vendorRepository, IMapper mapper, ICacheManager cacheManager)
         {
             this.vendorRepository = vendorRepository;
             this.mapper = mapper;
+            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse> Handle(CreateVendorCommand request, CancellationToken cancellationToken)
         {
             var vendor = mapper.Map<Vendor>(request);
             await vendorRepository.AddAsync(vendor);
             await vendorRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetListKey<VendorViewModel>());
             return new SuccessResponse("Vendor has been created!");
         }
     }

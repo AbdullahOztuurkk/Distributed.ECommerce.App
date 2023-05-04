@@ -19,7 +19,7 @@ namespace Clicco.Infrastructure.Services
             return await db.KeyExistsAsync(key);
         }
 
-        public async Task<T> GetOrSetAsync<T>(string key, Func<T> getValueFunc, int expirationDate = 60)
+        public async Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> getValueFunc, int expirationDate = 60)
         {
             var cachedValue = db.StringGet(key);
             if (!cachedValue.IsNull)
@@ -29,7 +29,7 @@ namespace Clicco.Infrastructure.Services
             }
 
             // Execute getValueFunc for get value if key doesnt exist on redis
-            var result = getValueFunc();
+            var result = await getValueFunc();
 
             // Caching new value
             await db.StringSetAsync(key, JsonConvert.SerializeObject(result), TimeSpan.FromMinutes(expirationDate));
@@ -44,24 +44,11 @@ namespace Clicco.Infrastructure.Services
 
         }
 
-        public async void RemoveAsync(string key)
+        public async Task RemoveAsync(string key)
         {
             await db.KeyDeleteAsync(key);
         }
 
-        public bool SearchInArray<T>(string key, T value)
-        {
-            long length = db.ListLength(key);
-            for (long i = 0; i < length; i++)
-            {
-                RedisValue redisValue = db.ListGetByIndex(key, i);
-                if (db.ListGetByIndex(key, i).ToString() == value.ToString())
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         public async Task<List<string>> GetListAsync(string key)
         {
@@ -82,21 +69,5 @@ namespace Clicco.Infrastructure.Services
             await db.ListRightPushAsync(key, value);
         }
 
-        public async Task<List<string>> SearchInListAsync(string key, string value)
-        {
-            var list = new List<string>();
-
-            var redisValues = await db.ListRangeAsync(key);
-
-            foreach (var redisValue in redisValues)
-            {
-                if (redisValue.ToString().Contains(value))
-                {
-                    list.Add(redisValue);
-                }
-            }
-
-            return list;
-        }
     }
 }
