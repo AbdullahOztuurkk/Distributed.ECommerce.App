@@ -1,6 +1,6 @@
-﻿using Clicco.PaymentServiceAPI.Models.Contracts;
-using Clicco.PaymentServiceAPI.Models.Request;
-using Clicco.PaymentServiceAPI.Models.Response;
+﻿using Clicco.Domain.Shared.Models.Payment;
+using Clicco.PaymentServiceAPI.Models.Contracts;
+
 
 namespace Clicco.PaymentServiceAPI.Models
 {

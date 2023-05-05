@@ -1,6 +1,4 @@
-﻿using Clicco.PaymentServiceAPI.Models.Request;
-using Clicco.PaymentServiceAPI.Models.Response;
-using System.Reflection;
+﻿using Clicco.Domain.Shared.Models.Payment;
 using static Clicco.PaymentServiceAPI.Models.Global;
 
 namespace Clicco.PaymentServiceAPI.Services
