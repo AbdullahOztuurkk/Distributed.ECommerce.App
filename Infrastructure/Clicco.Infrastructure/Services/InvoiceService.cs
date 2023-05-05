@@ -56,12 +56,12 @@ namespace Clicco.Infrastructure.Services
                 },
                 Coupon = new InvoiceCoupon
                 {
-                    Description = transactionCoupon == null ? string.Empty : transactionCoupon.Description,
+                    Description = transactionCoupon == null ? "Not Found" : transactionCoupon.Description,
                     DiscountAmount = transactionCoupon == null ? 0 : (int)(transactionCoupon.DiscountAmount),
-                    DiscountType = transactionCoupon == null ? string.Empty : Enum.ToObject(typeof(DiscountType), transactionCoupon.DiscountType).ToString(),
-                    Type = transactionCoupon == null ? string.Empty : Enum.ToObject(typeof(CouponType), transactionCoupon.Type).ToString(),
+                    DiscountType = transactionCoupon == null ? "Not Found" : Enum.ToObject(typeof(DiscountType), transactionCoupon.DiscountType).ToString(),
+                    Type = transactionCoupon == null ? "Not Found" : Enum.ToObject(typeof(CouponType), transactionCoupon.Type).ToString(),
                     ExpirationDate = transactionCoupon == null ? DateTime.MinValue : (DateTime)(transactionCoupon.ExpirationDate),
-                    Name = transactionCoupon == null ? string.Empty : transactionCoupon.Name,
+                    Name = transactionCoupon == null ? "Not Found" : transactionCoupon.Name,
                 },
                 Product = new InvoiceProduct
                 {

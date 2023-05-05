@@ -1,4 +1,4 @@
-using Clicco.PaymentServiceAPI.Models.Request;
+using Clicco.Domain.Shared.Models.Payment;
 using Clicco.PaymentServiceAPI.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
