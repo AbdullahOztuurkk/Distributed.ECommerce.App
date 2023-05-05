@@ -48,9 +48,6 @@ namespace Clicco.Application.Features.Commands.Payment
         }
         public async Task<PaymentResult> Handle(PaymentRequest request, CancellationToken cancellationToken)
         {
-            if (request.CouponId.HasValue)
-                await transactionService.CheckCouponIdAsync(request.CouponId.Value);
-
             await transactionService.CheckProductIdAsync(request.ProductId);
             await transactionService.CheckAddressIdAsync(request.AddressId);
 

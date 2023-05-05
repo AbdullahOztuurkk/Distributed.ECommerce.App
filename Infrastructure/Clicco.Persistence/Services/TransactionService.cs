@@ -34,12 +34,6 @@ namespace Clicco.Persistence.Services
             ThrowExceptionIfNull(result, CustomErrors.AddressNotFound);
         }
 
-        public async Task CheckCouponIdAsync(int couponId)
-        {
-            var result = await couponRepository.GetByIdAsync(couponId);
-            ThrowExceptionIfNull(result, CustomErrors.CouponNotFound);
-        }
-
         public async Task CheckProductIdAsync(int productId)
         {
             var result = await productRepository.GetByIdAsync(productId);
