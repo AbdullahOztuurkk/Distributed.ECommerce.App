@@ -43,7 +43,6 @@ namespace Clicco.Application.Features.Commands
             var coupon = mapper.Map<Coupon>(request);
             couponRepository.Delete(coupon);
             await couponRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<CategoryViewModel>(request.Id));
             return new SuccessResponse("Coupon has been deleted!");
         }
     }

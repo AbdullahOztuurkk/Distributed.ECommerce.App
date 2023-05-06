@@ -47,7 +47,6 @@ namespace Clicco.Application.Features.Commands
                 : claimHelper.GetUserId();
             await reviewRepository.AddAsync(review);
             await reviewRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetListKey<ReviewViewModel>(request.ProductId));
             return new SuccessResponse("Review has been created!");
         }
     }

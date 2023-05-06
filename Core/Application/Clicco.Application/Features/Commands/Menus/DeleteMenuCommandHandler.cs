@@ -35,7 +35,6 @@ namespace Clicco.Application.Features.Commands
             var menu = mapper.Map<Menu>(request);
             menuRepository.Delete(menu);
             await menuRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<MenuViewModel>(request.Id));
             return new SuccessResponse("Menu has been deleted!");
         }
     }

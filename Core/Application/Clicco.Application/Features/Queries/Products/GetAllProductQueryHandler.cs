@@ -2,8 +2,6 @@
 using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.ViewModels;
-using Clicco.Domain.Core;
-using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
@@ -17,24 +15,18 @@ namespace Clicco.Application.Features.Queries
     {
         private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
-        private readonly ICacheManager cacheManager;
 
         public GetAllProductQueryHandler(
             IProductRepository productRepository,
-            IMapper mapper,
-            ICacheManager cacheManager)
+            IMapper mapper)
         {
             this.productRepository = productRepository;
             this.mapper = mapper;
-            this.cacheManager = cacheManager;
         }
 
         public async Task<List<ProductViewModel>> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
         {
-            return await cacheManager.GetOrSetAsync(CacheKeys.GetListKey<TransactionViewModel>(), async () =>
-            {
-                return mapper.Map<List<ProductViewModel>>(await productRepository.Get(filter: null, x => x.Category, x => x.Vendor));
-            });
+            return mapper.Map<List<ProductViewModel>>(await productRepository.Get(filter: null, x => x.Category, x => x.Vendor));
         }
     }
 }

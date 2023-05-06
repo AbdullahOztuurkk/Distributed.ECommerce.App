@@ -42,7 +42,6 @@ namespace Clicco.Application.Features.Commands
             var transaction = mapper.Map<Transaction>(request);
             await transactionRepository.AddAsync(transaction);
             await transactionRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<TransactionViewModel>(request.Id));
             return mapper.Map<TransactionViewModel>(transaction);
         }
     }

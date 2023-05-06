@@ -25,12 +25,10 @@ namespace Clicco.Application.Features.Commands
     {
         private readonly ICouponRepository couponRepository;
         private readonly IMapper mapper;
-        private readonly ICacheManager cacheManager;
-        public CreateCouponCommandHandler(ICouponRepository couponRepository, IMapper mapper, ICacheManager cacheManager)
+        public CreateCouponCommandHandler(ICouponRepository couponRepository, IMapper mapper)
         {
             this.couponRepository = couponRepository;
             this.mapper = mapper;
-            this.cacheManager = cacheManager;
         }
 
         public async Task<BaseResponse> Handle(CreateCouponCommand request, CancellationToken cancellationToken)
@@ -38,7 +36,6 @@ namespace Clicco.Application.Features.Commands
             var coupon = mapper.Map<Coupon>(request);
             await couponRepository.AddAsync(coupon);
             await couponRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetListKey<CouponViewModel>());
             return new SuccessResponse("Coupon has been created!");
         }
     }

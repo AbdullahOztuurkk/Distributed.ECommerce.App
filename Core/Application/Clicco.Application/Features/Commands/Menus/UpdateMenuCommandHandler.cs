@@ -42,7 +42,6 @@ namespace Clicco.Application.Features.Commands
             menu.SlugUrl = uri;
             menuRepository.Update(menu);
             await menuRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<MenuViewModel>(request.Id));
             return mapper.Map<MenuViewModel>(menu);
         }
     }

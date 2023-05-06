@@ -38,6 +38,7 @@ namespace Clicco.InvoiceServiceAPI.Services
             if ( invoice != null)
             {
                 await emailService.SendInvoiceEmailAsync(invoice);
+                return new SuccessInvoiceResult($"Invoice email sent to {invoice.BuyerEmail}");
             }
             return new FailedInvoiceResult("Invoice cannot be found!");
         }

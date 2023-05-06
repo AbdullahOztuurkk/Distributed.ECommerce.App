@@ -38,7 +38,6 @@ namespace Clicco.Application.Features.Commands
             var review = mapper.Map<Review>(request);
             reviewRepository.Delete(review);
             await reviewRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<ReviewViewModel>(request.Id));
             return new SuccessResponse("Review has been deleted!");
         }
     }

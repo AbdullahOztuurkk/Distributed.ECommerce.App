@@ -42,7 +42,6 @@ namespace Clicco.Application.Features.Commands
             var product = mapper.Map<Product>(request);
             productRepository.Update(product);
             await productRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<ProductViewModel>(request.Id));
             return mapper.Map<ProductViewModel>(product);
         }
     }

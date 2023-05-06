@@ -45,7 +45,6 @@ namespace Clicco.Application.Features.Commands
             review.UserId = claimHelper.GetUserId();
             reviewRepository.Update(review);
             await reviewRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<ReviewViewModel>(request.Id));
             return mapper.Map<ReviewViewModel>(review);
         }
     }

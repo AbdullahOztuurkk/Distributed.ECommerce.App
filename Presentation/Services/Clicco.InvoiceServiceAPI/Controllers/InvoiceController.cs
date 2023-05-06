@@ -24,7 +24,7 @@ namespace Clicco.InvoiceServiceAPI.Controllers
 
         [HttpGet]
         [Route("SendInvoiceEmail/{id}")]
-        public async Task<IActionResult> SendInvoiceEmail([FromRoute] int id)
+        public async Task<IActionResult> SendInvoiceEmail(int id)
         {
             var result = await invoiceService.SendInvoiceEmail(id);
             return result.IsSuccess ? Ok(result) : BadRequest(result);

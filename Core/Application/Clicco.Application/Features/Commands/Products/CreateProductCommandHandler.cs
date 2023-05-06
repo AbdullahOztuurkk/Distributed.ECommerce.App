@@ -27,13 +27,11 @@ namespace Clicco.Application.Features.Commands
         private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
         private readonly IProductService productService;
-        private readonly ICacheManager cacheManager;
-        public CreateProductCommandHandler(IProductRepository productRepository, IMapper mapper, IProductService productService, ICacheManager cacheManager)
+        public CreateProductCommandHandler(IProductRepository productRepository, IMapper mapper, IProductService productService)
         {
             this.productRepository = productRepository;
             this.mapper = mapper;
             this.productService = productService;
-            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
@@ -41,10 +39,8 @@ namespace Clicco.Application.Features.Commands
             await productService.CheckVendorId(request.VendorId);
 
             var product = mapper.Map<Product>(request);
-            //product.SlugUrl = product.Name.ToSeoFriendlyUrl();
             await productRepository.AddAsync(product);
             await productRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetListKey<ProductViewModel>());
             return new SuccessResponse("Product has been created!");
         }
     }

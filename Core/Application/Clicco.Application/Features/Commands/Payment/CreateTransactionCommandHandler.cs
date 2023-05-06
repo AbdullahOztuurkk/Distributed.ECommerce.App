@@ -137,7 +137,6 @@ namespace Clicco.Application.Features.Commands.Payment
                 await FailedPayment(product, transaction, CustomErrors.UnexceptedError.ErrorMessage);
             }
             //Todo: Probably catch block is dead code due of exception middleware.
-            await cacheManager.RemoveAsync(CacheKeys.GetListKey<TransactionViewModel>());
             return result.IsSuccess ? new SuccessPaymentResult() : new FailedPaymentResult(result.Message);
         }
 

@@ -36,7 +36,6 @@ namespace Clicco.Application.Features.Commands
             var transaction = mapper.Map<Transaction>(request);
             transactionRepository.Delete(transaction);
             await transactionRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<TransactionViewModel>(request.Id));
             return new SuccessResponse("Transaction has been deleted!");
         }
     }
