@@ -1,11 +1,8 @@
-﻿using Clicco.AuthAPI.Models.Request;
-using Clicco.AuthAPI.Models;
+﻿using Clicco.AuthAPI.Models;
+using Clicco.AuthAPI.Models.Extensions;
+using Clicco.AuthAPI.Models.Response;
 using Clicco.AuthAPI.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Clicco.AuthAPI.Models.Response;
-using Clicco.AuthAPI.Models.Extensions;
-using Clicco.AuthAPI.Models.Email;
-using System;
 
 namespace Clicco.AuthAPI.Controllers
 {
@@ -62,6 +59,7 @@ namespace Clicco.AuthAPI.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(string email)
         {
+            //Todo: Must be changed with unique URL
             var result = await authService.UserExistsAsync(email);
             if (result)
             {

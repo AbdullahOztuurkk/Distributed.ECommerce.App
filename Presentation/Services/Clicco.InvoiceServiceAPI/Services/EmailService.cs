@@ -1,7 +1,6 @@
 ﻿using Clicco.Domain.Shared.Models.Email;
 using Clicco.InvoiceServiceAPI.Data.Models;
 using Clicco.InvoiceServiceAPI.Services.Contracts;
-using System.Security.Claims;
 
 namespace Clicco.InvoiceServiceAPI.Services
 {
@@ -11,8 +10,6 @@ namespace Clicco.InvoiceServiceAPI.Services
         private readonly IConfiguration configuration;
         private readonly string baseUri;
 
-        //Todo: Code Smell
-        //Can be created claim helper class and inject it. Then can be get Email claim
         public EmailService(HttpClient httpClient, IConfiguration configuration)
         {
             this.configuration = configuration;
