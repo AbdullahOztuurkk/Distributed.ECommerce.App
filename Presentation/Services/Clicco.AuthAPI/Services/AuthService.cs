@@ -23,16 +23,13 @@ namespace Clicco.AuthAPI.Services
         public async Task<User> LoginAsync(string email, string password)
         {
             bool isAdminLogin = false;
-            var user = new User();
             if (email.StartsWith('#'))
             {
                 //Get original email address without # character
                 email = email.Substring(1);
-                user = await userRepository.GetSingleAsync(m => m.Email == email);
                 isAdminLogin = true;
             }
-            else
-                user = await userRepository.GetSingleAsync(m => m.Email == email);
+            var user = await userRepository.GetSingleAsync(m => m.Email == email);
 
             if ((isAdminLogin) && (user != null && !user.IsSA))
             {
