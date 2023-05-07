@@ -77,66 +77,59 @@ namespace Clicco.Application.Features.Commands.Payment
             transaction.DiscountedAmount = transaction.TotalAmount;
             transaction.UserId = claimHelper.GetUserId();
 
-            try
+            if (result.IsSuccess)
             {
-                if (result.IsSuccess)
+                transaction.TransactionStatus = TransactionStatus.Success;
+                transaction.TransactionDetail = new TransactionDetail
                 {
-                    transaction.TransactionStatus = TransactionStatus.Success;
-                    transaction.TransactionDetail = new TransactionDetail
+                    ProductId = request.ProductId,
+                    Transaction = transaction
+                };
+                await transactionRepository.AddAsync(transaction);
+                await transactionRepository.SaveChangesAsync();
+                await transactionDetailRepository.SaveChangesAsync();
+                transaction.TransactionDetailId = transaction.TransactionDetail.Id;
+
+                if (request.CouponId.HasValue)
+                {
+                    await couponService.CheckSelfId(request.CouponId.Value);
+
+                    var coupon = await transactionService.GetCouponByIdAsync(request.CouponId.Value);
+
+                    await couponService.IsAvailable(transaction, coupon);
+
+                    await couponService.Apply(transaction, coupon);
+
+                    var activeCoupons = await cacheManager.GetListAsync(CacheKeys.ActiveCoupons);
+
+                    if (!activeCoupons.Any(x => x == coupon.Id.ToString()))
                     {
-                        ProductId = request.ProductId,
-                        Transaction = transaction
-                    };
-                    await transactionRepository.AddAsync(transaction);
-                    await transactionRepository.SaveChangesAsync();
-                    await transactionDetailRepository.SaveChangesAsync();
-                    transaction.TransactionDetailId = transaction.TransactionDetail.Id;
-
-                    if (request.CouponId.HasValue)
-                    {
-                        await couponService.CheckSelfId(request.CouponId.Value);
-
-                        var coupon = await transactionService.GetCouponByIdAsync(request.CouponId.Value);
-
-                        await couponService.IsAvailable(transaction, coupon);
-
-                        await couponService.Apply(transaction, coupon);
-
-                        var activeCoupons = await cacheManager.GetListAsync(CacheKeys.ActiveCoupons);
-
-                        if (!activeCoupons.Any(x => x == coupon.Id.ToString()))
-                        {
-                            await cacheManager.AddToListAsync(CacheKeys.ActiveCoupons, coupon.Id.ToString());
-                        }
+                        await cacheManager.AddToListAsync(CacheKeys.ActiveCoupons, coupon.Id.ToString());
                     }
-
-                    await transactionRepository.SaveChangesAsync();
-
-                    await emailService.SendSuccessPaymentEmailAsync(new PaymentSuccessEmailRequest
-                    {
-                        Amount = transaction.TotalAmount >= transaction.DiscountedAmount
-                            ? transaction.TotalAmount.ToString()
-                            : transaction.DiscountedAmount.ToString(),
-                        FullName = claimHelper.GetUserName(),
-                        OrderNumber = transaction.Code,
-                        PaymentMethod = "Credit / Bank Card",
-                        ProductName = product.Name,
-                        To = userEmail,
-                    });
-
-                    await invoiceService.CreateInvoice(userEmail, transaction, product, address);
-
                 }
-                else
+
+                await transactionRepository.SaveChangesAsync();
+
+                await emailService.SendSuccessPaymentEmailAsync(new PaymentSuccessEmailRequest
                 {
-                    await FailedPayment(product, transaction, result.Message);
-                }
+                    Amount = transaction.TotalAmount >= transaction.DiscountedAmount
+                        ? transaction.TotalAmount.ToString()
+                        : transaction.DiscountedAmount.ToString(),
+                    FullName = claimHelper.GetUserName(),
+                    OrderNumber = transaction.Code,
+                    PaymentMethod = "Credit / Bank Card",
+                    ProductName = product.Name,
+                    To = userEmail,
+                });
+
+                await invoiceService.CreateInvoice(userEmail, transaction, product, address);
+
             }
-            catch
+            else
             {
-                await FailedPayment(product, transaction, CustomErrors.UnexceptedError.ErrorMessage);
+                await FailedPayment(product, transaction, result.Message);
             }
-            //Todo: Probably catch block is dead code due of exception middleware.
+
             return result.IsSuccess ? new SuccessPaymentResult() : new FailedPaymentResult(result.Message);
         }
 
