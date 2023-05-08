@@ -5,7 +5,6 @@ namespace Clicco.Domain.Shared.Models.Payment
     public class PaymentRequest : IRequest<PaymentResult>
     {
         public int BankId { get; set; }
-        public int TotalAmount { get; set; }
         public int Quantity { get; set; }
         public int AddressId { get; set; }
         public int? CouponId { get; set; }
