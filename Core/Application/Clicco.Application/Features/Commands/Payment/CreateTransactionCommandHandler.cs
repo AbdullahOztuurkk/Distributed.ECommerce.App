@@ -61,8 +61,8 @@ namespace Clicco.Application.Features.Commands.Payment
                 CardInformation = request.CardInformation,
                 DealerName = product.Vendor.Name,
                 ProductName = product.Name,
-                TotalAmount = request.TotalAmount
-            };
+                TotalAmount = product.UnitPrice * request.Quantity,
+        };
 
             var result = await paymentService.Pay(bankRequest);
 

@@ -2,6 +2,7 @@
 using Clicco.AuthAPI.Models.Extensions;
 using Clicco.AuthAPI.Models.Response;
 using Clicco.AuthAPI.Services.Contracts;
+using Clicco.AuthAPI.Models.Request;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clicco.AuthAPI.Controllers
