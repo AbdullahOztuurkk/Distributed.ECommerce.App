@@ -31,6 +31,7 @@ namespace Clicco.Infrastructure.Repositories
             {
                 Address = new AddressViewModel
                 {
+                    Id = transaction.AddressId,
                     City = transaction.Address.City,
                     Country = transaction.Address.Country,
                     State = transaction.Address.State,
@@ -39,6 +40,7 @@ namespace Clicco.Infrastructure.Repositories
                 },
                 Product = new ProductViewModel
                 {
+                    Id = transaction.TransactionDetail.ProductId,
                     Code = transaction.TransactionDetail.Product.Code,
                     Name = transaction.TransactionDetail.Product.Name,
                     Description = transaction.TransactionDetail.Product.Description,
@@ -63,6 +65,7 @@ namespace Clicco.Infrastructure.Repositories
             {
                 detailViewModel.Coupon = new CouponViewModel
                 {
+                    Id = transaction.CouponId,
                     Description = transaction.Coupon.Description,
                     DiscountAmount = transaction.Coupon.DiscountAmount,
                     DiscountType = Enum.ToObject(typeof(DiscountType), transaction.Coupon.DiscountType).ToString(),

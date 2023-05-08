@@ -5,6 +5,7 @@ namespace Clicco.Application.ViewModels
 {
     public class TransactionViewModel
     {
+        public int Id { get; set; }
         public string Code { get; set; }
         public int TotalAmount { get; set; }
         public string Dealer { get; set; }
