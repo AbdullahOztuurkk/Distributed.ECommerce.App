@@ -3,17 +3,14 @@ using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.Interfaces.Services.External;
-using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
 using Clicco.Domain.Model;
-using Clicco.Domain.Model.Exceptions;
 using Clicco.Domain.Shared.Models.Email;
 using Clicco.Domain.Shared.Models.Payment;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands.Payment
 {
-    //Todo: Code Smell
     public class CreateTransactionCommandHandler : IRequestHandler<PaymentRequest, PaymentResult>
     {
         private readonly ITransactionRepository transactionRepository;
@@ -55,17 +52,6 @@ namespace Clicco.Application.Features.Commands.Payment
             var address = await transactionService.GetAddressByIdAsync(request.AddressId);
             var userEmail = claimHelper.GetUserEmail();
 
-            var bankRequest = new PaymentBankRequest
-            {
-                BankId = request.BankId,
-                CardInformation = request.CardInformation,
-                DealerName = product.Vendor.Name,
-                ProductName = product.Name,
-                TotalAmount = product.UnitPrice * request.Quantity,
-        };
-
-            var result = await paymentService.Pay(bankRequest);
-
             var transaction = new Transaction();
 
             transaction.Code = GetUniqueCode();
@@ -77,44 +63,51 @@ namespace Clicco.Application.Features.Commands.Payment
             transaction.DiscountedAmount = transaction.TotalAmount;
             transaction.UserId = claimHelper.GetUserId();
 
+            transaction.TransactionDetail = new TransactionDetail
+            {
+                ProductId = request.ProductId,
+                Transaction = transaction
+            };
+            await transactionRepository.AddAsync(transaction);
+            await transactionRepository.SaveChangesAsync();
+            await transactionDetailRepository.SaveChangesAsync();
+            transaction.TransactionDetailId = transaction.TransactionDetail.Id;
+
+            if (request.CouponId.HasValue)
+            {
+                await couponService.CheckSelfId(request.CouponId.Value);
+
+                var coupon = await transactionService.GetCouponByIdAsync(request.CouponId.Value);
+
+                await couponService.IsAvailable(transaction, coupon);
+
+                await couponService.Apply(transaction, coupon);
+
+                await cacheManager.SetAsync(CacheKeys.GetSingleKey<Coupon>(request.CouponId.Value), request.CouponId.Value.ToString());
+            }
+
+            var bankRequest = new PaymentBankRequest
+            {
+                BankId = request.BankId,
+                CardInformation = request.CardInformation,
+                DealerName = product.Vendor.Name,
+                ProductName = product.Name,
+                TotalAmount = transaction.DiscountedAmount < transaction.TotalAmount
+                        ? transaction.DiscountedAmount
+                        : transaction.TotalAmount,
+            };
+
+            var result = await paymentService.Pay(bankRequest);
+
             if (result.IsSuccess)
             {
                 transaction.TransactionStatus = TransactionStatus.Success;
-                transaction.TransactionDetail = new TransactionDetail
-                {
-                    ProductId = request.ProductId,
-                    Transaction = transaction
-                };
-                await transactionRepository.AddAsync(transaction);
-                await transactionRepository.SaveChangesAsync();
-                await transactionDetailRepository.SaveChangesAsync();
-                transaction.TransactionDetailId = transaction.TransactionDetail.Id;
-
-                if (request.CouponId.HasValue)
-                {
-                    await couponService.CheckSelfId(request.CouponId.Value);
-
-                    var coupon = await transactionService.GetCouponByIdAsync(request.CouponId.Value);
-
-                    await couponService.IsAvailable(transaction, coupon);
-
-                    await couponService.Apply(transaction, coupon);
-
-                    var activeCoupons = await cacheManager.GetListAsync(CacheKeys.ActiveCoupons);
-
-                    if (!activeCoupons.Any(x => x == coupon.Id.ToString()))
-                    {
-                        await cacheManager.AddToListAsync(CacheKeys.ActiveCoupons, coupon.Id.ToString());
-                    }
-                }
-
-                await transactionRepository.SaveChangesAsync();
 
                 await emailService.SendSuccessPaymentEmailAsync(new PaymentSuccessEmailRequest
                 {
-                    Amount = transaction.TotalAmount >= transaction.DiscountedAmount
-                        ? transaction.TotalAmount.ToString()
-                        : transaction.DiscountedAmount.ToString(),
+                    Amount = transaction.DiscountedAmount < transaction.TotalAmount
+                        ? transaction.DiscountedAmount.ToString()
+                        : transaction.TotalAmount.ToString(),
                     FullName = claimHelper.GetUserName(),
                     OrderNumber = transaction.Code,
                     PaymentMethod = "Credit / Bank Card",
@@ -122,44 +115,33 @@ namespace Clicco.Application.Features.Commands.Payment
                     To = userEmail,
                 });
 
-                await invoiceService.CreateInvoice(userEmail, transaction, product, address);
-
             }
             else
             {
-                await FailedPayment(product, transaction, result.Message);
+                transaction.TransactionStatus = TransactionStatus.Failed;
+
+                await emailService.SendFailedPaymentEmailAsync(new PaymentFailedEmailRequest
+                {
+                    Amount = transaction.DiscountedAmount < transaction.TotalAmount 
+                        ? transaction.DiscountedAmount.ToString() 
+                        : transaction.TotalAmount.ToString(),
+                    FullName = claimHelper.GetUserName(),
+                    OrderNumber = transaction.Code,
+                    PaymentMethod = "Credit / Bank Card",
+                    ProductName = product.Name,
+                    To = claimHelper.GetUserEmail(),
+                    Error = result.Message
+                });
             }
 
+            await transactionRepository.SaveChangesAsync();
+
+            await invoiceService.CreateInvoice(userEmail, transaction, product, address);
+
+            if(request.CouponId.HasValue)
+                await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Coupon>(request.CouponId.Value));
+
             return result.IsSuccess ? new SuccessPaymentResult() : new FailedPaymentResult(result.Message);
-        }
-
-        private async Task FailedPayment(Product product, Transaction transaction, string errorMessage)
-        {
-            transaction.TransactionStatus = TransactionStatus.Failed;
-            await transactionRepository.AddAsync(transaction);
-            await transactionRepository.SaveChangesAsync();
-            var TransactionDetail = new TransactionDetail
-            {
-                TransactionId = transaction.Id,
-                ProductId = product.Id,
-            };
-            await transactionDetailRepository.AddAsync(TransactionDetail);
-            transaction.TransactionDetailId = TransactionDetail.Id;
-            transaction.TransactionDetail = TransactionDetail;
-
-            await emailService.SendFailedPaymentEmailAsync(new PaymentFailedEmailRequest
-            {
-                Amount = transaction.TotalAmount.ToString(),
-                FullName = claimHelper.GetUserName(),
-                OrderNumber = transaction.Code,
-                PaymentMethod = "Credit / Bank Card",
-                ProductName = product.Name,
-                To = claimHelper.GetUserEmail(),
-                Error = errorMessage
-            });
-
-            await transactionRepository.SaveChangesAsync();
-            await transactionDetailRepository.SaveChangesAsync();
         }
 
         private string GetUniqueCode()

@@ -41,35 +41,24 @@ namespace Clicco.Persistence.Services
 
         public async Task IsAvailable(Transaction transaction, Coupon coupon)
         {
-            await CheckCouponAvailableForTransaction(transaction, coupon);
-        }
-
-        public async Task Apply(Transaction transaction, Coupon coupon)
-        {
-            await ApplyCouponForTransaction(transaction, coupon);
-        }
-
-        #region Private
-        private async Task CheckCouponAvailableForTransaction(Transaction transaction, Coupon coupon)
-        {
             if (!coupon.IsDeleted && coupon.IsActive && coupon.ExpirationDate < DateTime.UtcNow)
             {
                 throw new CustomException(CustomErrors.CouponInvalid);
             }
 
-            var activeCoupons = await cacheManager.GetListAsync(CacheKeys.ActiveCoupons);
-            if (activeCoupons.Any(x => x == coupon.Id.ToString()))
+            bool isExist = await cacheManager.ExistAsync(CacheKeys.GetSingleKey<Coupon>(coupon.Id));
+            if (isExist)
             {
                 throw new CustomException(CustomErrors.CouponIsNowUsed);
             }
 
             if (transaction.TransactionDetail.Product == null)
             {
-                var product = await productRepository.GetByIdAsync(transaction.TransactionDetail.ProductId);
+                var product = await productRepository.GetByIdAsync(transaction.TransactionDetail.ProductId, x => x.Category, x => x.Vendor);
                 transaction.TransactionDetail.Product = product;
             }
 
-            if (!CanBeAppliedTo(coupon, transaction.TransactionDetail))
+            if (!CanBeAppliedTo(coupon, transaction.TransactionDetail.Product))
             {
                 throw new CustomException(CustomErrors.CouponCannotUsed);
             }
@@ -77,22 +66,7 @@ namespace Clicco.Persistence.Services
             await Task.CompletedTask;
         }
 
-        public bool CanBeAppliedTo(Coupon coupon, TransactionDetail transactionDetail)
-        {
-            switch (coupon.Type)
-            {
-                case CouponType.Product:
-                    return transactionDetail.ProductId == coupon.TypeId;
-                case CouponType.Category:
-                    return transactionDetail.Product.CategoryId == coupon.TypeId;
-                case CouponType.Dealer:
-                    return transactionDetail.Product.VendorId == coupon.TypeId;
-                default:
-                    return false;
-            }
-        }
-
-        private async Task ApplyCouponForTransaction(Transaction transaction, Coupon coupon)
+        public async Task Apply(Transaction transaction, Coupon coupon)
         {
             if (coupon.DiscountType == DiscountType.Default)
             {
@@ -115,6 +89,22 @@ namespace Clicco.Persistence.Services
             transaction.Coupon = coupon;
             transactionRepository.Update(transaction);
             await transactionRepository.SaveChangesAsync();
+        }
+
+        #region Private
+        public bool CanBeAppliedTo(Coupon coupon, Product product)
+        {
+            switch (coupon.Type)
+            {
+                case CouponType.Product:
+                    return product.Id == coupon.TypeId;
+                case CouponType.Category:
+                    return product.Category.Id == coupon.TypeId;
+                case CouponType.Dealer:
+                    return product.Vendor.Id == coupon.TypeId;
+                default:
+                    return false;
+            }
         }
 
         #endregion

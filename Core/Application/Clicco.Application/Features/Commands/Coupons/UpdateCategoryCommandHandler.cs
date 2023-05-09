@@ -42,8 +42,8 @@ namespace Clicco.Application.Features.Commands
         {
             await couponService.CheckSelfId(request.Id);
 
-            var activeCoupons = await cacheManager.GetListAsync(CacheKeys.ActiveCoupons);
-            if (activeCoupons.Any(x => x == request.Id.ToString()))
+            bool isExist = await cacheManager.ExistAsync(CacheKeys.GetSingleKey<Coupon>(request.Id));
+            if (isExist)
             {
                 throw new CustomException(CustomErrors.CouponIsNowUsed);
             }

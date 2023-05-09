@@ -37,6 +37,11 @@ namespace Clicco.Infrastructure.Services
             return result;
         }
 
+        public async Task SetAsync(string key, string value, int expirationDate = 60)
+        {
+            await db.StringSetAsync(key, JsonConvert.SerializeObject(value), TimeSpan.FromMinutes(expirationDate));
+        }
+
         public async Task<T> GetAsync<T>(string key)
         {
             var cachedValue = await db.StringGetAsync(key);
@@ -48,26 +53,5 @@ namespace Clicco.Infrastructure.Services
         {
             await db.KeyDeleteAsync(key);
         }
-
-
-        public async Task<List<string>> GetListAsync(string key)
-        {
-            var list = new List<string>();
-
-            var redisValues = await db.ListRangeAsync(key);
-
-            foreach (var value in redisValues)
-            {
-                list.Add(value);
-            }
-
-            return list;
-        }
-
-        public async Task AddToListAsync(string key, string value)
-        {
-            await db.ListRightPushAsync(key, value);
-        }
-
     }
 }
