@@ -1,22 +1,19 @@
 ﻿using Clicco.Application.Interfaces.Services.External;
-using Microsoft.Extensions.Configuration;
 
 namespace Clicco.Infrastructure.Services
 {
     public class UserService : IUserService
     {
-        private readonly IConfiguration configuration;
-        private readonly string baseUri;
         private readonly HttpClient httpClient;
-        public UserService(IConfiguration configuration, HttpClient httpClient)
+        private readonly IHttpClientFactory httpClientFactory;
+        public UserService(IHttpClientFactory httpClientFactory)
         {
-            this.configuration = configuration;
-            baseUri = configuration["URLS:AUTH_SERVICE_API"];
-            this.httpClient = httpClient;
+            this.httpClientFactory = httpClientFactory;
+            httpClient = httpClientFactory.CreateClient(nameof(UserService));
         }
         public async Task<bool> IsExistAsync(int UserId)
         {
-            var response = await httpClient.GetAsync($"{baseUri}/api/users/{UserId}");
+            var response = await httpClient.GetAsync($"/api/users/{UserId}");
             return response.IsSuccessStatusCode;
         }
     }

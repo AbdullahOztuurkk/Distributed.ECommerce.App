@@ -1,41 +1,37 @@
 ﻿using Clicco.Application.Interfaces.Services.External;
 using Clicco.Domain.Shared.Models.Payment;
-using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
 
 namespace Clicco.Infrastructure.Services
 {
-    internal class PaymentService : IPaymentService
+    public class PaymentService : IPaymentService
     {
-        private readonly IConfiguration configuration;
-        private readonly string baseUri;
         private readonly HttpClient httpClient;
-
-        public PaymentService(IConfiguration configuration, HttpClient httpClient)
+        private readonly IHttpClientFactory httpClientFactory;
+        public PaymentService(IHttpClientFactory httpClientFactory)
         {
-            this.configuration = configuration;
-            baseUri = configuration["URLS:PAYMENT_SERVICE_API"];
-            this.httpClient = httpClient;
+            this.httpClientFactory = httpClientFactory;
+            httpClient = httpClientFactory.CreateClient(nameof(PaymentService));
         }
 
         public async Task<PaymentResult> Cancel(PaymentBankRequest paymentRequest)
         {
-            return await SendRequest($"{baseUri}/api/payments/cancel", paymentRequest);
+            return await SendRequest($"payments/cancel", paymentRequest);
         }
 
         public async Task<PaymentResult> Pay(PaymentBankRequest paymentRequest)
         {
-            return await SendRequest($"{baseUri}/api/payments/pay", paymentRequest);
+            return await SendRequest($"payments/pay", paymentRequest);
         }
 
         public async Task<PaymentResult> Provision(PaymentBankRequest paymentRequest)
         {
-            return await SendRequest($"{baseUri}/api/payments/provision", paymentRequest);
+            return await SendRequest($"payments/provision", paymentRequest);
         }
 
         public async Task<PaymentResult> Refund(PaymentBankRequest paymentRequest)
         {
-            return await SendRequest($"{baseUri}/api/payments/refund", paymentRequest);
+            return await SendRequest($"payments/refund", paymentRequest);
         }
 
         private async Task<PaymentResult> SendRequest(string url,PaymentBankRequest paymentRequest)

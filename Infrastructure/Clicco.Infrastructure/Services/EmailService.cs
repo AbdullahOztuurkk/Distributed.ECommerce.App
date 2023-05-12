@@ -6,31 +6,29 @@ namespace Clicco.Infrastructure.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly IConfiguration configuration;
-        private readonly string baseUri;
         private readonly HttpClient httpClient;
-        public EmailService(IConfiguration configuration, HttpClient httpClient)
+        private readonly IHttpClientFactory httpClientFactory;
+        public EmailService(IHttpClientFactory httpClientFactory)
         {
-            this.configuration = configuration;
-            baseUri = configuration["URLS:EMAIL_SERVICE_API"];
-            this.httpClient = httpClient;
+            this.httpClientFactory = httpClientFactory;
+            httpClient = httpClientFactory.CreateClient(nameof(EmailService));
         }
 
         public async Task<bool> SendFailedPaymentEmailAsync(PaymentFailedEmailRequest request)
         {
-            var response = await httpClient.PostAsJsonAsync($"{baseUri}/api/Email/SendFailedPaymentEmail", request);
+            var response = await httpClient.PostAsJsonAsync("Email/SendFailedPaymentEmail", request);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> SendInvoiceEmailAsync(object request)
         {
-            var response = await httpClient.PostAsJsonAsync($"{baseUri}/api/Email/SendInvoiceEmail", request);
+            var response = await httpClient.PostAsJsonAsync("Email/SendInvoiceEmail", request);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> SendSuccessPaymentEmailAsync(PaymentSuccessEmailRequest request)
         {
-            var response = await httpClient.PostAsJsonAsync($"{baseUri}/api/Email/SendSuccessPaymentEmail", request);
+            var response = await httpClient.PostAsJsonAsync("Email/SendSuccessPaymentEmail", request);
             return response.IsSuccessStatusCode;
         }
     }

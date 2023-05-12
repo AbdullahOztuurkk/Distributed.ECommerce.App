@@ -2,22 +2,17 @@
 using Clicco.Domain.Core;
 using Clicco.Domain.Model;
 using Clicco.Domain.Shared.Models.Invoice;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 
 namespace Clicco.Infrastructure.Services
 {
     public class InvoiceService : IInvoiceService
     {
-        private readonly IConfiguration configuration;
-        private readonly string baseUri;
         private readonly HttpClient httpClient;
-
-        public InvoiceService(IConfiguration configuration, HttpClient httpClient)
+        private readonly IHttpClientFactory httpClientFactory;
+        public InvoiceService(IHttpClientFactory httpClientFactory)
         {
-            this.configuration = configuration;
-            baseUri = configuration["URLS:INVOICE_SERVICE_API"];
-            this.httpClient = httpClient;
+            this.httpClientFactory = httpClientFactory;
+            httpClient = httpClientFactory.CreateClient(nameof(InvoiceService));
         }
 
         public async Task<bool> CreateInvoice(string BuyerEmail,Transaction transaction, Product product, Address address)
@@ -82,13 +77,13 @@ namespace Clicco.Infrastructure.Services
                 }
             };
 
-            var response = await httpClient.PostAsJsonAsync($"{baseUri}/api/invoices/Create", model);
+            var response = await httpClient.PostAsJsonAsync("invoices/Create", model);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> SendEmailByTransactionId(int transactionId)
         {
-            var response = await httpClient.GetAsync($"{baseUri}/api/invoices/SendInvoiceEmail/{transactionId}");
+            var response = await httpClient.GetAsync($"invoices/SendInvoiceEmail/{transactionId}");
             return response.IsSuccessStatusCode;
         }
     }

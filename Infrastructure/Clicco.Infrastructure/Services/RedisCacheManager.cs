@@ -46,7 +46,6 @@ namespace Clicco.Infrastructure.Services
         {
             var cachedValue = await db.StringGetAsync(key);
             return !cachedValue.IsNull ? JsonConvert.DeserializeObject<T>(cachedValue) : default(T);
-
         }
 
         public async Task RemoveAsync(string key)
