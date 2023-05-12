@@ -15,7 +15,6 @@ namespace Clicco.AuthAPI.Services
             Configuration = configuration;
         }
 
-        //Token üretecek metot.
         public string CreateAccessToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
