@@ -7,14 +7,12 @@ namespace Clicco.InvoiceServiceAPI.Services
     public class EmailService : IEmailService
     {
         private readonly HttpClient httpClient;
-        private readonly IConfiguration configuration;
-        private readonly string baseUri;
+        private readonly IHttpClientFactory httpClientFactory;
 
-        public EmailService(HttpClient httpClient, IConfiguration configuration)
+        public EmailService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            this.configuration = configuration;
-            baseUri = configuration["URLS:EMAIL_SERVICE_API"];
-            this.httpClient = httpClient;
+            this.httpClientFactory = httpClientFactory;
+            this.httpClient = httpClientFactory.CreateClient(nameof(EmailService));
         }
         public async Task<bool> SendInvoiceEmailAsync(Invoice request)
         {
@@ -28,7 +26,7 @@ namespace Clicco.InvoiceServiceAPI.Services
                 To = request.BuyerEmail
             };
 
-            var response = await httpClient.PostAsJsonAsync($"{baseUri}/api/Email/SendInvoiceEmail", invoiceModel);
+            var response = await httpClient.PostAsJsonAsync("Email/SendInvoiceEmail", invoiceModel);
             return response.IsSuccessStatusCode;
         }
     }

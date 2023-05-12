@@ -1,9 +1,10 @@
 ﻿using Clicco.AuthAPI.Data.Context;
 using Clicco.AuthAPI.Data.Contracts;
 using Clicco.AuthAPI.Models;
-using Clicco.AuthAPI.Models.Email;
 using Clicco.AuthAPI.Services.Contracts;
 using Clicco.AuthServiceAPI.Exceptions;
+using Clicco.AuthServiceAPI.Helpers.Contracts;
+using Clicco.Domain.Shared.Models.Email;
 
 namespace Clicco.AuthAPI.Services
 {
@@ -12,13 +13,16 @@ namespace Clicco.AuthAPI.Services
         private readonly AuthContext context;
         private readonly IEmailService emailService;
         private readonly IUserRepository userRepository;
+        private readonly IHashingHelper hashingHelper;
         public AuthService(AuthContext context,
             IUserRepository userRepository,
-            IEmailService emailService)
+            IEmailService emailService,
+            IHashingHelper hashingHelper)
         {
             this.context = context;
             this.userRepository = userRepository;
             this.emailService = emailService;
+            this.hashingHelper = hashingHelper;
         }
         public async Task<User> LoginAsync(string email, string password)
         {
@@ -36,7 +40,7 @@ namespace Clicco.AuthAPI.Services
                 throw new AuthException("You dont have an access!");
             }
 
-            if (user == null || (user != null && !VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)))
+            if (user == null || (user != null && !hashingHelper.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)))
             {
                 throw new AuthException("Username or password is wrong!");
             }
@@ -46,7 +50,7 @@ namespace Clicco.AuthAPI.Services
         public async Task<User> RegisterAsync(User user, string password)
         {
             byte[] passwordHash, passwordSalt;
-            CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            hashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
@@ -77,7 +81,7 @@ namespace Clicco.AuthAPI.Services
                 byte[] passwordHash, passwordSalt;
                 Guid guid = Guid.NewGuid();
                 string password = guid.ToString().Replace("-", string.Empty)[10..];
-                CreatePasswordHash(password, out passwordHash, out passwordSalt);
+                hashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
@@ -94,32 +98,5 @@ namespace Clicco.AuthAPI.Services
 
             await Task.CompletedTask;
         }
-
-        #region 
-        private bool VerifyPasswordHash(string password, byte[] userPasswordHash, byte[] userPasswordSalt)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(userPasswordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    //Calculated Hash should equals to Crypted Hash Check
-                    if (computedHash[i] != userPasswordHash[i])
-                        return false;
-                }
-                return true;
-            }
-        }
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        #endregion
     }
 }

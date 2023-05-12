@@ -18,13 +18,19 @@ namespace Clicco.InvoiceServiceAPI.Extensions
             return services.AddSingleton<DbContext>(dbContext);
         }
 
-        public static IServiceCollection AddApplicationDependencies(this IServiceCollection services)
+        public static IServiceCollection AddApplicationDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            return services
-                .AddHttpClient()
+            services.AddHttpClient(nameof(EmailService), client =>
+                 {
+                     client.BaseAddress = new Uri(configuration["URLS:EMAIL_SERVICE_API"]);
+                 });
+
+            services
                 .AddScoped<IInvoiceRepository, InvoiceRepository>()
                 .AddScoped<IEmailService, EmailService>()
                 .AddScoped<IInvoiceService, InvoiceService>();
+        
+            return services;
         }
 
     }

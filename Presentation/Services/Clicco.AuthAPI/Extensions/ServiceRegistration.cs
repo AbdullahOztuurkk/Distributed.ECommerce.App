@@ -5,6 +5,8 @@ using Clicco.AuthAPI.Data.Validators;
 using Clicco.AuthAPI.Models;
 using Clicco.AuthAPI.Services;
 using Clicco.AuthAPI.Services.Contracts;
+using Clicco.AuthServiceAPI.Helpers;
+using Clicco.AuthServiceAPI.Helpers.Contracts;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +50,12 @@ namespace Clicco.AuthAPI.Extensions
 
             services.AddValidatorsFromAssembly(typeof(UserValidators).Assembly);
 
-            services.AddHttpClient();
+            services.AddHttpClient(nameof(EmailService), client =>
+            {
+                client.BaseAddress = new Uri(configuration["URLS:EMAIL_SERVICE_API"]);
+            });
+
+            services.AddScoped<IHashingHelper, HashingHelper>();
 
             services.AddScoped<IAuthService, AuthService>();
 

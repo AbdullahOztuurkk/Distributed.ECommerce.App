@@ -1,30 +1,28 @@
-﻿using Clicco.AuthAPI.Models.Email;
-using Clicco.AuthAPI.Services.Contracts;
+﻿using Clicco.AuthAPI.Services.Contracts;
+using Clicco.Domain.Shared.Models.Email;
 
 namespace Clicco.AuthAPI.Services
 {
     public class EmailService : IEmailService
     {
         private readonly HttpClient httpClient;
-        private readonly IConfiguration configuration;
-        private readonly string baseUri;
+        private readonly IHttpClientFactory httpClientFactory;
 
-        public EmailService(HttpClient httpClient, IConfiguration configuration)
+        public EmailService(IHttpClientFactory httpClientFactory,IConfiguration configuration)
         {
-            this.configuration = configuration;
-            baseUri = configuration["URLS:EMAIL_SERVICE_API"];
-            this.httpClient = httpClient;
+            this.httpClientFactory = httpClientFactory;
+            this.httpClient = httpClientFactory.CreateClient(nameof(EmailService));
         }
 
         public async Task<bool> SendForgotPasswordEmailAsync(ForgotPasswordEmailRequest request)
         {
-            var response = await httpClient.PostAsJsonAsync($"{baseUri}/api/Email/SendForgotPasswordEmail",request);
+            var response = await httpClient.PostAsJsonAsync("Email/SendForgotPasswordEmail",request);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> SendRegistrationEmailAsync(RegistrationEmailRequest request)
         {
-            var response = await httpClient.PostAsJsonAsync($"{baseUri}/api/Email/SendRegistrationEmail", request);
+            var response = await httpClient.PostAsJsonAsync("Email/SendRegistrationEmail", request);
             return response.IsSuccessStatusCode;
         }
     }

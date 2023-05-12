@@ -1,4 +1,4 @@
-﻿using Clicco.AuthAPI.Models.Email;
+﻿using Clicco.Domain.Shared.Models.Email;
 
 namespace Clicco.AuthAPI.Services.Contracts
 {
