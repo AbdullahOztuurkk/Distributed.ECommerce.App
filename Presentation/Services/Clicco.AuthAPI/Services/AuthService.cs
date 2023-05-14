@@ -1,28 +1,32 @@
-﻿using Clicco.AuthAPI.Data.Context;
-using Clicco.AuthAPI.Data.Contracts;
+﻿using Clicco.AuthAPI.Data.Contracts;
 using Clicco.AuthAPI.Models;
 using Clicco.AuthAPI.Services.Contracts;
+using Clicco.AuthServiceAPI.Data.Contracts;
 using Clicco.AuthServiceAPI.Exceptions;
-using Clicco.AuthServiceAPI.Helpers.Contracts;
+using Clicco.AuthServiceAPI.Helpers;
+using Clicco.AuthServiceAPI.Models;
+using Clicco.AuthServiceAPI.Models.Request;
+using Clicco.AuthServiceAPI.Models.Response;
 using Clicco.Domain.Shared.Models.Email;
 
 namespace Clicco.AuthAPI.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly AuthContext context;
         private readonly IEmailService emailService;
         private readonly IUserRepository userRepository;
-        private readonly IHashingHelper hashingHelper;
-        public AuthService(AuthContext context,
-            IUserRepository userRepository,
+        private readonly IResetCodeRepository resetCodeRepository;
+        private readonly IHttpContextAccessor contextAccessor;
+
+        public AuthService(IUserRepository userRepository,
             IEmailService emailService,
-            IHashingHelper hashingHelper)
+            IResetCodeRepository resetLinkRepository,
+            IHttpContextAccessor contextAccessor)
         {
-            this.context = context;
             this.userRepository = userRepository;
             this.emailService = emailService;
-            this.hashingHelper = hashingHelper;
+            this.resetCodeRepository = resetLinkRepository;
+            this.contextAccessor = contextAccessor;
         }
         public async Task<User> LoginAsync(string email, string password)
         {
@@ -40,7 +44,7 @@ namespace Clicco.AuthAPI.Services
                 throw new AuthException("You dont have an access!");
             }
 
-            if (user == null || (user != null && !hashingHelper.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)))
+            if (user == null || (user != null && !HashingHelper.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)))
             {
                 throw new AuthException("Username or password is wrong!");
             }
@@ -50,7 +54,7 @@ namespace Clicco.AuthAPI.Services
         public async Task<User> RegisterAsync(User user, string password)
         {
             byte[] passwordHash, passwordSalt;
-            hashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
@@ -60,7 +64,7 @@ namespace Clicco.AuthAPI.Services
 
             await emailService.SendRegistrationEmailAsync(new RegistrationEmailRequest
             {
-                FullName = string.Join(" ", user.FirstName, user.LastName),
+                FullName = user.ToString(),
                 To = user.Email
             });
 
@@ -78,25 +82,60 @@ namespace Clicco.AuthAPI.Services
             var user = await userRepository.GetSingleAsync(x => x.Email == email);
             if (user != null)
             {
+                ResetCode resetCode = new()
+                {
+                    UserId = user.Id,
+                    CreationDate = DateTime.Now,
+                    ExpirationDate = DateTime.Now.AddMinutes(10),
+                    Code = ResetCodeHelper.GenerateResetCode()
+                };
+
+                await resetCodeRepository.AddAsync(resetCode);
+
+                await resetCodeRepository.SaveChangesAsync();
+
+                await emailService.SendForgotPasswordEmailAsync(new ForgotPasswordEmailRequest
+                {
+                    FullName = user.ToString(),
+                    ResetCode = resetCode.Code,
+                    To = user.Email
+                });
+            }
+            else
+            {
+                throw new AuthException("User not found!");
+            }
+
+            await Task.CompletedTask;
+        }
+
+        public async Task<AuthResult> ResetPasswordAsync(ResetPasswordDto dtoModel)
+        {
+            var resetCode = await resetCodeRepository.GetSingleAsync(x => x.Code == dtoModel.ResetCode);
+            if (resetCode.IsAvailable())
+            {
+                resetCode.IsActive = false;
+                await resetCodeRepository.SaveChangesAsync();
+
+                var user = await userRepository.GetByIdAsync(resetCode.UserId);
                 byte[] passwordHash, passwordSalt;
-                Guid guid = Guid.NewGuid();
-                string password = guid.ToString().Replace("-", string.Empty)[10..];
-                hashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
+                HashingHelper.CreatePasswordHash(dtoModel.Password, out passwordHash, out passwordSalt);
 
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
                 userRepository.Update(user);
                 await userRepository.SaveChangesAsync();
 
-                await emailService.SendForgotPasswordEmailAsync(new ForgotPasswordEmailRequest
+                await emailService.SendResetPasswordEmailAsync(new ResetPasswordEmailRequest
                 {
-                    FullName = string.Join(" ", user.FirstName, user.LastName),
-                    NewPassword = password,
-                    To = user.Email
+                    To = user.Email,
+                    FullName = user.ToString(),
                 });
-            }
 
-            await Task.CompletedTask;
+                return new SuccessAuthResult("Your password has been reset successfully!");
+            }
+            else
+                return new FailedAuthResult("Reset code is invalid!");
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Clicco.EmailServiceAPI.Services
                 Global.EmailType.FailedPayment => File.ReadAllText("HtmlFiles/FailedPaymentEmailTemplate.html"),
 
                 Global.EmailType.Invoice => File.ReadAllText("HtmlFiles/InvoiceEmailTemplate.html"),
+
+                Global.EmailType.ResetPassword => File.ReadAllText("HtmlFiles/ResetPasswordEmailTemplate.html"),
             };
 
             return template;
@@ -36,7 +38,9 @@ namespace Clicco.EmailServiceAPI.Services
 
                 Global.EmailType.FailedPayment => "Clicco - Payment Failed!",
 
-                Global.EmailType.Invoice => "Clicco - Invoice"
+                Global.EmailType.Invoice => "Clicco - Invoice",
+
+                Global.EmailType.ResetPassword => "Clicco - Password Reset Completed",
             };
 
             return template;

@@ -13,5 +13,10 @@ namespace Clicco.AuthAPI.Models
         public byte[] PasswordSalt { get; set; }
         public bool IsSA { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
+
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName}";
+        }
     }
 }

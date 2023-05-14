@@ -6,5 +6,7 @@ namespace Clicco.AuthAPI.Services.Contracts
     {
         Task<bool> SendRegistrationEmailAsync(RegistrationEmailRequest request);
         Task<bool> SendForgotPasswordEmailAsync(ForgotPasswordEmailRequest request);
+        Task<bool> SendResetPasswordEmailAsync(ResetPasswordEmailRequest request);
+
     }
 }

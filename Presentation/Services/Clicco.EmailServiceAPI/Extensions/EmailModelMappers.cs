@@ -20,7 +20,7 @@ namespace Clicco.EmailServiceAPI.Extensions
             {
                 To = request.To,
                 FullName = request.FullName,
-                NewPassword = request.NewPassword,
+                ResetCode = request.ResetCode,
             };
         }
 
@@ -60,6 +60,15 @@ namespace Clicco.EmailServiceAPI.Extensions
                 Coupon = request.Coupon,
                 Product = request.Product,
                 Vendor = request.Vendor,
+            };
+        }
+
+        public static ResetPasswordEmailTemplateModel ConvertToEmailModel(this ResetPasswordEmailRequest request)
+        {
+            return new ResetPasswordEmailTemplateModel()
+            {
+                To = request.To,
+                FullName = request.FullName
             };
         }
     }

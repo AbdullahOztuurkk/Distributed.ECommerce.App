@@ -1,5 +1,7 @@
 ﻿using Clicco.AuthAPI.Data.EntityConfigurations;
 using Clicco.AuthAPI.Models;
+using Clicco.AuthServiceAPI.Data.EntityConfigurations;
+using Clicco.AuthServiceAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Clicco.AuthAPI.Data.Context
@@ -17,6 +19,7 @@ namespace Clicco.AuthAPI.Data.Context
 
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<ResetCode> ResetCodes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -27,6 +30,7 @@ namespace Clicco.AuthAPI.Data.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ResetCodeEntityConfiguration());
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

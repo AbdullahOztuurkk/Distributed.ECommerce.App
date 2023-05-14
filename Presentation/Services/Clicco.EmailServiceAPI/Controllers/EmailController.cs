@@ -53,5 +53,12 @@ namespace Clicco.EmailServiceAPI.Controllers
             queueService.PushMessage(model.ConvertToEmailModel());
             return Ok(new EmailResponse(model.To).ToString());
         }
+
+        [HttpPost]
+        public IActionResult SendResetPasswordEmail([FromBody] ResetPasswordEmailRequest model)
+        {
+            queueService.PushMessage(model.ConvertToEmailModel());
+            return Ok(new EmailResponse(model.To).ToString());
+        }
     }
 }

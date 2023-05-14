@@ -3,6 +3,6 @@
     public class ForgotPasswordEmailRequest : BaseEmailRequest
     {
         public string FullName { get; set; }
-        public string NewPassword { get; set; }
+        public string ResetCode { get; set; }
     }
 }

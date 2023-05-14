@@ -4,6 +4,10 @@ using Clicco.AuthAPI.Models.Response;
 using Clicco.AuthAPI.Services.Contracts;
 using Clicco.AuthAPI.Models.Request;
 using Microsoft.AspNetCore.Mvc;
+using Clicco.AuthServiceAPI.Models.Request;
+using Clicco.AuthAPI.Data.Validators;
+using static Clicco.AuthAPI.Data.Validators.UserValidators;
+using Clicco.AuthServiceAPI.Helpers;
 
 namespace Clicco.AuthAPI.Controllers
 {
@@ -23,6 +27,7 @@ namespace Clicco.AuthAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto request)
         {
+            await ValidationHelper.IsValid(new RegisterModelValidator(), request);
             var result = await authService.UserExistsAsync(request.Email);
             if (result)
             {
@@ -58,16 +63,24 @@ namespace Clicco.AuthAPI.Controllers
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(string email)
+        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordDto dtoModel)
         {
-            //Todo: Must be changed with unique URL
-            var result = await authService.UserExistsAsync(email);
+            var result = await authService.UserExistsAsync(dtoModel.Email);
             if (result)
             {
-                await authService.ForgotPasswordAsync(email);
+                await authService.ForgotPasswordAsync(dtoModel.Email);
                 return Ok("Temporary password sent to email address!");
             }
             return BadRequest("User not found!");
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dtoModel)
+        {
+            var result = await authService.ResetPasswordAsync(dtoModel);
+            return result.IsSuccess 
+                ? Ok(result) 
+                : BadRequest(result);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Clicco.AuthAPI.Services
         private readonly HttpClient httpClient;
         private readonly IHttpClientFactory httpClientFactory;
 
-        public EmailService(IHttpClientFactory httpClientFactory,IConfiguration configuration)
+        public EmailService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             this.httpClientFactory = httpClientFactory;
             this.httpClient = httpClientFactory.CreateClient(nameof(EmailService));
@@ -16,13 +16,19 @@ namespace Clicco.AuthAPI.Services
 
         public async Task<bool> SendForgotPasswordEmailAsync(ForgotPasswordEmailRequest request)
         {
-            var response = await httpClient.PostAsJsonAsync("Email/SendForgotPasswordEmail",request);
+            var response = await httpClient.PostAsJsonAsync("Email/SendForgotPasswordEmail", request);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> SendRegistrationEmailAsync(RegistrationEmailRequest request)
         {
             var response = await httpClient.PostAsJsonAsync("Email/SendRegistrationEmail", request);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> SendResetPasswordEmailAsync(ResetPasswordEmailRequest request)
+        {
+            var response = await httpClient.PostAsJsonAsync("Email/SendResetPasswordEmail", request);
             return response.IsSuccessStatusCode;
         }
     }

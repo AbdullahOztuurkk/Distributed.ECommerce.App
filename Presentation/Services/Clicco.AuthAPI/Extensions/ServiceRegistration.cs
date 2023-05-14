@@ -5,13 +5,12 @@ using Clicco.AuthAPI.Data.Validators;
 using Clicco.AuthAPI.Models;
 using Clicco.AuthAPI.Services;
 using Clicco.AuthAPI.Services.Contracts;
-using Clicco.AuthServiceAPI.Helpers;
-using Clicco.AuthServiceAPI.Helpers.Contracts;
+using Clicco.AuthServiceAPI.Data.Contracts;
+using Clicco.AuthServiceAPI.Data.Repositories;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
 using System.Text;
 
 namespace Clicco.AuthAPI.Extensions
@@ -55,7 +54,7 @@ namespace Clicco.AuthAPI.Extensions
                 client.BaseAddress = new Uri(configuration["URLS:EMAIL_SERVICE_API"]);
             });
 
-            services.AddScoped<IHashingHelper, HashingHelper>();
+            services.AddHttpContextAccessor();
 
             services.AddScoped<IAuthService, AuthService>();
 
@@ -64,6 +63,8 @@ namespace Clicco.AuthAPI.Extensions
             services.AddScoped<IEmailService,EmailService>();
             
             services.AddScoped<IUserRepository,UserRepository>();
+
+            services.AddScoped<IResetCodeRepository, ResetCodeRepository>();
 
             services.AddScoped<ITokenHandler<User>,Services.TokenHandler>();
 

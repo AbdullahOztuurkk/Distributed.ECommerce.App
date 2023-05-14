@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Clicco.AuthAPI.Data.Validators
 {
-    public static class UserValidators
+    public class UserValidators
     {
         public class LoginModelValidator : AbstractValidator<LoginDto>
         {

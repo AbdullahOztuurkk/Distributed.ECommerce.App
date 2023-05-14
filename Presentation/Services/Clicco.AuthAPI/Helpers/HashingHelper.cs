@@ -1,10 +1,8 @@
-﻿using Clicco.AuthServiceAPI.Helpers.Contracts;
-
-namespace Clicco.AuthServiceAPI.Helpers
+﻿namespace Clicco.AuthServiceAPI.Helpers
 {
-    public class HashingHelper : IHashingHelper
-    {
-        public bool VerifyPasswordHash(string password, byte[] userPasswordHash, byte[] userPasswordSalt)
+    public static class HashingHelper
+    { 
+        public static bool VerifyPasswordHash(string password, byte[] userPasswordHash, byte[] userPasswordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512(userPasswordSalt))
             {
@@ -19,7 +17,7 @@ namespace Clicco.AuthServiceAPI.Helpers
             }
         }
 
-        public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
             {

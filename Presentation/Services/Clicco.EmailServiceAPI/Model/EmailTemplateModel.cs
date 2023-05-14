@@ -42,8 +42,8 @@ namespace Clicco.EmailServiceAPI.Model
         [DisplayElement("#FULL_NAME#")]
         public string FullName { get; set; }
 
-        [DisplayElement("#NEW_PASSWORD#")]
-        public string NewPassword { get; set; }
+        [DisplayElement("#RESET_CODE#")]
+        public string ResetCode { get; set; }
     }
 
     public class SuccessPaymentEmailTemplateModel : EmailTemplateModel
@@ -116,5 +116,16 @@ namespace Clicco.EmailServiceAPI.Model
 
         [CustomElement]
         public InvoiceCoupon Coupon { get; set; }
+    }
+
+    public class ResetPasswordEmailTemplateModel : EmailTemplateModel
+    {
+        public ResetPasswordEmailTemplateModel()
+        {
+            EmailType = EmailType.ResetPassword;
+        }
+
+        [DisplayElement("#FULL_NAME#")]
+        public string FullName { get; set; }
     }
 }
