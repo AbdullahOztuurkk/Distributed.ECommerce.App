@@ -6,7 +6,7 @@ using Clicco.Persistence.Services;
 using Moq;
 using NUnit.Framework;
 
-namespace Clicco.Application.Tests
+namespace Clicco.Persistence.Tests
 {
     public class CouponTests
     {
