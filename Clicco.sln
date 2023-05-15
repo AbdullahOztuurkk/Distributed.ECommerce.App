@@ -38,7 +38,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.PaymentServiceAPI", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.InvoiceServiceAPI", "Presentation\Services\Clicco.InvoiceServiceAPI\Clicco.InvoiceServiceAPI.csproj", "{DC6D11E7-269E-4B59-A36D-CCD39A37F69F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clicco.Domain.Shared", "Core\Domain\Clicco.Domain.Shared\Clicco.Domain.Shared.csproj", "{78C438CE-C355-4A6F-B998-5754D363FFAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.Domain.Shared", "Core\Domain\Clicco.Domain.Shared\Clicco.Domain.Shared.csproj", "{78C438CE-C355-4A6F-B998-5754D363FFAC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5B7D044E-6331-4118-B05E-9E069A0040B6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApi", "WebApi", "{70188DB9-8495-46A0-8F6F-77C67BC49BE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clicco.Application.Tests", "Tests\WebApi\Clicco.Application.Tests\Clicco.Application.Tests.csproj", "{A0D78581-F9C2-43E4-AF23-220E72824547}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +96,10 @@ Global
 		{78C438CE-C355-4A6F-B998-5754D363FFAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78C438CE-C355-4A6F-B998-5754D363FFAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78C438CE-C355-4A6F-B998-5754D363FFAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0D78581-F9C2-43E4-AF23-220E72824547}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0D78581-F9C2-43E4-AF23-220E72824547}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0D78581-F9C2-43E4-AF23-220E72824547}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0D78581-F9C2-43E4-AF23-220E72824547}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,6 +119,8 @@ Global
 		{F0AC40EA-64CA-461A-A8B1-77EAFC65E194} = {B0555D1C-2430-4915-BBD7-7A89283C6DF3}
 		{DC6D11E7-269E-4B59-A36D-CCD39A37F69F} = {B0555D1C-2430-4915-BBD7-7A89283C6DF3}
 		{78C438CE-C355-4A6F-B998-5754D363FFAC} = {BC540803-0F3B-4D11-9D0B-78033A8E5C99}
+		{70188DB9-8495-46A0-8F6F-77C67BC49BE9} = {5B7D044E-6331-4118-B05E-9E069A0040B6}
+		{A0D78581-F9C2-43E4-AF23-220E72824547} = {70188DB9-8495-46A0-8F6F-77C67BC49BE9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5ED189FF-6738-48AA-BACA-CB01FD6FD628}
