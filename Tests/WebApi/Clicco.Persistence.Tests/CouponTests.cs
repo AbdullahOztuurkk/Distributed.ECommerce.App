@@ -1,8 +1,10 @@
 using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core;
 using Clicco.Domain.Model;
 using Clicco.Persistence.Services;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 
@@ -14,6 +16,7 @@ namespace Clicco.Persistence.Tests
         private Mock<ICouponRepository> mockCouponRepository;
         private Mock<IProductRepository> mockProductRepository;
         private Mock<ICacheManager> mockCacheManager;
+        private ICouponService couponService;
 
         [SetUp]
         public void Setup()
@@ -23,19 +26,16 @@ namespace Clicco.Persistence.Tests
             mockCouponRepository = new Mock<ICouponRepository>();
             mockProductRepository = new Mock<IProductRepository>();
 
-            mockTransactionRepository.Setup(x => x.Update(It.IsAny<Transaction>())).Returns(It.IsAny<Transaction>());
-            mockTransactionRepository.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
+            couponService = new CouponService(
+                mockCouponRepository.Object,
+                mockTransactionRepository.Object,
+                mockProductRepository.Object,
+                mockCacheManager.Object);
         }
 
         [Test]
         public async Task UseCoupon_WhenItIsDefaultCoupon_MustBeDiscount()
         {
-            CouponService couponService = new CouponService(
-                mockCouponRepository.Object,
-                mockTransactionRepository.Object,
-                mockProductRepository.Object,
-                mockCacheManager.Object);
-
             Coupon defaultCoupon = new()
             {
                 DiscountAmount = 100,
@@ -48,18 +48,12 @@ namespace Clicco.Persistence.Tests
 
             await couponService.Apply(transaction, defaultCoupon);
 
-            Assert.That(transaction.DiscountedAmount, Is.EqualTo(900));
+            transaction.DiscountedAmount.Should().Be(900);
         }
 
         [Test]
         public async Task UseCoupon_WhenItIsPercentageCoupon_MustBeDiscount()
         {
-            CouponService couponService = new CouponService(
-                mockCouponRepository.Object,
-                mockTransactionRepository.Object,
-                mockProductRepository.Object,
-                mockCacheManager.Object);
-
             Coupon percentageCoupon = new()
             {
                 DiscountAmount = 70,
@@ -72,7 +66,7 @@ namespace Clicco.Persistence.Tests
 
             await couponService.Apply(transaction, percentageCoupon);
 
-            Assert.That(transaction.DiscountedAmount, Is.EqualTo(300));
+            transaction.DiscountedAmount.Should().Be(300);
         }
     }
 }
