@@ -10,10 +10,10 @@ namespace Clicco.Domain.Shared.Models.Invoice
         public string Code { get; set; }
 
         [DisplayElement("#TRANSACTION_TOTAL_AMOUNT#")]
-        public int TotalAmount { get; set; }
+        public decimal TotalAmount { get; set; }
 
         [DisplayElement("#TRANSACTION_DISCOUNT_AMOUNT#")]
-        public int DiscountedAmount { get; set; }
+        public decimal DiscountedAmount { get; set; }
 
         [DisplayElement("#TRANSACTION_DEALER_NAME#")]
         public string Dealer { get; set; }

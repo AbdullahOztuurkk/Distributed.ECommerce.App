@@ -10,7 +10,7 @@ namespace Clicco.Domain.Model
         public int? TypeId { get; set; }
         public DateTime ExpirationDate { get; set; }
         public DiscountType DiscountType { get; set; }
-        public int DiscountAmount { get; set; }
+        public decimal DiscountAmount { get; set; }
         public bool IsActive { get; set; } = true;
         public bool IsDeleted { get; set; } = false;
 

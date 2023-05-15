@@ -82,7 +82,7 @@ namespace Clicco.Persistence.Services
 
             else if (coupon.DiscountType == DiscountType.Percentage)
             {
-                transaction.DiscountedAmount = transaction.TotalAmount * (coupon.DiscountAmount / 100);
+                transaction.DiscountedAmount = transaction.TotalAmount - (transaction.TotalAmount * (coupon.DiscountAmount / 100));
             }
 
             transaction.CouponId = coupon.Id;

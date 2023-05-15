@@ -11,6 +11,6 @@ namespace Clicco.Application.ViewModels
         public int? TypeId { get; set; }
         public DateTime ExpirationDate { get; set; }
         public string DiscountType { get; set; }
-        public int DiscountAmount { get; set; }
+        public decimal DiscountAmount { get; set; }
     }
 }

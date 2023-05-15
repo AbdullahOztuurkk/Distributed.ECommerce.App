@@ -92,9 +92,9 @@ namespace Clicco.Application.Features.Commands.Payment
                 CardInformation = request.CardInformation,
                 DealerName = product.Vendor.Name,
                 ProductName = product.Name,
-                TotalAmount = transaction.DiscountedAmount < transaction.TotalAmount
+                TotalAmount = (int)(transaction.DiscountedAmount < transaction.TotalAmount
                         ? transaction.DiscountedAmount
-                        : transaction.TotalAmount,
+                        : transaction.TotalAmount),
             };
 
             var result = await paymentService.Pay(bankRequest);
