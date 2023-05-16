@@ -41,7 +41,7 @@ namespace Clicco.Persistence.Services
 
         public async Task IsAvailable(Transaction transaction, Coupon coupon)
         {
-            if (!coupon.IsDeleted && coupon.IsActive && coupon.ExpirationDate < DateTime.UtcNow)
+            if (!coupon.IsDeleted && coupon.IsActive && coupon.ExpirationDate >= DateTime.UtcNow)
             {
                 throw new CustomException(CustomErrors.CouponInvalid);
             }
@@ -91,7 +91,6 @@ namespace Clicco.Persistence.Services
             await transactionRepository.SaveChangesAsync();
         }
 
-        #region Private
         public bool CanBeAppliedTo(Coupon coupon, Product product)
         {
             switch (coupon.Type)
@@ -107,6 +106,5 @@ namespace Clicco.Persistence.Services
             }
         }
 
-        #endregion
     }
 }
