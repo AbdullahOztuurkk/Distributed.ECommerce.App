@@ -25,6 +25,8 @@ namespace Clicco.Infrastructure.Repositories
                     parent = parent.Parent;
                 }
             }
+            //Reverse exist list for correct url
+            uris.Reverse();
 
             return uris.ConcatUrls();
         }
