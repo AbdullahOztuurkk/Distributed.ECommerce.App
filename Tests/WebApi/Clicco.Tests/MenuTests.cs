@@ -16,7 +16,7 @@ namespace Clicco.Persistence.Tests
         private Mock<IMenuService> mockMenuService;
         private Mock<IMapper> mockMapper;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             mockMapper = new Mock<IMapper>();

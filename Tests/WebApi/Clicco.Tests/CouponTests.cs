@@ -21,7 +21,7 @@ namespace Clicco.Persistence.Tests
         private ICouponService couponService;
         private Transaction transaction { get; set; }
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             mockTransactionRepository = new Mock<ITransactionRepository>();
