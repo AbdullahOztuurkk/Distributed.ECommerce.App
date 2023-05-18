@@ -44,7 +44,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5B7D044E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApi", "WebApi", "{70188DB9-8495-46A0-8F6F-77C67BC49BE9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.Persistence.Tests", "Tests\WebApi\Clicco.Persistence.Tests\Clicco.Persistence.Tests.csproj", "{F832F79C-698A-4E8C-8E40-60F8AA4D88FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.Tests", "Tests\WebApi\Clicco.Persistence.Tests\Clicco.Tests.csproj", "{F832F79C-698A-4E8C-8E40-60F8AA4D88FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

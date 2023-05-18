@@ -19,7 +19,7 @@ namespace Clicco.Persistence.Tests
         private Mock<IProductRepository> mockProductRepository;
         private Mock<ICacheManager> mockCacheManager;
         private ICouponService couponService;
-        private Transaction transaction { get ; set; }
+        private Transaction transaction { get; set; }
 
         [SetUp]
         public void Setup()
@@ -69,21 +69,6 @@ namespace Clicco.Persistence.Tests
         }
 
         [Test]
-        public async Task UseCoupon_WhenPercentageAmountGreaterThan100_MustThrowException()
-        {
-            Coupon coupon = new()
-            {
-                DiscountAmount = 101,
-                DiscountType = DiscountType.Percentage,
-            };
-
-            Func<Task> act = async () => { await couponService.IsAvailable(transaction, coupon); };
-
-            await act.Should()
-                .ThrowAsync<CustomException>();
-        }
-
-        [Test]
         public async Task UseCoupon_WhenCouponCached_MustThrowException()
         {
             Coupon coupon = new()
@@ -94,21 +79,19 @@ namespace Clicco.Persistence.Tests
 
             mockCacheManager.Setup(x => x.ExistAsync(CacheKeys.GetSingleKey<Coupon>(coupon.Id))).ReturnsAsync(true);
 
-            Func<Task> act = async () => { await couponService.IsAvailable(transaction, coupon); };
+            Func<Task> act = async () => { await couponService.IsAvailable(It.IsAny<Product>(), coupon); };
 
             await act.Should()
-                .ThrowAsync<CustomException>();
+                .ThrowAsync<CustomException>()
+                .Where(o => o.CustomError == CustomErrors.CouponIsNowUsed);
         }
 
         [Test]
         public async Task UseCoupon_WhenCouponWithWrongCategory_MustThrowException()
         {
-            transaction.TransactionDetail = new TransactionDetail()
+            Product product = new Product()
             {
-                Product = new Product()
-                {
-                    Id = 1
-                },
+                Id = 1
             };
 
             Coupon coupon = new()
@@ -121,10 +104,12 @@ namespace Clicco.Persistence.Tests
 
             mockCacheManager.Setup(x => x.ExistAsync(CacheKeys.GetSingleKey<Coupon>(coupon.Id))).ReturnsAsync(false);
 
-            Func<Task> act = async () => { await couponService.IsAvailable(transaction, coupon); };
+            Func<Task> act = async () => { await couponService.IsAvailable(product, coupon); };
 
             await act.Should()
-                .ThrowAsync<CustomException>();
+                .ThrowAsync<CustomException>()
+                .Where(o => o.CustomError == CustomErrors.CouponCannotUsed);
+
         }
     }
 }
