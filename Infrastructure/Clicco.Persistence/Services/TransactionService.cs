@@ -65,7 +65,7 @@ namespace Clicco.Persistence.Services
 
         public async Task<Product> GetProductByIdAsync(int productId)
         {
-            return await productRepository.GetByIdAsync(productId, x => x.Vendor);
+            return await productRepository.GetByIdAsync(productId, x => x.Vendor,x => x.Category);
         }
     }
 }

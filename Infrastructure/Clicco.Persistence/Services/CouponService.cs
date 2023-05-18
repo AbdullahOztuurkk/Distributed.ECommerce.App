@@ -39,7 +39,7 @@ namespace Clicco.Persistence.Services
             ThrowExceptionIfNull(result, CustomErrors.TransactionNotFound);
         }
 
-        public async Task IsAvailable(Transaction transaction, Coupon coupon)
+        public async Task IsAvailable(Product product, Coupon coupon)
         {
             if (!coupon.IsDeleted && coupon.IsActive && coupon.ExpirationDate >= DateTime.UtcNow)
             {
@@ -52,13 +52,7 @@ namespace Clicco.Persistence.Services
                 throw new CustomException(CustomErrors.CouponIsNowUsed);
             }
 
-            if (transaction.TransactionDetail.Product == null)
-            {
-                var product = await productRepository.GetByIdAsync(transaction.TransactionDetail.ProductId, x => x.Category, x => x.Vendor);
-                transaction.TransactionDetail.Product = product;
-            }
-
-            if (!CanBeAppliedTo(coupon, transaction.TransactionDetail.Product))
+            if (!CanBeAppliedTo(coupon, product))
             {
                 throw new CustomException(CustomErrors.CouponCannotUsed);
             }

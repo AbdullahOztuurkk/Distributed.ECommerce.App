@@ -79,7 +79,7 @@ namespace Clicco.Application.Features.Commands.Payment
 
                 var coupon = await transactionService.GetCouponByIdAsync(request.CouponId.Value);
 
-                await couponService.IsAvailable(transaction, coupon);
+                await couponService.IsAvailable(product, coupon);
 
                 await couponService.Apply(transaction, coupon);
 
@@ -106,8 +106,8 @@ namespace Clicco.Application.Features.Commands.Payment
                 await emailService.SendSuccessPaymentEmailAsync(new PaymentSuccessEmailRequest
                 {
                     Amount = transaction.DiscountedAmount < transaction.TotalAmount
-                        ? transaction.DiscountedAmount.ToString()
-                        : transaction.TotalAmount.ToString(),
+                        ? string.Format("{0:N2}", transaction.DiscountedAmount)
+                        : string.Format("{0:N2}", transaction.TotalAmount),
                     FullName = claimHelper.GetUserName(),
                     OrderNumber = transaction.Code,
                     PaymentMethod = "Credit / Bank Card",
@@ -122,9 +122,9 @@ namespace Clicco.Application.Features.Commands.Payment
 
                 await emailService.SendFailedPaymentEmailAsync(new PaymentFailedEmailRequest
                 {
-                    Amount = transaction.DiscountedAmount < transaction.TotalAmount 
-                        ? transaction.DiscountedAmount.ToString() 
-                        : transaction.TotalAmount.ToString(),
+                    Amount = transaction.DiscountedAmount < transaction.TotalAmount
+                        ? string.Format("{0:N2}", transaction.DiscountedAmount)
+                        : string.Format("{0:N2}", transaction.TotalAmount),
                     FullName = claimHelper.GetUserName(),
                     OrderNumber = transaction.Code,
                     PaymentMethod = "Credit / Bank Card",
