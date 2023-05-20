@@ -48,5 +48,16 @@ namespace Clicco.InvoiceServiceAPI.Data.Context
             var result = await collection.DeleteOneAsync(x => x.Id == id);
             return result.DeletedCount > 0;
         }
+
+        public async Task<bool> UpdateAsync(string id, Invoice entity)
+        {
+            var isValidId = ObjectId.TryParse(id, out _);
+
+            if (!isValidId)
+                return false;
+
+            var note = await collection.ReplaceOneAsync(x => x.Id == id, entity);
+            return note.ModifiedCount > 0;
+        }
     }
 }

@@ -37,5 +37,10 @@ namespace Clicco.InvoiceServiceAPI.Data.Repositories
         {
             return await dbContext.Invoices.RemoveAsync(id);
         }
+
+        public async Task<bool> UpdateAsync(string id, Invoice entity)
+        {
+            return await dbContext.Invoices.UpdateAsync(id, entity);
+        }
     }
 }

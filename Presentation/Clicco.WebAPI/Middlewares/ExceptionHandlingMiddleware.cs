@@ -19,7 +19,7 @@ namespace Clicco.WebAPI.Middlewares
                 await next(context);
             }
             catch (Exception error)
-            {
+             {
                 CustomError customError;
                 var response = context.Response;
                 switch (error)

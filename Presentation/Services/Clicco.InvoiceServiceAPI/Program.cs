@@ -1,9 +1,4 @@
-using Clicco.InvoiceServiceAPI.Data.Common;
-using Clicco.InvoiceServiceAPI.Data.Context;
 using Clicco.InvoiceServiceAPI.Extensions;
-using Clicco.InvoiceServiceAPI.Middlewares;
-using Clicco.InvoiceServiceAPI.Settings;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +8,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddApplicationDependencies(builder.Configuration);
-builder.Services.AddSingleton<DbContext,MongoDbContext>();
 builder.Configuration.AddEnvironmentVariables();
-builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection(nameof(MongoDbSettings)));
+builder.Services.AddApplicationDependencies(builder.Configuration);
 
 var app = builder.Build();
 

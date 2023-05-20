@@ -1,6 +1,6 @@
-﻿using Clicco.InvoiceServiceAPI.Data.Common;
+﻿using Clicco.InvoiceServiceAPI.Configurations;
+using Clicco.InvoiceServiceAPI.Data.Common;
 using Clicco.InvoiceServiceAPI.Data.Models;
-using Clicco.InvoiceServiceAPI.Settings;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 

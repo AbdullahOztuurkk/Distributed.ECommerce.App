@@ -1,4 +1,4 @@
-﻿namespace Clicco.InvoiceServiceAPI.Settings
+﻿namespace Clicco.InvoiceServiceAPI.Configurations
 {
     public interface IMongoDbSettings
     {

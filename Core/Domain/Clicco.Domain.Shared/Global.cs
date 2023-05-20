@@ -2,6 +2,12 @@
 {
     public class Global
     {
+        public class QueueNames
+        {
+            public const string UpdatedTransactionQueue = "updated-transaction-queue";
+            public const string DeletedTransactionQueue = "deleted-transaction-queue";        
+        }
+
         public class ExcludeAttribute : Attribute
         {
 
