@@ -16,6 +16,8 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameo
 builder.Services.Configure<RabbitMqSettings>(builder.Configuration.GetSection(nameof(RabbitMqSettings)));
 builder.Services.AddHostedService<EmailWorker>();
 
+builder.Configuration.AddEnvironmentVariables();
+
 var app = builder.Build(); 
 
 // Configure the HTTP request pipeline.

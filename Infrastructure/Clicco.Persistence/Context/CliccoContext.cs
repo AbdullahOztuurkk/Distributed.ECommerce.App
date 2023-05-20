@@ -2,11 +2,24 @@
 using Clicco.Domain.Model;
 using Clicco.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Clicco.Infrastructure.Context
 {
     public class CliccoContext : DbContext
     {
+        public IConfiguration configuration
+        {
+            get
+            {
+                return new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json")
+                    .AddEnvironmentVariables()
+                    .Build();
+            }
+        }
+
         public CliccoContext(DbContextOptions<CliccoContext> options) : base(options)
         {
 
@@ -49,7 +62,7 @@ namespace Clicco.Infrastructure.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=DESKTOP-2QF0S4K;Initial Catalog=ParamECommerce;Integrated Security=True;", opt =>
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("CliccoContext"), opt =>
             {
                 opt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null);
             });

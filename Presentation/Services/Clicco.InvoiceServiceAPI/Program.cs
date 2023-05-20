@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationDependencies(builder.Configuration);
 builder.Services.AddSingleton<DbContext,MongoDbContext>();
-
+builder.Configuration.AddEnvironmentVariables();
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection(nameof(MongoDbSettings)));
 
 var app = builder.Build();
