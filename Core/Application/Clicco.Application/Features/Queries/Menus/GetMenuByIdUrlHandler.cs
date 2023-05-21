@@ -26,7 +26,7 @@ namespace Clicco.Application.Features.Queries
         }
         public async Task<MenuViewModel> Handle(GetMenuByUrlQuery request, CancellationToken cancellationToken)
         {
-            return await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Menu>(request.Id), async () =>
+            return await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Menu>(request.Url), async () =>
             {
                 return mapper.Map<MenuViewModel>(await menuRepository.GetSingleAsync(x => x.SlugUrl == request.Url, x => x.Category));
             });

@@ -23,7 +23,7 @@ namespace Clicco.InvoiceServiceAPI
                 rabbitMqService.ReceiveMessages<int>(QueueNames.DeletedTransactionQueue, async (id) =>
                 {
                     var invoice = await invoiceRepository.FindOneAsync(x => x.Transaction.Id == id);
-                    if(invoice != null)
+                    if (invoice != null)
                     {
                         await invoiceRepository.RemoveAsync(invoice.Id);
 
@@ -33,7 +33,7 @@ namespace Clicco.InvoiceServiceAPI
                 rabbitMqService.ReceiveMessages<InvoiceTransaction>(QueueNames.UpdatedTransactionQueue, async (invoiceTransaction) =>
                 {
                     var invoice = await invoiceRepository.FindOneAsync(x => x.Transaction.Id == invoiceTransaction.Id);
-                    if(invoice != null)
+                    if (invoice != null)
                     {
                         invoice.Transaction = invoiceTransaction;
 
