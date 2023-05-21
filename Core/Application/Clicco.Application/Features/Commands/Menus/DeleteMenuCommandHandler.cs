@@ -32,7 +32,11 @@ namespace Clicco.Application.Features.Commands
         {
             await menuService.CheckSelfId(request.Id);
 
-            var menu = mapper.Map<Menu>(request);
+            var menu = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Menu>(request.Id), async () =>
+            {
+                return await menuRepository.GetByIdAsync(request.Id);
+            });
+
             menuRepository.Delete(menu);
             await menuRepository.SaveChangesAsync();
             return new SuccessResponse("Menu has been deleted!");

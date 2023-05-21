@@ -39,9 +39,16 @@ namespace Clicco.Application.Features.Commands
             await productService.CheckSelfId(request.Id);
             await productService.CheckCategoryId(request.CategoryId);
 
-            var product = mapper.Map<Product>(request);
-            productRepository.Update(product);
+            var product = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Product>(request.Id), async () =>
+            {
+                return await productRepository.GetByIdAsync(request.Id);
+            });
+
+            productRepository.Update(mapper.Map(request, product));
             await productRepository.SaveChangesAsync();
+
+            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Product>(request.Id), product);
+
             return mapper.Map<ProductViewModel>(product);
         }
     }

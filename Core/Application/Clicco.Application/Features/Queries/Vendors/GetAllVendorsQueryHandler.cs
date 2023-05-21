@@ -3,6 +3,7 @@ using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
@@ -26,7 +27,7 @@ namespace Clicco.Application.Features.Queries
         }
         public async Task<List<VendorViewModel>> Handle(GetAllVendorsQuery request, CancellationToken cancellationToken)
         {
-            return await cacheManager.GetOrSetAsync(CacheKeys.GetListKey<VendorViewModel>(), async () =>
+            return await cacheManager.GetOrSetAsync(CacheKeys.GetListKey<Vendor>(), async () =>
             {
                 return mapper.Map<List<VendorViewModel>>(await vendorRepository.GetAll());
             });

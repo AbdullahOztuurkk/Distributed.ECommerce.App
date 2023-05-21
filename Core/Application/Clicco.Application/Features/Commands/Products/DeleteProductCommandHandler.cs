@@ -19,19 +19,23 @@ namespace Clicco.Application.Features.Commands
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, BaseResponse>
     {
         private readonly IProductRepository productRepository;
-        private readonly IMapper mapper;
         private readonly IProductService productService;
-        public DeleteProductCommandHandler(IProductRepository productRepository, IMapper mapper, IProductService productService)
+        private readonly ICacheManager cacheManager;
+        public DeleteProductCommandHandler(IProductRepository productRepository, IProductService productService, ICacheManager cacheManager)
         {
             this.productRepository = productRepository;
-            this.mapper = mapper;
             this.productService = productService;
+            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
             await productService.CheckSelfId(request.Id);
 
-            var product = mapper.Map<Product>(request);
+            var product = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Product>(request.Id), async () =>
+            {
+                return await productRepository.GetByIdAsync(request.Id);
+            });
+
             productRepository.Delete(product);
             await productRepository.SaveChangesAsync();
             return new SuccessResponse("Product has been deleted!");

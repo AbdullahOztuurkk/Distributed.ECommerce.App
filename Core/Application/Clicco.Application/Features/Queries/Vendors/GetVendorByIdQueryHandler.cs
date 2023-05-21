@@ -4,6 +4,7 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
@@ -34,7 +35,7 @@ namespace Clicco.Application.Features.Queries
         {
             await vendorService.CheckSelfId(request.Id);
 
-            return await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<VendorViewModel>(request.Id), async () =>
+            return await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Vendor>(request.Id), async () =>
             {
                 return mapper.Map<VendorViewModel>(await vendorRepository.GetByIdAsync(request.Id));
             });

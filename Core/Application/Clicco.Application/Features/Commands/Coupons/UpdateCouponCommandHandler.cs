@@ -48,9 +48,15 @@ namespace Clicco.Application.Features.Commands
                 throw new CustomException(CustomErrors.CouponIsNowUsed);
             }
 
-            var coupon = mapper.Map<Coupon>(request);
-            couponRepository.Update(coupon);
+            var coupon = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Coupon>(request.Id), async () =>
+            {
+                return await couponRepository.GetByIdAsync(request.Id);
+            });
+
+            couponRepository.Update(mapper.Map(request,coupon));
             await couponRepository.SaveChangesAsync();
+
+            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Coupon>(request.Id),coupon);
             return mapper.Map<CouponViewModel>(coupon);
         }
     }

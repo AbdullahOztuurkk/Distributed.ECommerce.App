@@ -4,6 +4,7 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
@@ -30,7 +31,7 @@ namespace Clicco.Application.Features.Queries
         {
             await addressService.CheckUserIdAsync(request.UserId);
 
-            return await cacheManager.GetOrSetAsync(CacheKeys.GetListKey<AddressViewModel>(request.UserId), async () =>
+            return await cacheManager.GetOrSetAsync(CacheKeys.GetListKey<Address>(request.UserId), async () =>
             {
                 return mapper.Map<List<AddressViewModel>>(await addressRepository.Get(x => x.UserId == request.UserId));
             });

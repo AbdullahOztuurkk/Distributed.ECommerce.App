@@ -34,10 +34,13 @@ namespace Clicco.Application.Features.Commands
         {
             await vendorService.CheckSelfId(request.Id);
 
-            var vendor = mapper.Map<Vendor>(request);
+            var vendor = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Vendor>(request.Id), async () =>
+            {
+                return await vendorRepository.GetByIdAsync(request.Id);
+            });
             vendorRepository.Delete(vendor);
             await vendorRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<VendorViewModel>(request.Id));
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Vendor>(request.Id));
             return new SuccessResponse("Transaction has been deleted!");
         }
     }

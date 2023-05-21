@@ -3,6 +3,7 @@ using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
@@ -25,7 +26,7 @@ namespace Clicco.Application.Features.Queries
         }
         public async Task<CategoryViewModel> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
-            return await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<CategoryViewModel>(request.Id), async () =>
+            return await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Category>(request.Id), async () =>
             {
                 return mapper.Map<CategoryViewModel>(await categoryRepository.GetByIdAsync(request.Id));
             });

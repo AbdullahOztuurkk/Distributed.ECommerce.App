@@ -35,12 +35,16 @@ namespace Clicco.Application.Features.Commands
         {
             await vendorService.CheckSelfId(request.Id);
 
-            var transaction = mapper.Map<Vendor>(request);
-            await vendorRepository.AddAsync(transaction);
+            var vendor = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Vendor>(request.Id), async () =>
+            {
+                return await vendorRepository.GetByIdAsync(request.Id);
+            });
+
+            vendorRepository.Update(mapper.Map(request, vendor));
             await vendorRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<VendorViewModel>(request.Id));
-            await cacheManager.RemoveAsync(CacheKeys.GetListKey<VendorViewModel>());
-            return mapper.Map<VendorViewModel>(transaction);
+            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Vendor>(request.Id), vendor);
+
+            return mapper.Map<VendorViewModel>(vendor);
         }
     }
 }

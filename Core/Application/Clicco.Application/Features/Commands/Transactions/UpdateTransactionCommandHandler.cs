@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.Interfaces.Services.External;
@@ -27,16 +28,19 @@ namespace Clicco.Application.Features.Commands
         private readonly IMapper mapper;
         private readonly ITransactionService transactionService;
         private readonly IRabbitMqService rabbitMqService;
+        private readonly ICacheManager cacheManager;
         public UpdateTransactionCommandHandler(
             ITransactionRepository transactionRepository,
             IMapper mapper,
             ITransactionService transactionService,
-            IRabbitMqService rabbitMqService)
+            IRabbitMqService rabbitMqService,
+            ICacheManager cacheManager)
         {
             this.transactionRepository = transactionRepository;
             this.mapper = mapper;
             this.transactionService = transactionService;
             this.rabbitMqService = rabbitMqService;
+            this.cacheManager = cacheManager;
         }
         public async Task<TransactionViewModel> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
         {
@@ -44,8 +48,12 @@ namespace Clicco.Application.Features.Commands
             await transactionService.CheckSelfId(request.Id);
             await transactionService.CheckAddressIdAsync(request.AddressId);
 
-            var transaction = mapper.Map<Transaction>(request);
-            transactionRepository.Update(transaction);
+            Transaction transaction = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Transaction>(request.Id), async () =>
+            {
+                return await transactionRepository.GetByIdAsync(request.Id);
+            });
+
+            transactionRepository.Update(mapper.Map(request, transaction));
             await transactionRepository.SaveChangesAsync();
 
             await rabbitMqService.PushMessage<InvoiceTransaction>(new InvoiceTransaction
@@ -64,6 +72,8 @@ namespace Clicco.Application.Features.Commands
                     TransactionStatus.Success => "Successful"
                 }
             }, QueueNames.UpdatedTransactionQueue);
+
+            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Transaction>(request.Id), transaction);
 
             return mapper.Map<TransactionViewModel>(transaction);
         }

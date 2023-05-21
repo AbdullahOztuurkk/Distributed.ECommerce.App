@@ -38,10 +38,16 @@ namespace Clicco.Application.Features.Commands
             var uri = menuRepository.GetExactSlugUrlByCategoryId(request.CategoryId);
             await menuService.CheckSlugUrl(uri);
 
-            var menu = mapper.Map<Menu>(request);
+            var menu = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Menu>(request.Id), async () =>
+            {
+                return await menuRepository.GetByIdAsync(request.Id);
+            });
+
+            menuRepository.Update(mapper.Map(request, menu));
             menu.SlugUrl = uri;
-            menuRepository.Update(menu);
             await menuRepository.SaveChangesAsync();
+
+            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Menu>(request.Id), menu);
             return mapper.Map<MenuViewModel>(menu);
         }
     }

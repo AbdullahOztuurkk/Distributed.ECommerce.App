@@ -35,9 +35,15 @@ namespace Clicco.Application.Features.Commands
         {
             await reviewService.CheckSelfId(request.Id);
             
-            var review = mapper.Map<Review>(request);
+            var review = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Review>(request.Id), async () =>
+            {
+                return await reviewRepository.GetByIdAsync(request.Id);
+            });
+
             reviewRepository.Delete(review);
             await reviewRepository.SaveChangesAsync();
+
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Review>(request.Id));
             return new SuccessResponse("Review has been deleted!");
         }
     }

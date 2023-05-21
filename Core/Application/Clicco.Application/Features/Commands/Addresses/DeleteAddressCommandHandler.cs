@@ -32,9 +32,13 @@ namespace Clicco.Application.Features.Commands
         {
             await addressService.CheckSelfId(request.Id);
 
-            var address = mapper.Map<Address>(request);
+            var address = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Address>(request.Id), async () =>
+            {
+                return await addressRepository.GetByIdAsync(request.Id);
+            });
+
             addressRepository.Delete(address);
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<AddressViewModel>(request.Id));
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Address>(request.Id));
             return new SuccessResponse("Address has been deleted!");
         }
     }

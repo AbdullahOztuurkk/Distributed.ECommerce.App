@@ -41,10 +41,15 @@ namespace Clicco.Application.Features.Commands
             await reviewService.CheckSelfId(request.Id);
             await reviewService.CheckProductIdAsync(request.ProductId);
 
-            var review = mapper.Map<Review>(request);
+            var review = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Review>(request.Id), async () =>
+            {
+                return await reviewRepository.GetByIdAsync(request.Id);
+            });
+
+            reviewRepository.Update(mapper.Map(request, review));
             review.UserId = claimHelper.GetUserId();
-            reviewRepository.Update(review);
             await reviewRepository.SaveChangesAsync();
+            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Review>(request.Id), review);
             return mapper.Map<ReviewViewModel>(review);
         }
     }

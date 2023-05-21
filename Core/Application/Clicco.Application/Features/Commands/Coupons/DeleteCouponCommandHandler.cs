@@ -39,9 +39,14 @@ namespace Clicco.Application.Features.Commands
                 throw new CustomException(CustomErrors.CouponIsNowUsed);
             }
 
-            var coupon = mapper.Map<Coupon>(request);
+            var coupon = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Coupon>(request.Id), async () =>
+            {
+                return await couponRepository.GetByIdAsync(request.Id);
+            });
+
             couponRepository.Delete(coupon);
             await couponRepository.SaveChangesAsync();
+
             return new SuccessResponse("Coupon has been deleted!");
         }
     }

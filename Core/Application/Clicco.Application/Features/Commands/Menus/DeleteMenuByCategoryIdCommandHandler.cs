@@ -31,6 +31,7 @@ namespace Clicco.Application.Features.Commands.Menus
 
         public async Task<BaseResponse> Handle(DeleteMenuByCategoryIdCommand request, CancellationToken cancellationToken)
         {
+            //Todo: Need cache mechanism for performance
             await menuService.CheckCategoryId(request.CategoryId);
 
             var menu = await menuRepository.GetSingleAsync(x => x.CategoryId == request.CategoryId);

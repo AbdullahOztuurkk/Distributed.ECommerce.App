@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.Interfaces.Services.External;
+using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
@@ -17,25 +19,29 @@ namespace Clicco.Application.Features.Commands
     public class DeleteTransactionCommandHandler : IRequestHandler<DeleteTransactionCommand, BaseResponse>
     {
         private readonly ITransactionRepository transactionRepository;
-        private readonly IMapper mapper;
         private readonly ITransactionService transactionService;
         private readonly IRabbitMqService rabbitMqService;
+        private readonly ICacheManager cacheManager;
         public DeleteTransactionCommandHandler(
             ITransactionRepository transactionRepository,
-            IMapper mapper,
             ITransactionService transactionService,
-            IRabbitMqService rabbitMqService)
+            IRabbitMqService rabbitMqService,
+            ICacheManager cacheManager)
         {
             this.transactionRepository = transactionRepository;
             this.transactionService = transactionService;
-            this.mapper = mapper;
             this.rabbitMqService = rabbitMqService;
+            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse> Handle(DeleteTransactionCommand request, CancellationToken cancellationToken)
         {
             await transactionService.CheckSelfId(request.Id);
 
-            var transaction = await transactionRepository.GetByIdAsync(request.Id);
+            var transaction = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Transaction>(request.Id), async () =>
+            {
+                return await transactionRepository.GetByIdAsync(request.Id);
+            });
+
             transactionRepository.Delete(transaction);
             await transactionRepository.SaveChangesAsync();
 

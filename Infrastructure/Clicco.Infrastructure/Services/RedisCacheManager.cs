@@ -41,6 +41,10 @@ namespace Clicco.Infrastructure.Services
         {
             await db.StringSetAsync(key, JsonConvert.SerializeObject(value), TimeSpan.FromMinutes(expirationDate));
         }
+        public async Task SetAsync<T>(string key, T value, int expirationDate = 60)
+        {
+            await db.StringSetAsync(key, JsonConvert.SerializeObject(value), TimeSpan.FromMinutes(expirationDate));
+        }
 
         public async Task<T> GetAsync<T>(string key)
         {

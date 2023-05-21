@@ -40,10 +40,13 @@ namespace Clicco.Application.Features.Commands
             if (request.MenuId.HasValue)
                 await categoryService.CheckMenuId(request.MenuId.Value);
 
-            var category = mapper.Map<Category>(request);
-            categoryRepository.Update(category);
+            var category = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Category>(request.Id), async () =>
+            {
+                return await categoryRepository.GetByIdAsync(request.Id);
+            });
+            categoryRepository.Update(mapper.Map(request, category));
             await categoryRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<CategoryViewModel>(request.Id));
+            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Category>(request.Id), category);
             return mapper.Map<CategoryViewModel>(category);
         }
     }

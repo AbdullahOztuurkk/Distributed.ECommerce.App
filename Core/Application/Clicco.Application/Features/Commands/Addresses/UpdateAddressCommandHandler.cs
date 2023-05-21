@@ -28,14 +28,14 @@ namespace Clicco.Application.Features.Commands
         private readonly IMapper mapper;
         private readonly IAddressService addressService;
         private readonly IClaimHelper claimHelper;
-        //private readonly ICacheManager cacheManager;
-        public UpdateAddressCommandHandler(IAddressRepository addressRepository, IMapper mapper, IAddressService addressService, IClaimHelper claimHelper/*, ICacheManager cacheManager*/)
+        private readonly ICacheManager cacheManager;
+        public UpdateAddressCommandHandler(IAddressRepository addressRepository, IMapper mapper, IAddressService addressService, IClaimHelper claimHelper, ICacheManager cacheManager)
         {
             this.addressRepository = addressRepository;
             this.mapper = mapper;
             this.addressService = addressService;
             this.claimHelper = claimHelper;
-            //this.cacheManager = cacheManager;
+            this.cacheManager = cacheManager;
         }
 
         public async Task<AddressViewModel> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
@@ -45,13 +45,18 @@ namespace Clicco.Application.Features.Commands
             if (request.UserId.HasValue)
                 await addressService.CheckUserIdAsync(request.UserId.Value);
 
-            var address = mapper.Map<Address>(request);
+            var address = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Address>(request.Id), async () =>
+            {
+                return await addressRepository.GetByIdAsync(request.Id);
+            });
+            addressRepository.Update(mapper.Map(request, address));
+
             address.UserId = request.UserId.HasValue
                 ? request.UserId.Value
                 : claimHelper.GetUserId();
-            addressRepository.Update(address);
+
             await addressRepository.SaveChangesAsync();
-            //await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<AddressViewModel>(request.Id));
+            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Address>(request.Id),address);
             return mapper.Map<AddressViewModel>(address);
         }
     }

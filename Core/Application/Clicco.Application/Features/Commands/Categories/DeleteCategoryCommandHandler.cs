@@ -32,11 +32,15 @@ namespace Clicco.Application.Features.Commands
         {
             await categoryService.CheckSelfId(request.Id);
 
-            var category = mapper.Map<Category>(request.Id);
+            var category =  await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Category>(request.Id), async () =>
+            {
+                return await categoryRepository.GetByIdAsync(request.Id);
+            });
+
             categoryRepository.Delete(category);
             await categoryService.DisableMenuId(request.Id);
             await categoryRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<CategoryViewModel>(request.Id));
+            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Category>(request.Id));
             return new SuccessResponse("Category has been deleted!");
         }
     }
