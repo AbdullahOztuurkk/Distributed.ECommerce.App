@@ -27,14 +27,12 @@ namespace Clicco.AuthAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto request)
         {
-            await ValidationHelper.IsValid(new RegisterModelValidator(), request);
             var result = await authService.UserExistsAsync(request.Email);
             if (result)
             {
                 return BadRequest("User already exists");
             }
 
-            //Todo: Must be Validate
             var CreateToUser = new User
             {
                 Email = request.Email,

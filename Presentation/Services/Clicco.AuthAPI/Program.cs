@@ -1,11 +1,19 @@
+using Clicco.AuthAPI.Data.Validators;
 using Clicco.AuthAPI.Extensions;
+using Clicco.AuthServiceAPI.Filters;
+using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt =>
+{
+    opt.Filters.Add<RequestValidationFilter>();
+})
+    .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserValidators>())
+    .ConfigureApiBehaviorOptions(opt => opt.SuppressModelStateInvalidFilter = true);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -13,7 +21,8 @@ builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddFundamentalServices(builder.Configuration);
 
-builder.Services.AddSwaggerGen(c => {
+builder.Services.AddSwaggerGen(c =>
+{
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Clicco Auth API",

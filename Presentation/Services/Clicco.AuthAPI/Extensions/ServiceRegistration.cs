@@ -47,8 +47,6 @@ namespace Clicco.AuthAPI.Extensions
                 opt.EnableSensitiveDataLogging();
             });
 
-            services.AddValidatorsFromAssembly(typeof(UserValidators).Assembly);
-
             services.AddHttpClient(nameof(EmailService), client =>
             {
                 client.BaseAddress = new Uri(configuration["URLS:EMAIL_SERVICE_API"]);
