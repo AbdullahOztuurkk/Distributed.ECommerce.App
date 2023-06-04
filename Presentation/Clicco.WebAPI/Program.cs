@@ -2,13 +2,20 @@ using Clicco.Application.Extensions;
 using Clicco.Infrastructure.Extensions;
 using Clicco.WebAPI.Filters;
 using Clicco.WebAPI.Middlewares;
+using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt =>
+{
+    opt.Filters.Add<RequestValidationFilter>();
+})
+    .AddFluentValidation()
+    .ConfigureApiBehaviorOptions(opt => opt.SuppressModelStateInvalidFilter = true);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 

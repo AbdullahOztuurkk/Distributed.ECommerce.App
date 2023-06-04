@@ -4,12 +4,13 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class UpdateProductCommand : IRequest<ProductViewModel>
+    public class UpdateProductCommand : IRequest<BaseResponse<ProductViewModel>>
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -19,7 +20,7 @@ namespace Clicco.Application.Features.Commands
         public int UnitPrice { get; set; }
         public int CategoryId { get; set; }
     }
-    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, ProductViewModel>
+    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, BaseResponse<ProductViewModel>>
     {
         private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
@@ -34,7 +35,7 @@ namespace Clicco.Application.Features.Commands
             this.cacheManager = cacheManager;
         }
 
-        public async Task<ProductViewModel> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<ProductViewModel>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
             await productService.CheckSelfId(request.Id);
             await productService.CheckCategoryId(request.CategoryId);
@@ -49,7 +50,7 @@ namespace Clicco.Application.Features.Commands
 
             await cacheManager.SetAsync(CacheKeys.GetSingleKey<Product>(request.Id), product);
 
-            return mapper.Map<ProductViewModel>(product);
+            return new SuccessResponse<ProductViewModel>(mapper.Map<ProductViewModel>(product));
         }
     }
 }

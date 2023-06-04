@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.WebAPI.Controllers
 {
@@ -37,14 +38,14 @@ namespace Clicco.WebAPI.Controllers
         [AllowAnonymous]
         [ProducesResponseType(typeof(List<ReviewViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetMenuByUrl(int id)
+        public async Task<IActionResult> GetMenuByUrl([FromQuery] PaginationFilter paginationFilter,int id)
         {
-            var result = await mediator.Send(new GetReviewsByProductIdQuery { ProductId = id });
+            var result = await mediator.Send(new GetReviewsByProductIdQuery(paginationFilter) { ProductId = id});
             return Ok(result);
         }
 
         [HttpPost("Create")]
-        [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BaseResponse<CreateReviewCommand>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateReviewCommand command)
         {
@@ -53,7 +54,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(ReviewViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BaseResponse<ReviewViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateReviewCommand command)
         {
@@ -62,7 +63,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpDelete("Delete")]
-        [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BaseResponse<ReviewViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromBody] DeleteReviewCommand command)
         {

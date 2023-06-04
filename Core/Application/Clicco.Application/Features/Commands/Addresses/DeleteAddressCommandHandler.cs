@@ -10,12 +10,12 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class DeleteAddressCommand : IRequest<BaseResponse>
+    public class DeleteAddressCommand : IRequest<BaseResponse<AddressViewModel>>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressCommand, BaseResponse>
+    public class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressCommand, BaseResponse<AddressViewModel>>
     {
         private readonly IAddressRepository addressRepository;
         private readonly IMapper mapper;
@@ -28,7 +28,7 @@ namespace Clicco.Application.Features.Commands
             this.addressService = addressService;
             this.cacheManager = cacheManager;
         }
-        public async Task<BaseResponse> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<AddressViewModel>> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
         {
             await addressService.CheckSelfId(request.Id);
 
@@ -39,7 +39,7 @@ namespace Clicco.Application.Features.Commands
 
             addressRepository.Delete(address);
             await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Address>(request.Id));
-            return new SuccessResponse("Address has been deleted!");
+            return new SuccessResponse<AddressViewModel>("Address has been deleted!");
         }
     }
 }

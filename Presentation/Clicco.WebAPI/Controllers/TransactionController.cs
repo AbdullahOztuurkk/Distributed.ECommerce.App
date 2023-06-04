@@ -33,7 +33,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(TransactionViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BaseResponse<TransactionViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateTransactionCommand command)
         {
@@ -42,7 +42,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("{id}/details")]
-        [ProducesResponseType(typeof(TransactionDetailViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BaseResponse<TransactionDetailViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
@@ -60,7 +60,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpDelete("Delete")]
-        [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BaseResponse<TransactionViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromBody] DeleteTransactionCommand command)
         {

@@ -10,12 +10,12 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class DeleteVendorCommand : IRequest<BaseResponse>
+    public class DeleteVendorCommand : IRequest<BaseResponse<VendorViewModel>>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteVendorCommandHandler : IRequestHandler<DeleteVendorCommand, BaseResponse>
+    public class DeleteVendorCommandHandler : IRequestHandler<DeleteVendorCommand, BaseResponse<VendorViewModel>>
     {
         private readonly IVendorRepository vendorRepository;
         private readonly IMapper mapper;
@@ -30,7 +30,7 @@ namespace Clicco.Application.Features.Commands
             this.cacheManager = cacheManager;
         }
         
-        public async Task<BaseResponse> Handle(DeleteVendorCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<VendorViewModel>> Handle(DeleteVendorCommand request, CancellationToken cancellationToken)
         {
             await vendorService.CheckSelfId(request.Id);
 
@@ -41,7 +41,7 @@ namespace Clicco.Application.Features.Commands
             vendorRepository.Delete(vendor);
             await vendorRepository.SaveChangesAsync();
             await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Vendor>(request.Id));
-            return new SuccessResponse("Transaction has been deleted!");
+            return new SuccessResponse<VendorViewModel>("Transaction has been deleted!");
         }
     }
 }

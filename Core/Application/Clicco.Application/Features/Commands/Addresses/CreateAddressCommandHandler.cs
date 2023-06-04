@@ -7,12 +7,11 @@ using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
-using static Clicco.Domain.Core.ResponseModel.BaseResponse;
 
 namespace Clicco.Application.Features.Commands
 {
 
-    public class CreateAddressCommand : IRequest<BaseResponse>
+    public class CreateAddressCommand : IRequest<BaseResponse<AddressViewModel>>
     {
         public string City { get; set; }
         public string Street { get; set; }
@@ -21,7 +20,7 @@ namespace Clicco.Application.Features.Commands
         public string ZipCode { get; set; }
         public int UserId { get; set; }
     }
-    public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, BaseResponse>
+    public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, BaseResponse<AddressViewModel>>
     {
         private readonly IAddressRepository addressRepository;
         private readonly IMapper mapper;
@@ -34,7 +33,7 @@ namespace Clicco.Application.Features.Commands
             this.addressService = addressService;
             this.cacheManager = cacheManager;
         }
-        public async Task<BaseResponse> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<AddressViewModel>> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
         {
             await addressService.CheckUserIdAsync(request.UserId);
             
@@ -42,7 +41,7 @@ namespace Clicco.Application.Features.Commands
             await addressRepository.AddAsync(address);
             await addressRepository.SaveChangesAsync();
             await cacheManager.RemoveAsync(CacheKeys.GetListKey<AddressViewModel>(address.Id));
-            return new SuccessResponse("Address has been created!");
+            return new SuccessResponse<AddressViewModel>("Address has been created!");
         }
     }
 }

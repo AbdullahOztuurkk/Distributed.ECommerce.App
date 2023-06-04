@@ -5,13 +5,14 @@ using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
 using Clicco.Domain.Core.Exceptions;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.Domain.Model.Exceptions;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class UpdateCouponCommand : IRequest<CouponViewModel>
+    public class UpdateCouponCommand : IRequest<BaseResponse<CouponViewModel>>
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -23,7 +24,7 @@ namespace Clicco.Application.Features.Commands
         public DiscountType DiscountType { get; set; }
         public int DiscountAmount { get; set; }
     }
-    public class UpdateCouponCommandHandler : IRequestHandler<UpdateCouponCommand, CouponViewModel>
+    public class UpdateCouponCommandHandler : IRequestHandler<UpdateCouponCommand, BaseResponse<CouponViewModel>>
     {
         private readonly ICouponRepository couponRepository;
         private readonly ICouponService couponService;
@@ -38,7 +39,7 @@ namespace Clicco.Application.Features.Commands
             this.cacheManager = cacheManager;
         }
 
-        public async Task<CouponViewModel> Handle(UpdateCouponCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<CouponViewModel>> Handle(UpdateCouponCommand request, CancellationToken cancellationToken)
         {
             await couponService.CheckSelfId(request.Id);
 
@@ -57,7 +58,7 @@ namespace Clicco.Application.Features.Commands
             await couponRepository.SaveChangesAsync();
 
             await cacheManager.SetAsync(CacheKeys.GetSingleKey<Coupon>(request.Id),coupon);
-            return mapper.Map<CouponViewModel>(coupon);
+            return new SuccessResponse<CouponViewModel>(mapper.Map<CouponViewModel>(coupon));
         }
     }
 }

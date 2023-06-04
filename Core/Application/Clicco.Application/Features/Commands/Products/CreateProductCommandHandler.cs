@@ -11,7 +11,7 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class CreateProductCommand : IRequest<BaseResponse>
+    public class CreateProductCommand : IRequest<BaseResponse<ProductViewModel>>
     {
         public string Name { get; set; }
         public string Code { get; set; }
@@ -22,7 +22,7 @@ namespace Clicco.Application.Features.Commands
         public int VendorId { get; set; }
 
     }
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, BaseResponse>
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, BaseResponse<ProductViewModel>>
     {
         private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
@@ -33,7 +33,7 @@ namespace Clicco.Application.Features.Commands
             this.mapper = mapper;
             this.productService = productService;
         }
-        public async Task<BaseResponse> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<ProductViewModel>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             await productService.CheckCategoryId(request.CategoryId);
             await productService.CheckVendorId(request.VendorId);
@@ -41,7 +41,7 @@ namespace Clicco.Application.Features.Commands
             var product = mapper.Map<Product>(request);
             await productRepository.AddAsync(product);
             await productRepository.SaveChangesAsync();
-            return new SuccessResponse("Product has been created!");
+            return new SuccessResponse<ProductViewModel>("Product has been created!");
         }
     }
 }

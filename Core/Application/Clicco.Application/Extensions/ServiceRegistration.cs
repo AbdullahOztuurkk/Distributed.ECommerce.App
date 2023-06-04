@@ -28,7 +28,7 @@ namespace Clicco.Application.Extensions
 
             services.AddScoped<IClaimHelper, ClaimHelper>();
 
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             return services;
         }
     }

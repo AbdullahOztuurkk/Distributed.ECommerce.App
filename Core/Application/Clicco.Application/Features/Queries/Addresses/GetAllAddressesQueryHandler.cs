@@ -3,33 +3,35 @@ using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
+using Clicco.Domain.Shared;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetAllAddressesQuery : IRequest<List<AddressViewModel>>
+    public class GetAllAddressesQuery : IRequest<BaseResponse<List<AddressViewModel>>>
     {
+        public GetAllAddressesQuery(Global.PaginationFilter paginationFilter)
+        {
+            PaginationFilter = paginationFilter;
+        }
 
+        public Global.PaginationFilter PaginationFilter { get; }
     }
 
-    public class GetAllAddressesQueryHandler : IRequestHandler<GetAllAddressesQuery, List<AddressViewModel>>
+    public class GetAllAddressesQueryHandler : IRequestHandler<GetAllAddressesQuery, BaseResponse<List<AddressViewModel>>>
     {
         private readonly IAddressRepository addressRepository;
         private readonly IMapper mapper;
-        private readonly ICacheManager cacheManager;
-        public GetAllAddressesQueryHandler(IAddressRepository addressRepository, IMapper mapper, ICacheManager cacheManager)
+        public GetAllAddressesQueryHandler(IAddressRepository addressRepository, IMapper mapper)
         {
             this.addressRepository = addressRepository;
             this.mapper = mapper;
-            this.cacheManager = cacheManager;
         }
-        public async Task<List<AddressViewModel>> Handle(GetAllAddressesQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<List<AddressViewModel>>> Handle(GetAllAddressesQuery request, CancellationToken cancellationToken)
         {
-            return await cacheManager.GetOrSetAsync(CacheKeys.GetListKey<Address>(), async () =>
-            {
-                return mapper.Map<List<AddressViewModel>>(await addressRepository.GetAll());
-            });
+            return new SuccessResponse<List<AddressViewModel>>(mapper.Map<List<AddressViewModel>>(await addressRepository.PaginateAsync(request.PaginationFilter)));
         }
     }
 }

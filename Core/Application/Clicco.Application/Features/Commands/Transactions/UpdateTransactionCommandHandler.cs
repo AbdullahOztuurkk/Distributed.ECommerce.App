@@ -5,6 +5,7 @@ using Clicco.Application.Interfaces.Services;
 using Clicco.Application.Interfaces.Services.External;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.Domain.Shared.Models.Invoice;
 using MediatR;
@@ -12,7 +13,7 @@ using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class UpdateTransactionCommand : IRequest<TransactionViewModel>
+    public class UpdateTransactionCommand : IRequest<BaseResponse<TransactionViewModel>>
     {
         public int Id { get; set; }
         public string Code { get; set; }
@@ -22,7 +23,7 @@ namespace Clicco.Application.Features.Commands
         public int UserId { get; set; }
         public int AddressId { get; set; }
     }
-    public class UpdateTransactionCommandHandler : IRequestHandler<UpdateTransactionCommand, TransactionViewModel>
+    public class UpdateTransactionCommandHandler : IRequestHandler<UpdateTransactionCommand, BaseResponse<TransactionViewModel>>
     {
         private readonly ITransactionRepository transactionRepository;
         private readonly IMapper mapper;
@@ -42,7 +43,7 @@ namespace Clicco.Application.Features.Commands
             this.rabbitMqService = rabbitMqService;
             this.cacheManager = cacheManager;
         }
-        public async Task<TransactionViewModel> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<TransactionViewModel>> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
         {
             await transactionService.CheckUserIdAsync(request.UserId);
             await transactionService.CheckSelfId(request.Id);
@@ -75,7 +76,7 @@ namespace Clicco.Application.Features.Commands
 
             await cacheManager.SetAsync(CacheKeys.GetSingleKey<Transaction>(request.Id), transaction);
 
-            return mapper.Map<TransactionViewModel>(transaction);
+            return new SuccessResponse<TransactionViewModel>(mapper.Map<TransactionViewModel>(transaction));
         }
     }
 }

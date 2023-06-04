@@ -3,17 +3,18 @@ using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetCategoryByURLQuery : IRequest<CategoryViewModel>
+    public class GetCategoryByURLQuery : IRequest<BaseResponse<CategoryViewModel>>
     {
         public string Url { get; set; }
     }
 
-    public class GetCategoryByURLQueryHandler : IRequestHandler<GetCategoryByURLQuery, CategoryViewModel>
+    public class GetCategoryByURLQueryHandler : IRequestHandler<GetCategoryByURLQuery, BaseResponse<CategoryViewModel>>
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
@@ -26,12 +27,9 @@ namespace Clicco.Application.Features.Queries
             this.cacheManager = cacheManager;
         }
 
-        public async Task<CategoryViewModel> Handle(GetCategoryByURLQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<CategoryViewModel>> Handle(GetCategoryByURLQuery request, CancellationToken cancellationToken)
         {
-            return await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Category>(request.Url), async () =>
-            {
-                return mapper.Map<CategoryViewModel>(await categoryRepository.GetSingleAsync(x => x.SlugUrl == request.Url, x => x.Menu));
-            });
+            return new SuccessResponse<CategoryViewModel>(mapper.Map<CategoryViewModel>(await categoryRepository.GetSingleAsync(x => x.SlugUrl == request.Url, x => x.Menu)));
         }
     }
 }

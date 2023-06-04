@@ -10,12 +10,12 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class DeleteCategoryCommand : IRequest<BaseResponse>
+    public class DeleteCategoryCommand : IRequest<BaseResponse<CategoryViewModel>>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, BaseResponse>
+    public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, BaseResponse<CategoryViewModel>>
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
@@ -28,7 +28,7 @@ namespace Clicco.Application.Features.Commands
             this.categoryService = categoryService;
             this.cacheManager = cacheManager;
         }
-        public async Task<BaseResponse> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<CategoryViewModel>> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
             await categoryService.CheckSelfId(request.Id);
 
@@ -41,7 +41,7 @@ namespace Clicco.Application.Features.Commands
             await categoryService.DisableMenuId(request.Id);
             await categoryRepository.SaveChangesAsync();
             await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Category>(request.Id));
-            return new SuccessResponse("Category has been deleted!");
+            return new SuccessResponse<CategoryViewModel>("Category has been deleted!");
         }
     }
 }

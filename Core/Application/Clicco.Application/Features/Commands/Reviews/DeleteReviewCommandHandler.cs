@@ -11,12 +11,12 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class DeleteReviewCommand : IRequest<BaseResponse>
+    public class DeleteReviewCommand : IRequest<BaseResponse<ReviewViewModel>>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteReviewCommandHandler : IRequestHandler<DeleteReviewCommand, BaseResponse>
+    public class DeleteReviewCommandHandler : IRequestHandler<DeleteReviewCommand, BaseResponse<ReviewViewModel>>
     {
         private readonly IReviewRepository reviewRepository;
         private readonly IMapper mapper;
@@ -31,7 +31,7 @@ namespace Clicco.Application.Features.Commands
             this.cacheManager = cacheManager;
         }
 
-        public async Task<BaseResponse> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<ReviewViewModel>> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
         {
             await reviewService.CheckSelfId(request.Id);
             
@@ -44,7 +44,7 @@ namespace Clicco.Application.Features.Commands
             await reviewRepository.SaveChangesAsync();
 
             await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Review>(request.Id));
-            return new SuccessResponse("Review has been deleted!");
+            return new SuccessResponse<ReviewViewModel>("Review has been deleted!");
         }
     }
 }

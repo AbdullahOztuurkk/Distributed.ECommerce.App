@@ -11,14 +11,14 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class CreateCategoryCommand : IRequest<BaseResponse>
+    public class CreateCategoryCommand : IRequest<BaseResponse<CategoryViewModel>>
     {
         public string Name { get; set; }
         public int? ParentId { get; set; }
         public int? MenuId { get; set; }
     }
 
-    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, BaseResponse>
+    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, BaseResponse<CategoryViewModel>>
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
@@ -31,7 +31,7 @@ namespace Clicco.Application.Features.Commands
             this.categoryService = categoryService;
             this.cacheManager = cacheManager;
         }
-        public async Task<BaseResponse> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<CategoryViewModel>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
             if (request.ParentId.HasValue)
                 await categoryService.CheckSelfId(request.ParentId.Value, CustomErrors.ParentCategoryNotFound);
@@ -43,7 +43,7 @@ namespace Clicco.Application.Features.Commands
             await categoryRepository.AddAsync(category);
             await categoryRepository.SaveChangesAsync();
             await cacheManager.RemoveAsync(CacheKeys.GetListKey<CategoryViewModel>());
-            return new SuccessResponse("Category has been created!");
+            return new SuccessResponse<CategoryViewModel>("Category has been created!");
         }
     }
 }

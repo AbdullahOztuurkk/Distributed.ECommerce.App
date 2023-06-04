@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.WebAPI.Controllers
 {
@@ -25,9 +26,9 @@ namespace Clicco.WebAPI.Controllers
         [HttpGet]
         [AllowAnonymous]
         [ProducesResponseType(typeof(List<CouponViewModel>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] PaginationFilter paginationFilter)
         {
-            var result = await mediator.Send(new GetAllCouponsQuery());
+            var result = await mediator.Send(new GetAllCouponsQuery(paginationFilter));
             return Ok(result);
         }
 
@@ -47,7 +48,7 @@ namespace Clicco.WebAPI.Controllers
         [AllowAnonymous]
         [ProducesResponseType(typeof(List<CouponViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetCouponsByDate(string date)
+        public async Task<IActionResult> GetCouponsByDate([FromQuery] PaginationFilter paginationFilter, string date)
         {
             var actualDate = DateTime.Parse(date);
             var result = await mediator.Send(new GetCouponByDateQuery { ExpirationDate = actualDate });
@@ -55,7 +56,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPost("Create")]
-        [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BaseResponse<CouponViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateCouponCommand command)
         {
@@ -64,7 +65,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(CouponViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BaseResponse<CouponViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateCouponCommand command)
         {
@@ -73,7 +74,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpDelete("Delete")]
-        [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BaseResponse<CouponViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromBody] DeleteCouponCommand command)
         {

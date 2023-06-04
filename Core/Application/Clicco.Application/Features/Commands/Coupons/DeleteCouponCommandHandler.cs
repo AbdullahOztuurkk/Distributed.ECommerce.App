@@ -12,12 +12,12 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class DeleteCouponCommand : IRequest<BaseResponse>
+    public class DeleteCouponCommand : IRequest<BaseResponse<CouponViewModel>>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteCouponCommandHandler : IRequestHandler<DeleteCouponCommand, BaseResponse>
+    public class DeleteCouponCommandHandler : IRequestHandler<DeleteCouponCommand, BaseResponse<CouponViewModel>>
     {
         private readonly ICouponRepository couponRepository;
         private readonly ICouponService couponService;
@@ -30,7 +30,7 @@ namespace Clicco.Application.Features.Commands
             this.mapper = mapper;
             this.cacheManager = cacheManager;
         }
-        public async Task<BaseResponse> Handle(DeleteCouponCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<CouponViewModel>> Handle(DeleteCouponCommand request, CancellationToken cancellationToken)
         {
             await couponService.CheckSelfId(request.Id);
             bool isExist = await cacheManager.ExistAsync(CacheKeys.GetSingleKey<Coupon>(request.Id));
@@ -47,7 +47,7 @@ namespace Clicco.Application.Features.Commands
             couponRepository.Delete(coupon);
             await couponRepository.SaveChangesAsync();
 
-            return new SuccessResponse("Coupon has been deleted!");
+            return new SuccessResponse<CouponViewModel>("Coupon has been deleted!");
         }
     }
 }

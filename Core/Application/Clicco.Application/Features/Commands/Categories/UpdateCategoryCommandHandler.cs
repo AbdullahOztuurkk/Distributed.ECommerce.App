@@ -4,20 +4,21 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using Clicco.Domain.Model.Exceptions;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class UpdateCategoryCommand : IRequest<CategoryViewModel>
+    public class UpdateCategoryCommand : IRequest<BaseResponse<CategoryViewModel>>
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public int? ParentId { get; set; }
         public int? MenuId { get; set; }
     }
-    public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, CategoryViewModel>
+    public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, BaseResponse<CategoryViewModel>>
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
@@ -32,7 +33,7 @@ namespace Clicco.Application.Features.Commands
             this.cacheManager = cacheManager;
         }
 
-        public async Task<CategoryViewModel> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<CategoryViewModel>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
             await categoryService.CheckSelfId(request.Id);
             if (request.ParentId.HasValue)
@@ -47,7 +48,7 @@ namespace Clicco.Application.Features.Commands
             categoryRepository.Update(mapper.Map(request, category));
             await categoryRepository.SaveChangesAsync();
             await cacheManager.SetAsync(CacheKeys.GetSingleKey<Category>(request.Id), category);
-            return mapper.Map<CategoryViewModel>(category);
+            return new SuccessResponse<CategoryViewModel>(mapper.Map<CategoryViewModel>(category));
         }
     }
 }

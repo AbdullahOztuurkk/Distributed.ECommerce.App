@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class CreateVendorCommand : IRequest<BaseResponse>
+    public class CreateVendorCommand : IRequest<BaseResponse<VendorViewModel>>
     {
         public string Name { get; set; }
         public string Email { get; set; }
@@ -17,7 +17,7 @@ namespace Clicco.Application.Features.Commands
         public string Region { get; set; }
         public string Address { get; set; }
     }
-    public class CreateVendorCommandHandler : IRequestHandler<CreateVendorCommand, BaseResponse>
+    public class CreateVendorCommandHandler : IRequestHandler<CreateVendorCommand, BaseResponse<VendorViewModel>>
     {
         private readonly IVendorRepository vendorRepository;
         private readonly IMapper mapper;
@@ -28,13 +28,13 @@ namespace Clicco.Application.Features.Commands
             this.mapper = mapper;
             this.cacheManager = cacheManager;
         }
-        public async Task<BaseResponse> Handle(CreateVendorCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<VendorViewModel>> Handle(CreateVendorCommand request, CancellationToken cancellationToken)
         {
             var vendor = mapper.Map<Vendor>(request);
             await vendorRepository.AddAsync(vendor);
             await vendorRepository.SaveChangesAsync();
             await cacheManager.RemoveAsync(CacheKeys.GetListKey<VendorViewModel>());
-            return new SuccessResponse("Vendor has been created!");
+            return new SuccessResponse<VendorViewModel>("Vendor has been created!");
         }
     }
 }

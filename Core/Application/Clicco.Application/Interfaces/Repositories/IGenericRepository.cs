@@ -1,6 +1,7 @@
 ﻿using Clicco.Application.Interfaces.UnitOfWork;
 using Clicco.Domain.Core;
 using System.Linq.Expressions;
+using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.Application.Interfaces.Repositories
 {
@@ -9,6 +10,8 @@ namespace Clicco.Application.Interfaces.Repositories
         Task<List<T>> GetAll();
         Task<List<T>> Get(Expression<Func<T, bool>> filter = null, params Expression<Func<T, object>>[] includes);
         Task<List<T>> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, params Expression<Func<T, object>>[] includes);
+        Task<List<T>> PaginateAsync(Expression<Func<T, bool>> filter, PaginationFilter paginationFilter, params Expression<Func<T, object>>[] includes);
+        Task<List<T>> PaginateAsync(PaginationFilter paginationFilter, params Expression<Func<T, object>>[] includes);
         Task<T> GetById(int id);
         Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes);
         Task<T> GetSingleAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes);

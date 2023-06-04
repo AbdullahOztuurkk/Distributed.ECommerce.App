@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class CreateCouponCommand : IRequest<BaseResponse>
+    public class CreateCouponCommand : IRequest<BaseResponse<CouponViewModel>>
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -21,7 +21,7 @@ namespace Clicco.Application.Features.Commands
         public int DiscountAmount { get; set; }
     }
 
-    public class CreateCouponCommandHandler : IRequestHandler<CreateCouponCommand, BaseResponse>
+    public class CreateCouponCommandHandler : IRequestHandler<CreateCouponCommand, BaseResponse<CouponViewModel>>
     {
         private readonly ICouponRepository couponRepository;
         private readonly IMapper mapper;
@@ -31,12 +31,12 @@ namespace Clicco.Application.Features.Commands
             this.mapper = mapper;
         }
 
-        public async Task<BaseResponse> Handle(CreateCouponCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<CouponViewModel>> Handle(CreateCouponCommand request, CancellationToken cancellationToken)
         {
             var coupon = mapper.Map<Coupon>(request);
             await couponRepository.AddAsync(coupon);
             await couponRepository.SaveChangesAsync();
-            return new SuccessResponse("Coupon has been created!");
+            return new SuccessResponse<CouponViewModel>("Coupon has been created!");
         }
     }
 }

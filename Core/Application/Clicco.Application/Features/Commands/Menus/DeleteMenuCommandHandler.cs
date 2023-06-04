@@ -10,12 +10,12 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class DeleteMenuCommand : IRequest<BaseResponse>
+    public class DeleteMenuCommand : IRequest<BaseResponse<MenuViewModel>>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand, BaseResponse>
+    public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand, BaseResponse<MenuViewModel>>
     {
         private readonly IMenuRepository menuRepository;
         private readonly IMenuService menuService;
@@ -28,7 +28,7 @@ namespace Clicco.Application.Features.Commands
             this.mapper = mapper;
             this.cacheManager = cacheManager;
         }
-        public async Task<BaseResponse> Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<MenuViewModel>> Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
         {
             await menuService.CheckSelfId(request.Id);
 
@@ -39,7 +39,7 @@ namespace Clicco.Application.Features.Commands
 
             menuRepository.Delete(menu);
             await menuRepository.SaveChangesAsync();
-            return new SuccessResponse("Menu has been deleted!");
+            return new SuccessResponse<MenuViewModel>("Menu has been deleted!");
         }
     }
 }

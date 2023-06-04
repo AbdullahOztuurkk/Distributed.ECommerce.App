@@ -4,17 +4,18 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetAddressesByUserIdQuery : IRequest<List<AddressViewModel>>
+    public class GetAddressesByUserIdQuery : IRequest<BaseResponse<List<AddressViewModel>>>
     {
         public int UserId { get; set; }
     }
 
-    public class GetAddressesByUserIdQueryHandler : IRequestHandler<GetAddressesByUserIdQuery, List<AddressViewModel>>
+    public class GetAddressesByUserIdQueryHandler : IRequestHandler<GetAddressesByUserIdQuery, BaseResponse<List<AddressViewModel>>>
     {
         private readonly IAddressRepository addressRepository;
         private readonly IMapper mapper;
@@ -27,14 +28,11 @@ namespace Clicco.Application.Features.Queries
             this.mapper = mapper;
             this.cacheManager = cacheManager;
         }
-        public async Task<List<AddressViewModel>> Handle(GetAddressesByUserIdQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<List<AddressViewModel>>> Handle(GetAddressesByUserIdQuery request, CancellationToken cancellationToken)
         {
             await addressService.CheckUserIdAsync(request.UserId);
 
-            return await cacheManager.GetOrSetAsync(CacheKeys.GetListKey<Address>(request.UserId), async () =>
-            {
-                return mapper.Map<List<AddressViewModel>>(await addressRepository.Get(x => x.UserId == request.UserId));
-            });
+            return new SuccessResponse<List<AddressViewModel>>(mapper.Map<List<AddressViewModel>>(await addressRepository.Get(x => x.UserId == request.UserId)));
         }
     }
 }

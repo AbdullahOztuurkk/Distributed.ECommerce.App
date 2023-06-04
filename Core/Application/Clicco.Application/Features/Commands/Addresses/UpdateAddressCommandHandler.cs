@@ -5,14 +5,13 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class UpdateAddressCommand : IRequest<AddressViewModel>
+    public class UpdateAddressCommand : IRequest<BaseResponse<AddressViewModel>>
     {
         public int Id { get; set; }
         public string City { get; set; }
@@ -22,7 +21,7 @@ namespace Clicco.Application.Features.Commands
         public string ZipCode { get; set; }
         public int? UserId { get; set; }
     }
-    public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, AddressViewModel>
+    public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, BaseResponse<AddressViewModel>>
     {
         private readonly IAddressRepository addressRepository;
         private readonly IMapper mapper;
@@ -38,7 +37,7 @@ namespace Clicco.Application.Features.Commands
             this.cacheManager = cacheManager;
         }
 
-        public async Task<AddressViewModel> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<AddressViewModel>> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
         {
             await addressService.CheckSelfId(request.Id);
 
@@ -57,7 +56,7 @@ namespace Clicco.Application.Features.Commands
 
             await addressRepository.SaveChangesAsync();
             await cacheManager.SetAsync(CacheKeys.GetSingleKey<Address>(request.Id),address);
-            return mapper.Map<AddressViewModel>(address);
+            return new SuccessResponse<AddressViewModel>(mapper.Map<AddressViewModel>(address));
         }
     }
 }

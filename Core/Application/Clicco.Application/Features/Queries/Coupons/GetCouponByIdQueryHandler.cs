@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.ViewModels;
+using Clicco.Domain.Core.ResponseModel;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetCouponByIdQuery : IRequest<CouponViewModel>
+    public class GetCouponByIdQuery : IRequest<BaseResponse<CouponViewModel>>
     {
         public int Id { get; set; }
     }
 
-    public class GetCouponByIdQueryHandler : IRequestHandler<GetCouponByIdQuery, CouponViewModel>
+    public class GetCouponByIdQueryHandler : IRequestHandler<GetCouponByIdQuery, BaseResponse<CouponViewModel>>
     {
         private readonly ICouponRepository couponRepository;
         private readonly IMapper mapper;
@@ -21,9 +22,9 @@ namespace Clicco.Application.Features.Queries
             this.mapper = mapper;
         }
 
-        public async Task<CouponViewModel> Handle(GetCouponByIdQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<CouponViewModel>> Handle(GetCouponByIdQuery request, CancellationToken cancellationToken)
         {
-            return mapper.Map<CouponViewModel>(await couponRepository.GetByIdAsync(request.Id));
+            return new SuccessResponse<CouponViewModel>(mapper.Map<CouponViewModel>(await couponRepository.GetByIdAsync(request.Id)));
         }
     }
 }

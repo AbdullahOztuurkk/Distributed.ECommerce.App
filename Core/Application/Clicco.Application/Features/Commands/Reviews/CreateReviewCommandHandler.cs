@@ -1,18 +1,16 @@
 ﻿using AutoMapper;
-using Clicco.Application.Features.Queries;
 using Clicco.Application.Helpers.Contracts;
 using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
-using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class CreateReviewCommand : IRequest<BaseResponse>
+    public class CreateReviewCommand : IRequest<BaseResponse<ReviewViewModel>>
     {
         public string Description { get; set; }
         public byte Rating { get; set; }
@@ -20,7 +18,7 @@ namespace Clicco.Application.Features.Commands
         public int ProductId { get; set; }
         public int? UserId { get; set; }
     }
-    public class CreateReviewCommandHandler : IRequestHandler<CreateReviewCommand, BaseResponse>
+    public class CreateReviewCommandHandler : IRequestHandler<CreateReviewCommand, BaseResponse<ReviewViewModel>>
     {
         private readonly IReviewRepository reviewRepository;
         private readonly IMapper mapper;
@@ -35,7 +33,7 @@ namespace Clicco.Application.Features.Commands
             this.claimHelper = claimHelper;
             this.cacheManager = cacheManager;
         }
-        public async Task<BaseResponse> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<ReviewViewModel>> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
             await reviewService.CheckProductIdAsync(request.ProductId);
             if (request.UserId.HasValue)
@@ -47,7 +45,7 @@ namespace Clicco.Application.Features.Commands
                 : claimHelper.GetUserId();
             await reviewRepository.AddAsync(review);
             await reviewRepository.SaveChangesAsync();
-            return new SuccessResponse("Review has been created!");
+            return new SuccessResponse<ReviewViewModel>("Review has been created!");
         }
     }
 }

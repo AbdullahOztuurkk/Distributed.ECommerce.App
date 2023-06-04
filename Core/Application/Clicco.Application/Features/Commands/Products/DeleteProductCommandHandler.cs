@@ -11,12 +11,12 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class DeleteProductCommand : IRequest<BaseResponse>
+    public class DeleteProductCommand : IRequest<BaseResponse<ProductViewModel>>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, BaseResponse>
+    public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, BaseResponse<ProductViewModel>>
     {
         private readonly IProductRepository productRepository;
         private readonly IProductService productService;
@@ -27,7 +27,7 @@ namespace Clicco.Application.Features.Commands
             this.productService = productService;
             this.cacheManager = cacheManager;
         }
-        public async Task<BaseResponse> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<ProductViewModel>> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
             await productService.CheckSelfId(request.Id);
 
@@ -38,7 +38,7 @@ namespace Clicco.Application.Features.Commands
 
             productRepository.Delete(product);
             await productRepository.SaveChangesAsync();
-            return new SuccessResponse("Product has been deleted!");
+            return new SuccessResponse<ProductViewModel>("Product has been deleted!");
         }
     }
 }

@@ -4,17 +4,18 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetTransactionByIdQuery : IRequest<TransactionViewModel>
+    public class GetTransactionByIdQuery : IRequest<BaseResponse<TransactionViewModel>>
     {
         public int Id { get; set; }
     }
 
-    public class GetTransactionByIdQueryHandler : IRequestHandler<GetTransactionByIdQuery, TransactionViewModel>
+    public class GetTransactionByIdQueryHandler : IRequestHandler<GetTransactionByIdQuery, BaseResponse<TransactionViewModel>>
     {
         private readonly ITransactionRepository transactionRepository;
         private readonly ITransactionService transactionService;
@@ -31,14 +32,11 @@ namespace Clicco.Application.Features.Queries
             this.transactionService = transactionService;
             this.cacheManager = cacheManager;
         }
-        public async Task<TransactionViewModel> Handle(GetTransactionByIdQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<TransactionViewModel>> Handle(GetTransactionByIdQuery request, CancellationToken cancellationToken)
         {
             await transactionService.CheckSelfId(request.Id);
 
-            return await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Transaction>(request.Id), async () =>
-            {
-                return mapper.Map<TransactionViewModel>(await transactionRepository.GetByIdAsync(request.Id));
-            });
+            return new SuccessResponse<TransactionViewModel>(mapper.Map<TransactionViewModel>(await transactionRepository.GetByIdAsync(request.Id)));
         }
     }
 }

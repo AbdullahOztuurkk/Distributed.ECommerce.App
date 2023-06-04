@@ -4,12 +4,13 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class UpdateVendorCommand : IRequest<VendorViewModel>
+    public class UpdateVendorCommand : IRequest<BaseResponse<VendorViewModel>>
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -18,7 +19,7 @@ namespace Clicco.Application.Features.Commands
         public string Region { get; set; }
         public string Address { get; set; }
     }
-    public class UpdateVendorCommandHandler : IRequestHandler<UpdateVendorCommand, VendorViewModel>
+    public class UpdateVendorCommandHandler : IRequestHandler<UpdateVendorCommand, BaseResponse<VendorViewModel>>
     {
         private readonly IVendorRepository vendorRepository;
         private readonly IMapper mapper;
@@ -31,7 +32,7 @@ namespace Clicco.Application.Features.Commands
             this.vendorService = vendorService;
             this.cacheManager = cacheManager;
         }
-        public async Task<VendorViewModel> Handle(UpdateVendorCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<VendorViewModel>> Handle(UpdateVendorCommand request, CancellationToken cancellationToken)
         {
             await vendorService.CheckSelfId(request.Id);
 
@@ -44,7 +45,7 @@ namespace Clicco.Application.Features.Commands
             await vendorRepository.SaveChangesAsync();
             await cacheManager.SetAsync(CacheKeys.GetSingleKey<Vendor>(request.Id), vendor);
 
-            return mapper.Map<VendorViewModel>(vendor);
+            return new SuccessResponse<VendorViewModel>(mapper.Map<VendorViewModel>(vendor));
         }
     }
 }

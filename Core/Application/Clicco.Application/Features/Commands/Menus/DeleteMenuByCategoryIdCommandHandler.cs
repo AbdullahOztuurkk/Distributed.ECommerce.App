@@ -10,11 +10,11 @@ using MediatR;
 
 namespace Clicco.Application.Features.Commands.Menus
 {
-    public class DeleteMenuByCategoryIdCommand : IRequest<BaseResponse>
+    public class DeleteMenuByCategoryIdCommand : IRequest<BaseResponse<MenuViewModel>>
     {
         public int CategoryId { get; set; }
     }
-    public class DeleteMenuByCategoryIdCommandHandler : IRequestHandler<DeleteMenuByCategoryIdCommand, BaseResponse>
+    public class DeleteMenuByCategoryIdCommandHandler : IRequestHandler<DeleteMenuByCategoryIdCommand, BaseResponse<MenuViewModel>>
     {
         private readonly IMenuRepository menuRepository;
         private readonly IMenuService menuService;
@@ -29,7 +29,7 @@ namespace Clicco.Application.Features.Commands.Menus
             this.cacheManager = cacheManager;
         }
 
-        public async Task<BaseResponse> Handle(DeleteMenuByCategoryIdCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<MenuViewModel>> Handle(DeleteMenuByCategoryIdCommand request, CancellationToken cancellationToken)
         {
             //Todo: Need cache mechanism for performance
             await menuService.CheckCategoryId(request.CategoryId);
@@ -37,7 +37,7 @@ namespace Clicco.Application.Features.Commands.Menus
             var menu = await menuRepository.GetSingleAsync(x => x.CategoryId == request.CategoryId);
             menuRepository.Delete(menu);
             await menuRepository.SaveChangesAsync();
-            return new SuccessResponse("Menu has been deleted!");
+            return new SuccessResponse<MenuViewModel>("Menu has been deleted!");
         }
     }
 }

@@ -5,12 +5,13 @@ using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands
 {
-    public class UpdateReviewCommand : IRequest<ReviewViewModel>
+    public class UpdateReviewCommand : IRequest<BaseResponse<ReviewViewModel>>  
     {
         public int Id { get; set; }
         public string Description { get; set; }
@@ -19,7 +20,7 @@ namespace Clicco.Application.Features.Commands
         public int ProductId { get; set; }
         public int UserId { get; set; }
     }
-    public class UpdateReviewCommandHandler : IRequestHandler<UpdateReviewCommand, ReviewViewModel>
+    public class UpdateReviewCommandHandler : IRequestHandler<UpdateReviewCommand, BaseResponse<ReviewViewModel>>
     {
         private readonly IReviewRepository reviewRepository;
         private readonly IMapper mapper;
@@ -36,7 +37,7 @@ namespace Clicco.Application.Features.Commands
             this.cacheManager = cacheManager;
         }
 
-        public async Task<ReviewViewModel> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<ReviewViewModel>> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
         {
             await reviewService.CheckSelfId(request.Id);
             await reviewService.CheckProductIdAsync(request.ProductId);
@@ -50,7 +51,7 @@ namespace Clicco.Application.Features.Commands
             review.UserId = claimHelper.GetUserId();
             await reviewRepository.SaveChangesAsync();
             await cacheManager.SetAsync(CacheKeys.GetSingleKey<Review>(request.Id), review);
-            return mapper.Map<ReviewViewModel>(review);
+            return new SuccessResponse<ReviewViewModel>(mapper.Map<ReviewViewModel>(review));
         }
     }
 }
