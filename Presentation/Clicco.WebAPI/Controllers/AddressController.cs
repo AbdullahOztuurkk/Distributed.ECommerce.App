@@ -43,12 +43,11 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("GetByUserId")]
-        [AllowAnonymous]
         [ProducesResponseType(typeof(AddressViewModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetAddressByUserId(int userId)
+        public async Task<IActionResult> GetAddressesByUserId()
         {
-            var address = await mediator.Send(new GetAddressesByUserIdQuery { UserId = userId });
+            var address = await mediator.Send(new GetAddressesByUserIdQuery());
             return Ok(address);
         }
 

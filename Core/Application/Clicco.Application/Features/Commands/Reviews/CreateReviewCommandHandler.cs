@@ -16,7 +16,6 @@ namespace Clicco.Application.Features.Commands
         public byte Rating { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int ProductId { get; set; }
-        public int? UserId { get; set; }
     }
     public class CreateReviewCommandHandler : IRequestHandler<CreateReviewCommand, BaseResponse<ReviewViewModel>>
     {
@@ -24,27 +23,22 @@ namespace Clicco.Application.Features.Commands
         private readonly IMapper mapper;
         private readonly IReviewService reviewService;
         private readonly IClaimHelper claimHelper;
-        private readonly ICacheManager cacheManager;
-        public CreateReviewCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IReviewService reviewService, IClaimHelper claimHelper, ICacheManager cacheManager)
+        public CreateReviewCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IReviewService reviewService, IClaimHelper claimHelper)
         {
             this.reviewRepository = reviewRepository;
             this.mapper = mapper;
             this.reviewService = reviewService;
             this.claimHelper = claimHelper;
-            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse<ReviewViewModel>> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
             await reviewService.CheckProductIdAsync(request.ProductId);
-            if (request.UserId.HasValue)
-                await reviewService.CheckUserIdAsync(request.UserId.Value);
 
             var review = mapper.Map<Review>(request);
-            review.UserId = request.UserId.HasValue 
-                ? request.UserId.Value 
-                : claimHelper.GetUserId();
+            review.UserId = claimHelper.GetUserId();
             await reviewRepository.AddAsync(review);
             await reviewRepository.SaveChangesAsync();
+
             return new SuccessResponse<ReviewViewModel>("Review has been created!");
         }
     }

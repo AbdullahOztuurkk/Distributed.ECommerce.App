@@ -20,7 +20,6 @@
         Success,
     }
 
-    //Todo: Must be refactor for many cache cases
     public class CacheKeys
     {
         public static string GetSingleKey<T>(object key) => string.Format($"CliccoWebApi-{typeof(T).Name}-Id-{key}");

@@ -29,6 +29,14 @@ namespace Clicco.Application.Features.Queries
 
         public async Task<BaseResponse<CategoryViewModel>> Handle(GetCategoryByURLQuery request, CancellationToken cancellationToken)
         {
+            var cachedItems = await cacheManager.GetAsync<List<CategoryViewModel>>(CacheKeys.GetListKey<Category>());
+            var entity = cachedItems.FirstOrDefault(x => x.SlugUrl == request.Url);
+
+            if (entity != null)
+            {
+                return new SuccessResponse<CategoryViewModel>(entity);
+            }
+
             return new SuccessResponse<CategoryViewModel>(mapper.Map<CategoryViewModel>(await categoryRepository.GetSingleAsync(x => x.SlugUrl == request.Url, x => x.Menu)));
         }
     }

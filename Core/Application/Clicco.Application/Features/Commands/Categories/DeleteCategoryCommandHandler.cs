@@ -18,13 +18,11 @@ namespace Clicco.Application.Features.Commands
     public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, BaseResponse<CategoryViewModel>>
     {
         private readonly ICategoryRepository categoryRepository;
-        private readonly IMapper mapper;
         private readonly ICategoryService categoryService;
         private readonly ICacheManager cacheManager;
-        public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, ICategoryService categoryService, ICacheManager cacheManager)
+        public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, ICategoryService categoryService, ICacheManager cacheManager)
         {
             this.categoryRepository = categoryRepository;
-            this.mapper = mapper;
             this.categoryService = categoryService;
             this.cacheManager = cacheManager;
         }
@@ -32,15 +30,13 @@ namespace Clicco.Application.Features.Commands
         {
             await categoryService.CheckSelfId(request.Id);
 
-            var category =  await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Category>(request.Id), async () =>
-            {
-                return await categoryRepository.GetByIdAsync(request.Id);
-            });
+            var category =  await categoryRepository.GetByIdAsync(request.Id);
 
             categoryRepository.Delete(category);
             await categoryService.DisableMenuId(request.Id);
             await categoryRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Category>(request.Id));
+            await cacheManager.RemoveAsync(CacheKeys.GetListKey<Category>());
+
             return new SuccessResponse<CategoryViewModel>("Category has been deleted!");
         }
     }

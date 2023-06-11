@@ -18,7 +18,6 @@ namespace Clicco.Application.Features.Commands
         public string State { get; set; }
         public string Country { get; set; }
         public string ZipCode { get; set; }
-        public int UserId { get; set; }
     }
     public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, BaseResponse<AddressViewModel>>
     {
@@ -34,13 +33,10 @@ namespace Clicco.Application.Features.Commands
             this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse<AddressViewModel>> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
-        {
-            await addressService.CheckUserIdAsync(request.UserId);
-            
+        {            
             var address = mapper.Map<Address>(request);
             await addressRepository.AddAsync(address);
             await addressRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetListKey<AddressViewModel>(address.Id));
             return new SuccessResponse<AddressViewModel>("Address has been created!");
         }
     }

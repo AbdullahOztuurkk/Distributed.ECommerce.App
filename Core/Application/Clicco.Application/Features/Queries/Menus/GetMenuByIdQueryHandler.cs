@@ -18,13 +18,24 @@ namespace Clicco.Application.Features.Queries
     {
         private readonly IMenuRepository menuRepository;
         private readonly IMapper mapper;
-        public GetMenuByIdQueryHandler(IMenuRepository menuRepository, IMapper mapper)
+        private readonly ICacheManager cacheManager;
+        public GetMenuByIdQueryHandler(IMenuRepository menuRepository, IMapper mapper, ICacheManager cacheManager)
         {
             this.menuRepository = menuRepository;
             this.mapper = mapper;
+            this.cacheManager = cacheManager;
         }
+
         public async Task<BaseResponse<MenuViewModel>> Handle(GetMenuByIdQuery request, CancellationToken cancellationToken)
         {
+            var cachedItems = await cacheManager.GetAsync<List<MenuViewModel>>(CacheKeys.GetListKey<Menu>());
+            var entity = cachedItems.FirstOrDefault(x => x.Id == request.Id);
+
+            if (entity != null)
+            {
+                return new SuccessResponse<MenuViewModel>(entity);
+            }
+
             return new SuccessResponse<MenuViewModel>(mapper.Map<MenuViewModel>(await menuRepository.GetByIdAsync(request.Id, x => x.Category)));
         }
     }

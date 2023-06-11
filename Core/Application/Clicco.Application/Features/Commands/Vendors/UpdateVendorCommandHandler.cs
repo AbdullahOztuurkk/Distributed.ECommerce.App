@@ -24,26 +24,19 @@ namespace Clicco.Application.Features.Commands
         private readonly IVendorRepository vendorRepository;
         private readonly IMapper mapper;
         private readonly IVendorService vendorService;
-        private readonly ICacheManager cacheManager;
-        public UpdateVendorCommandHandler(IVendorRepository vendorRepository, IMapper mapper, IVendorService vendorService, ICacheManager cacheManager)
+        public UpdateVendorCommandHandler(IVendorRepository vendorRepository, IMapper mapper, IVendorService vendorService)
         {
             this.vendorRepository = vendorRepository;
             this.mapper = mapper;
             this.vendorService = vendorService;
-            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse<VendorViewModel>> Handle(UpdateVendorCommand request, CancellationToken cancellationToken)
         {
             await vendorService.CheckSelfId(request.Id);
 
-            var vendor = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Vendor>(request.Id), async () =>
-            {
-                return await vendorRepository.GetByIdAsync(request.Id);
-            });
-
+            var vendor =  await vendorRepository.GetByIdAsync(request.Id);
             vendorRepository.Update(mapper.Map(request, vendor));
             await vendorRepository.SaveChangesAsync();
-            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Vendor>(request.Id), vendor);
 
             return new SuccessResponse<VendorViewModel>(mapper.Map<VendorViewModel>(vendor));
         }

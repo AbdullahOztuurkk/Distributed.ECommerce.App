@@ -25,9 +25,9 @@ namespace Clicco.WebAPI.Controllers
         [HttpGet]
         [AllowAnonymous]
         [ProducesResponseType(typeof(List<MenuViewModel>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll([FromQuery] PaginationFilter paginationFilter)
+        public async Task<IActionResult> GetAll()
         {
-            var result = await mediator.Send(new GetAllMenusQuery(paginationFilter));
+            var result = await mediator.Send(new GetAllMenusQuery());
             return Ok(result);
         }
 

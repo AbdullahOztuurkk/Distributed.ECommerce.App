@@ -9,10 +9,6 @@ namespace Clicco.Application.Validations.Addresses
         {
             public CreateAddressValidator()
             {
-                RuleFor(x => x.UserId)
-                    .GreaterThan(0)
-                    .NotEmpty();
-
                 RuleFor(x => x.Street)
                     .MinimumLength(5)
                     .MaximumLength(50)

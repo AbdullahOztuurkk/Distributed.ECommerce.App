@@ -19,7 +19,6 @@ namespace Clicco.Application.Features.Commands
         public string State { get; set; }
         public string Country { get; set; }
         public string ZipCode { get; set; }
-        public int? UserId { get; set; }
     }
     public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, BaseResponse<AddressViewModel>>
     {
@@ -41,18 +40,9 @@ namespace Clicco.Application.Features.Commands
         {
             await addressService.CheckSelfId(request.Id);
 
-            if (request.UserId.HasValue)
-                await addressService.CheckUserIdAsync(request.UserId.Value);
-
-            var address = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Address>(request.Id), async () =>
-            {
-                return await addressRepository.GetByIdAsync(request.Id);
-            });
+            var address = await addressRepository.GetByIdAsync(request.Id);
             addressRepository.Update(mapper.Map(request, address));
-
-            address.UserId = request.UserId.HasValue
-                ? request.UserId.Value
-                : claimHelper.GetUserId();
+            address.UserId = claimHelper.GetUserId();
 
             await addressRepository.SaveChangesAsync();
             await cacheManager.SetAsync(CacheKeys.GetSingleKey<Address>(request.Id),address);

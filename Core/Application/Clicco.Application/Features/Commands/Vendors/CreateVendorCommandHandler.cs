@@ -33,7 +33,7 @@ namespace Clicco.Application.Features.Commands
             var vendor = mapper.Map<Vendor>(request);
             await vendorRepository.AddAsync(vendor);
             await vendorRepository.SaveChangesAsync();
-            await cacheManager.RemoveAsync(CacheKeys.GetListKey<VendorViewModel>());
+
             return new SuccessResponse<VendorViewModel>("Vendor has been created!");
         }
     }

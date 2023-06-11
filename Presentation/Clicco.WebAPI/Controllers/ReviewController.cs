@@ -38,9 +38,9 @@ namespace Clicco.WebAPI.Controllers
         [AllowAnonymous]
         [ProducesResponseType(typeof(List<ReviewViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetMenuByUrl([FromQuery] PaginationFilter paginationFilter,int id)
+        public async Task<IActionResult> GetByProductId([FromQuery] PaginationFilter paginationFilter, int id)
         {
-            var result = await mediator.Send(new GetReviewsByProductIdQuery(paginationFilter) { ProductId = id});
+            var result = await mediator.Send(new GetReviewsByProductIdQuery(paginationFilter) { ProductId = id });
             return Ok(result);
         }
 

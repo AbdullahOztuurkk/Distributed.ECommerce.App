@@ -18,27 +18,19 @@ namespace Clicco.Application.Features.Commands
     public class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressCommand, BaseResponse<AddressViewModel>>
     {
         private readonly IAddressRepository addressRepository;
-        private readonly IMapper mapper;
         private readonly IAddressService addressService;
-        private readonly ICacheManager cacheManager;
-        public DeleteAddressCommandHandler(IAddressRepository addressRepository, IMapper mapper, IAddressService addressService, ICacheManager cacheManager)
+        public DeleteAddressCommandHandler(IAddressRepository addressRepository, IAddressService addressService)
         {
             this.addressRepository = addressRepository;
-            this.mapper = mapper;
             this.addressService = addressService;
-            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse<AddressViewModel>> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
         {
             await addressService.CheckSelfId(request.Id);
 
-            var address = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Address>(request.Id), async () =>
-            {
-                return await addressRepository.GetByIdAsync(request.Id);
-            });
-
+            var address = await addressRepository.GetByIdAsync(request.Id);
             addressRepository.Delete(address);
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Address>(request.Id));
+
             return new SuccessResponse<AddressViewModel>("Address has been deleted!");
         }
     }

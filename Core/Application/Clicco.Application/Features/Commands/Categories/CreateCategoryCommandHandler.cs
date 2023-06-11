@@ -39,10 +39,10 @@ namespace Clicco.Application.Features.Commands
                 await categoryService.CheckMenuId(request.MenuId.Value);
 
             var category = mapper.Map<Category>(request);
-            //category.SlugUrl = request.Name.ToSeoFriendlyUrl();
             await categoryRepository.AddAsync(category);
             await categoryRepository.SaveChangesAsync();
             await cacheManager.RemoveAsync(CacheKeys.GetListKey<CategoryViewModel>());
+
             return new SuccessResponse<CategoryViewModel>("Category has been created!");
         }
     }

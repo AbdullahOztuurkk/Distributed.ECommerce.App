@@ -20,24 +20,19 @@ namespace Clicco.Application.Features.Commands
     {
         private readonly IProductRepository productRepository;
         private readonly IProductService productService;
-        private readonly ICacheManager cacheManager;
-        public DeleteProductCommandHandler(IProductRepository productRepository, IProductService productService, ICacheManager cacheManager)
+        public DeleteProductCommandHandler(IProductRepository productRepository, IProductService productService)
         {
             this.productRepository = productRepository;
             this.productService = productService;
-            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse<ProductViewModel>> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
             await productService.CheckSelfId(request.Id);
 
-            var product = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Product>(request.Id), async () =>
-            {
-                return await productRepository.GetByIdAsync(request.Id);
-            });
-
+            var product =  await productRepository.GetByIdAsync(request.Id);
             productRepository.Delete(product);
             await productRepository.SaveChangesAsync();
+
             return new SuccessResponse<ProductViewModel>("Product has been deleted!");
         }
     }

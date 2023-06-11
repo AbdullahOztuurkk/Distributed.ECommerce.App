@@ -45,14 +45,10 @@ namespace Clicco.Application.Features.Commands
         }
         public async Task<BaseResponse<TransactionViewModel>> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
         {
-            await transactionService.CheckUserIdAsync(request.UserId);
             await transactionService.CheckSelfId(request.Id);
             await transactionService.CheckAddressIdAsync(request.AddressId);
 
-            Transaction transaction = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Transaction>(request.Id), async () =>
-            {
-                return await transactionRepository.GetByIdAsync(request.Id);
-            });
+            var transaction =  await transactionRepository.GetByIdAsync(request.Id);
 
             transactionRepository.Update(mapper.Map(request, transaction));
             await transactionRepository.SaveChangesAsync();
@@ -73,8 +69,6 @@ namespace Clicco.Application.Features.Commands
                     TransactionStatus.Success => "Successful"
                 }
             }, QueueNames.UpdatedTransactionQueue);
-
-            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Transaction>(request.Id), transaction);
 
             return new SuccessResponse<TransactionViewModel>(mapper.Map<TransactionViewModel>(transaction));
         }

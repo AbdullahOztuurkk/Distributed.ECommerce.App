@@ -22,31 +22,24 @@ namespace Clicco.Application.Features.Commands
         private readonly ITransactionRepository transactionRepository;
         private readonly ITransactionService transactionService;
         private readonly IRabbitMqService rabbitMqService;
-        private readonly ICacheManager cacheManager;
         public DeleteTransactionCommandHandler(
             ITransactionRepository transactionRepository,
             ITransactionService transactionService,
-            IRabbitMqService rabbitMqService,
-            ICacheManager cacheManager)
+            IRabbitMqService rabbitMqService)
         {
             this.transactionRepository = transactionRepository;
             this.transactionService = transactionService;
             this.rabbitMqService = rabbitMqService;
-            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse<TransactionViewModel>> Handle(DeleteTransactionCommand request, CancellationToken cancellationToken)
         {
             await transactionService.CheckSelfId(request.Id);
 
-            var transaction = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Transaction>(request.Id), async () =>
-            {
-                return await transactionRepository.GetByIdAsync(request.Id);
-            });
-
+            var transaction =  await transactionRepository.GetByIdAsync(request.Id);
             transactionRepository.Delete(transaction);
             await transactionRepository.SaveChangesAsync();
 
-            await rabbitMqService.PushMessage<int>(request.Id, QueueNames.DeletedTransactionQueue);
+            await rabbitMqService.PushMessage(request.Id, QueueNames.DeletedTransactionQueue);
 
             return new SuccessResponse<TransactionViewModel>("Transaction has been deleted!");
         }

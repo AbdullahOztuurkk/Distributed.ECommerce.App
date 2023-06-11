@@ -19,26 +19,22 @@ namespace Clicco.Application.Features.Commands
     {
         private readonly IMenuRepository menuRepository;
         private readonly IMenuService menuService;
-        private readonly IMapper mapper;
         private readonly ICacheManager cacheManager;
-        public DeleteMenuCommandHandler(IMenuRepository menuRepository, IMenuService menuService, IMapper mapper, ICacheManager cacheManager)
+        public DeleteMenuCommandHandler(IMenuRepository menuRepository, IMenuService menuService, ICacheManager cacheManager)
         {
             this.menuRepository = menuRepository;
             this.menuService = menuService;
-            this.mapper = mapper;
             this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse<MenuViewModel>> Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
         {
             await menuService.CheckSelfId(request.Id);
 
-            var menu = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Menu>(request.Id), async () =>
-            {
-                return await menuRepository.GetByIdAsync(request.Id);
-            });
-
+            var menu = await menuRepository.GetByIdAsync(request.Id);
             menuRepository.Delete(menu);
             await menuRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetListKey<Menu>());
+
             return new SuccessResponse<MenuViewModel>("Menu has been deleted!");
         }
     }

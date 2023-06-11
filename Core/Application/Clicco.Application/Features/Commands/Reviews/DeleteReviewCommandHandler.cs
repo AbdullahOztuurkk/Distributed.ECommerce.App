@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Clicco.Application.Features.Queries;
+using Clicco.Application.Helpers.Contracts;
 using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
@@ -19,31 +20,30 @@ namespace Clicco.Application.Features.Commands
     public class DeleteReviewCommandHandler : IRequestHandler<DeleteReviewCommand, BaseResponse<ReviewViewModel>>
     {
         private readonly IReviewRepository reviewRepository;
-        private readonly IMapper mapper;
         private readonly IReviewService reviewService;
-        private readonly ICacheManager cacheManager;
+        private readonly IClaimHelper claimHelper;
 
-        public DeleteReviewCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IReviewService reviewService, ICacheManager cacheManager)
+        public DeleteReviewCommandHandler(IReviewRepository reviewRepository, IReviewService reviewService, IClaimHelper claimHelper)
         {
             this.reviewRepository = reviewRepository;
-            this.mapper = mapper;
             this.reviewService = reviewService;
-            this.cacheManager = cacheManager;
+            this.claimHelper = claimHelper;
         }
 
         public async Task<BaseResponse<ReviewViewModel>> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
         {
             await reviewService.CheckSelfId(request.Id);
-            
-            var review = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Review>(request.Id), async () =>
+
+            int userId = claimHelper.GetUserId();
+            var review = await reviewRepository.GetByIdAsync(request.Id);
+            if(review.UserId != userId)
             {
-                return await reviewRepository.GetByIdAsync(request.Id);
-            });
+                return new ErrorResponse<ReviewViewModel>("You cannot delete someone else's comment!");
+            }
 
             reviewRepository.Delete(review);
             await reviewRepository.SaveChangesAsync();
 
-            await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Review>(request.Id));
             return new SuccessResponse<ReviewViewModel>("Review has been deleted!");
         }
     }

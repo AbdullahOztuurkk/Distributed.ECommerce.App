@@ -18,7 +18,6 @@ namespace Clicco.Application.Features.Commands
         public byte Rating { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int ProductId { get; set; }
-        public int UserId { get; set; }
     }
     public class UpdateReviewCommandHandler : IRequestHandler<UpdateReviewCommand, BaseResponse<ReviewViewModel>>
     {
@@ -26,15 +25,13 @@ namespace Clicco.Application.Features.Commands
         private readonly IMapper mapper;
         private readonly IReviewService reviewService;
         private readonly IClaimHelper claimHelper;
-        private readonly ICacheManager cacheManager;
 
-        public UpdateReviewCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IReviewService reviewService, IClaimHelper claimHelper, ICacheManager cacheManager)
+        public UpdateReviewCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IReviewService reviewService, IClaimHelper claimHelper)
         {
             this.reviewRepository = reviewRepository;
             this.mapper = mapper;
             this.reviewService = reviewService;
             this.claimHelper = claimHelper;
-            this.cacheManager = cacheManager;
         }
 
         public async Task<BaseResponse<ReviewViewModel>> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
@@ -42,15 +39,16 @@ namespace Clicco.Application.Features.Commands
             await reviewService.CheckSelfId(request.Id);
             await reviewService.CheckProductIdAsync(request.ProductId);
 
-            var review = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Review>(request.Id), async () =>
+            var review =  await reviewRepository.GetByIdAsync(request.Id);
+            int userId = claimHelper.GetUserId();
+            if (review.UserId != userId)
             {
-                return await reviewRepository.GetByIdAsync(request.Id);
-            });
-
+                return new ErrorResponse<ReviewViewModel>("You cannot update someone else's comment!");
+            }
             reviewRepository.Update(mapper.Map(request, review));
-            review.UserId = claimHelper.GetUserId();
+            review.UserId = userId;
             await reviewRepository.SaveChangesAsync();
-            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Review>(request.Id), review);
+
             return new SuccessResponse<ReviewViewModel>(mapper.Map<ReviewViewModel>(review));
         }
     }

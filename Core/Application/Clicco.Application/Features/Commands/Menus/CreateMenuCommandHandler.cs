@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
+using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
 using MediatR;
@@ -19,11 +21,13 @@ namespace Clicco.Application.Features.Commands
         private readonly IMenuRepository menuRepository;
         private readonly IMapper mapper;
         private readonly IMenuService menuService;
-        public CreateMenuCommandHandler(IMenuRepository menuRepository, IMapper mapper, IMenuService menuService)
+        private readonly ICacheManager cacheManager;
+        public CreateMenuCommandHandler(IMenuRepository menuRepository, IMapper mapper, IMenuService menuService, ICacheManager cacheManager)
         {
             this.menuRepository = menuRepository;
             this.mapper = mapper;
             this.menuService = menuService;
+            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse<MenuViewModel>> Handle(CreateMenuCommand request, CancellationToken cancellationToken)
         {
@@ -35,6 +39,8 @@ namespace Clicco.Application.Features.Commands
             newMenu.SlugUrl = exactUri;
             await menuRepository.AddAsync(newMenu);
             await menuRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetListKey<Menu>());
+
             return new SuccessResponse<MenuViewModel>("Menu has been created!");
         }
     }

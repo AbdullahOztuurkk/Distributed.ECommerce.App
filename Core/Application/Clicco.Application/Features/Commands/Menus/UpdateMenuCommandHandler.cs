@@ -23,7 +23,6 @@ namespace Clicco.Application.Features.Commands
         private readonly IMenuService menuService;
         private readonly IMapper mapper;
         private readonly ICacheManager cacheManager;
-
         public UpdateMenuCommandHandler(IMenuRepository menuRepository, IMapper mapper, IMenuService menuService, ICacheManager cacheManager)
         {
             this.menuRepository = menuRepository;
@@ -39,16 +38,13 @@ namespace Clicco.Application.Features.Commands
             var uri = menuRepository.GetExactSlugUrlByCategoryId(request.CategoryId);
             await menuService.CheckSlugUrl(uri);
 
-            var menu = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Menu>(request.Id), async () =>
-            {
-                return await menuRepository.GetByIdAsync(request.Id);
-            });
+            var menu = await menuRepository.GetByIdAsync(request.Id);
 
             menuRepository.Update(mapper.Map(request, menu));
             menu.SlugUrl = uri;
             await menuRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetListKey<Menu>());
 
-            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Menu>(request.Id), menu);
             return new SuccessResponse<MenuViewModel>(mapper.Map<MenuViewModel>(menu));
         }
     }

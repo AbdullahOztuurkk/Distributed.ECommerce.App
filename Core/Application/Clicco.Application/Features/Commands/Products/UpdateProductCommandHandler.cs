@@ -25,14 +25,11 @@ namespace Clicco.Application.Features.Commands
         private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
         private readonly IProductService productService;
-        private readonly ICacheManager cacheManager;
-
-        public UpdateProductCommandHandler(IProductRepository productRepository, IMapper mapper, IProductService productService, ICacheManager cacheManager)
+        public UpdateProductCommandHandler(IProductRepository productRepository, IMapper mapper, IProductService productService)
         {
             this.productRepository = productRepository;
             this.mapper = mapper;
             this.productService = productService;
-            this.cacheManager = cacheManager;
         }
 
         public async Task<BaseResponse<ProductViewModel>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
@@ -40,15 +37,9 @@ namespace Clicco.Application.Features.Commands
             await productService.CheckSelfId(request.Id);
             await productService.CheckCategoryId(request.CategoryId);
 
-            var product = await cacheManager.GetOrSetAsync(CacheKeys.GetSingleKey<Product>(request.Id), async () =>
-            {
-                return await productRepository.GetByIdAsync(request.Id);
-            });
-
+            var product = await productRepository.GetByIdAsync(request.Id);
             productRepository.Update(mapper.Map(request, product));
             await productRepository.SaveChangesAsync();
-
-            await cacheManager.SetAsync(CacheKeys.GetSingleKey<Product>(request.Id), product);
 
             return new SuccessResponse<ProductViewModel>(mapper.Map<ProductViewModel>(product));
         }

@@ -43,18 +43,6 @@ namespace Clicco.WebAPI.Controllers
             return Ok(result);
         }
 
-        // v1/api/controller/action/2012-12-31
-        [HttpGet("GetListByDate/{date}")]
-        [AllowAnonymous]
-        [ProducesResponseType(typeof(List<CouponViewModel>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetCouponsByDate([FromQuery] PaginationFilter paginationFilter, string date)
-        {
-            var actualDate = DateTime.Parse(date);
-            var result = await mediator.Send(new GetCouponByDateQuery { ExpirationDate = actualDate });
-            return Ok(result);
-        }
-
         [HttpPost("Create")]
         [ProducesResponseType(typeof(BaseResponse<CouponViewModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]

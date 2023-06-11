@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Clicco.Application.Helpers.Contracts;
 using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
@@ -12,27 +13,25 @@ namespace Clicco.Application.Features.Queries
 {
     public class GetAddressesByUserIdQuery : IRequest<BaseResponse<List<AddressViewModel>>>
     {
-        public int UserId { get; set; }
+
     }
 
     public class GetAddressesByUserIdQueryHandler : IRequestHandler<GetAddressesByUserIdQuery, BaseResponse<List<AddressViewModel>>>
     {
         private readonly IAddressRepository addressRepository;
         private readonly IMapper mapper;
-        private readonly IAddressService addressService;
-        private readonly ICacheManager cacheManager;
-        public GetAddressesByUserIdQueryHandler(IAddressRepository addressRepository, IMapper mapper, IAddressService addressService, ICacheManager cacheManager)
+        private readonly IClaimHelper claimHelper;
+        public GetAddressesByUserIdQueryHandler(IAddressRepository addressRepository, IMapper mapper, IClaimHelper claimHelper)
         {
             this.addressRepository = addressRepository;
-            this.addressService = addressService;
             this.mapper = mapper;
-            this.cacheManager = cacheManager;
+            this.claimHelper = claimHelper;
         }
         public async Task<BaseResponse<List<AddressViewModel>>> Handle(GetAddressesByUserIdQuery request, CancellationToken cancellationToken)
         {
-            await addressService.CheckUserIdAsync(request.UserId);
+            int userId = claimHelper.GetUserId();
 
-            return new SuccessResponse<List<AddressViewModel>>(mapper.Map<List<AddressViewModel>>(await addressRepository.Get(x => x.UserId == request.UserId)));
+            return new SuccessResponse<List<AddressViewModel>>(mapper.Map<List<AddressViewModel>>(await addressRepository.Get(x => x.UserId == userId)));
         }
     }
 }

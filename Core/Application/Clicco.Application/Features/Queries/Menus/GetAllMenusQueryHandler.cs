@@ -12,27 +12,26 @@ namespace Clicco.Application.Features.Queries
 {
     public class GetAllMenusQuery : IRequest<BaseResponse<List<MenuViewModel>>>
     {
-        public GetAllMenusQuery(Global.PaginationFilter paginationFilter)
-        {
-            PaginationFilter = paginationFilter;
-        }
 
-        public Global.PaginationFilter PaginationFilter { get; }
     }
     public class GetAllMenusQueryHandler : IRequestHandler<GetAllMenusQuery, BaseResponse<List<MenuViewModel>>>
     {
         private readonly IMenuRepository menuRepository;
         private readonly IMapper mapper;
+        private readonly ICacheManager cacheManager;
 
-        public GetAllMenusQueryHandler(IMenuRepository menuRepository, IMapper mapper)
+        public GetAllMenusQueryHandler(IMenuRepository menuRepository, IMapper mapper, ICacheManager cacheManager)
         {
             this.menuRepository = menuRepository;
             this.mapper = mapper;
+            this.cacheManager = cacheManager;
         }
 
         public async Task<BaseResponse<List<MenuViewModel>>> Handle(GetAllMenusQuery request, CancellationToken cancellationToken)
         {
-            return new SuccessResponse<List<MenuViewModel>>(mapper.Map<List<MenuViewModel>>(await menuRepository.PaginateAsync(x => x.IsActive, paginationFilter: request.PaginationFilter)));
+            return new SuccessResponse<List<MenuViewModel>>(await cacheManager.GetOrSetAsync(CacheKeys.GetListKey<Menu>(), async () => {
+                return mapper.Map<List<MenuViewModel>>(await menuRepository.Get(x => x.IsActive));
+            }));
         }
     }
 }

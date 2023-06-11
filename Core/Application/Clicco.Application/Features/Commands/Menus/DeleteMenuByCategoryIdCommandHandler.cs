@@ -6,6 +6,7 @@ using Clicco.Application.Interfaces.Services;
 using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
+using Clicco.Domain.Model;
 using MediatR;
 
 namespace Clicco.Application.Features.Commands.Menus
@@ -37,6 +38,8 @@ namespace Clicco.Application.Features.Commands.Menus
             var menu = await menuRepository.GetSingleAsync(x => x.CategoryId == request.CategoryId);
             menuRepository.Delete(menu);
             await menuRepository.SaveChangesAsync();
+            await cacheManager.RemoveAsync(CacheKeys.GetListKey<Menu>());
+
             return new SuccessResponse<MenuViewModel>("Menu has been deleted!");
         }
     }
