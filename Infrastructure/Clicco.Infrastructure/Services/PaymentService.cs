@@ -1,44 +1,35 @@
 ﻿using Clicco.Application.Interfaces.Services.External;
 using Clicco.Domain.Shared.Models.Payment;
-using System.Net.Http.Json;
+using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.Infrastructure.Services
 {
     public class PaymentService : IPaymentService
     {
-        private readonly HttpClient httpClient;
-        private readonly IHttpClientFactory httpClientFactory;
-        public PaymentService(IHttpClientFactory httpClientFactory)
+        private readonly IQueueService rabbitMqService;
+        public PaymentService(IQueueService rabbitMqService)
         {
-            this.httpClientFactory = httpClientFactory;
-            httpClient = httpClientFactory.CreateClient(nameof(PaymentService));
+            this.rabbitMqService = rabbitMqService;
         }
 
-        public async Task<PaymentResult> Cancel(PaymentBankRequest paymentRequest)
+        public async Task Cancel(PaymentBankRequest paymentRequest)
         {
-            return await SendRequest($"payments/cancel", paymentRequest);
+            await rabbitMqService.PushMessage(ExchangeNames.EventExchange, paymentRequest, EventNames.PaymentCancelRequest);
         }
 
-        public async Task<PaymentResult> Pay(PaymentBankRequest paymentRequest)
+        public async Task Pay(PaymentBankRequest paymentRequest)
         {
-            return await SendRequest($"payments/pay", paymentRequest);
+            await rabbitMqService.PushMessage(ExchangeNames.EventExchange, paymentRequest, EventNames.PaymentRequest);
         }
 
-        public async Task<PaymentResult> Provision(PaymentBankRequest paymentRequest)
+        public async Task Provision(PaymentBankRequest paymentRequest)
         {
-            return await SendRequest($"payments/provision", paymentRequest);
+            await rabbitMqService.PushMessage(ExchangeNames.EventExchange, paymentRequest, EventNames.PaymentProvisionRequest);
         }
 
-        public async Task<PaymentResult> Refund(PaymentBankRequest paymentRequest)
+        public async Task Refund(PaymentBankRequest paymentRequest)
         {
-            return await SendRequest($"payments/refund", paymentRequest);
-        }
-
-        private async Task<PaymentResult> SendRequest(string url,PaymentBankRequest paymentRequest)
-        {
-            var response = await httpClient.PostAsJsonAsync(url, paymentRequest);
-            var result = await response.Content.ReadAsAsync<PaymentResult>();
-            return result;
+            await rabbitMqService.PushMessage(ExchangeNames.EventExchange, paymentRequest, EventNames.PaymentRefundRequest);
         }
     }
 }

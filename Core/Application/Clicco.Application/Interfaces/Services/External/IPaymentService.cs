@@ -4,10 +4,10 @@ namespace Clicco.Application.Interfaces.Services.External
 {
     public interface IPaymentService
     {
-        Task<PaymentResult> Pay(PaymentBankRequest paymentRequest);
-        Task<PaymentResult> Provision(PaymentBankRequest paymentRequest);
-        Task<PaymentResult> Cancel(PaymentBankRequest paymentRequest);
-        Task<PaymentResult> Refund(PaymentBankRequest paymentRequest);
+        Task Pay(PaymentBankRequest paymentRequest);
+        Task Provision(PaymentBankRequest paymentRequest);
+        Task Cancel(PaymentBankRequest paymentRequest);
+        Task Refund(PaymentBankRequest paymentRequest);
 
     }
 }

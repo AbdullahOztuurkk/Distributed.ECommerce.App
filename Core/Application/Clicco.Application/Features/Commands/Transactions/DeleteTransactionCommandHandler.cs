@@ -7,6 +7,7 @@ using Clicco.Application.ViewModels;
 using Clicco.Domain.Core;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model;
+using Clicco.Domain.Shared.Models.Transaction;
 using MediatR;
 using static Clicco.Domain.Shared.Global;
 
@@ -21,11 +22,11 @@ namespace Clicco.Application.Features.Commands
     {
         private readonly ITransactionRepository transactionRepository;
         private readonly ITransactionService transactionService;
-        private readonly IRabbitMqService rabbitMqService;
+        private readonly IQueueService rabbitMqService;
         public DeleteTransactionCommandHandler(
             ITransactionRepository transactionRepository,
             ITransactionService transactionService,
-            IRabbitMqService rabbitMqService)
+            IQueueService rabbitMqService)
         {
             this.transactionRepository = transactionRepository;
             this.transactionService = transactionService;
@@ -39,7 +40,7 @@ namespace Clicco.Application.Features.Commands
             transactionRepository.Delete(transaction);
             await transactionRepository.SaveChangesAsync();
 
-            await rabbitMqService.PushMessage(request.Id, QueueNames.DeletedTransactionQueue);
+            await rabbitMqService.PushMessage(ExchangeNames.EventExchange, new DeletedTransactionModel { Id = request.Id }, EventNames.DeletedTransaction);
 
             return new SuccessResponse<TransactionViewModel>("Transaction has been deleted!");
         }

@@ -52,11 +52,10 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}/details/SendInvoiceEmail")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetInvoiceEmailByTransactionId([FromRoute] int id)
         {
-            var result = await mediator.Send(new GetInvoiceEmailByTransactionIdQuery { TransactionId = id });
-            return result ? Ok() : BadRequest();
+            await mediator.Send(new GetInvoiceEmailByTransactionIdQuery { TransactionId = id });
+            return Ok();
         }
 
         [HttpDelete("Delete")]

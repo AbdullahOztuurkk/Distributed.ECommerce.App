@@ -6,7 +6,7 @@ namespace Clicco.PaymentServiceAPI.Services
     public class AkbankService : BaseBank
     {
 
-        public override async Task<PaymentResult> Pay(PaymentRequest request)
+        public override async Task<PaymentResult> Pay(PaymentBankRequest request)
         {
             return await Task.FromResult(new FailedPaymentResult($"Error at {GetType().Name}"));
         }

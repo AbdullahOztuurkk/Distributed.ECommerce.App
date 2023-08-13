@@ -17,10 +17,11 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PayAsync(PaymentRequest paymentRequest)
+        [Route("pay")]
+        public async Task<IActionResult> Pay(PaymentRequest paymentRequest)
         {
             var result = await mediator.Send(paymentRequest);
-            return result.IsSuccess ? Ok() : BadRequest();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
     }
 }

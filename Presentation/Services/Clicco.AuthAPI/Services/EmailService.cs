@@ -1,35 +1,33 @@
 ﻿using Clicco.AuthAPI.Services.Contracts;
+using Clicco.AuthServiceAPI.Services.Contracts;
 using Clicco.Domain.Shared.Models.Email;
+using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.AuthAPI.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly HttpClient httpClient;
-        private readonly IHttpClientFactory httpClientFactory;
+        private readonly IQueueService queueService;
 
-        public EmailService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public EmailService(IQueueService queueService)
         {
-            this.httpClientFactory = httpClientFactory;
-            this.httpClient = httpClientFactory.CreateClient(nameof(EmailService));
+            this.queueService = queueService;
         }
 
-        public async Task<bool> SendForgotPasswordEmailAsync(ForgotPasswordEmailRequest request)
+        public async Task SendForgotPasswordEmailAsync(ForgotPasswordEmailRequest request)
         {
-            var response = await httpClient.PostAsJsonAsync("Email/SendForgotPasswordEmail", request);
-            return response.IsSuccessStatusCode;
+            await queueService.PushMessage(ExchangeNames.EmailExchange, request, EventNames.ForgotPasswordMailRequest);
         }
 
-        public async Task<bool> SendRegistrationEmailAsync(RegistrationEmailRequest request)
+        public async Task SendRegistrationEmailAsync(RegistrationEmailRequest request)
         {
-            var response = await httpClient.PostAsJsonAsync("Email/SendRegistrationEmail", request);
-            return response.IsSuccessStatusCode;
+            await queueService.PushMessage(ExchangeNames.EmailExchange, request, EventNames.RegistrationMailRequest);
         }
 
-        public async Task<bool> SendResetPasswordEmailAsync(ResetPasswordEmailRequest request)
+        public async Task SendResetPasswordEmailAsync(ResetPasswordEmailRequest request)
         {
-            var response = await httpClient.PostAsJsonAsync("Email/SendResetPasswordEmail", request);
-            return response.IsSuccessStatusCode;
+            await queueService.PushMessage(ExchangeNames.EmailExchange, request, EventNames.ResetPasswordMailRequest);
+
         }
     }
 }

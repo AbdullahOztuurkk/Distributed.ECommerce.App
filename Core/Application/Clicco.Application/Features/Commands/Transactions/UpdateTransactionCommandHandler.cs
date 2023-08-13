@@ -28,20 +28,17 @@ namespace Clicco.Application.Features.Commands
         private readonly ITransactionRepository transactionRepository;
         private readonly IMapper mapper;
         private readonly ITransactionService transactionService;
-        private readonly IRabbitMqService rabbitMqService;
-        private readonly ICacheManager cacheManager;
+        private readonly IQueueService rabbitMqService;
         public UpdateTransactionCommandHandler(
             ITransactionRepository transactionRepository,
             IMapper mapper,
             ITransactionService transactionService,
-            IRabbitMqService rabbitMqService,
-            ICacheManager cacheManager)
+            IQueueService rabbitMqService)
         {
             this.transactionRepository = transactionRepository;
             this.mapper = mapper;
             this.transactionService = transactionService;
             this.rabbitMqService = rabbitMqService;
-            this.cacheManager = cacheManager;
         }
         public async Task<BaseResponse<TransactionViewModel>> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
         {
@@ -53,7 +50,7 @@ namespace Clicco.Application.Features.Commands
             transactionRepository.Update(mapper.Map(request, transaction));
             await transactionRepository.SaveChangesAsync();
 
-            await rabbitMqService.PushMessage<InvoiceTransaction>(new InvoiceTransaction
+            await rabbitMqService.PushMessage(ExchangeNames.EventExchange,new InvoiceTransaction
             {
                 Code = request.Code,
                 CreatedDate = transaction.CreatedDate,
@@ -61,14 +58,14 @@ namespace Clicco.Application.Features.Commands
                 DeliveryDate = transaction.DeliveryDate,
                 DiscountedAmount = transaction.DiscountedAmount,
                 TotalAmount = transaction.TotalAmount,
-                Id = request.Id,
+                Id = transaction.Id,
                 TransactionStatus = transaction.TransactionStatus switch
                 {
                     TransactionStatus.Failed => "Failed",
                     TransactionStatus.Pending => "Pending",
                     TransactionStatus.Success => "Successful"
                 }
-            }, QueueNames.UpdatedTransactionQueue);
+            }, EventNames.UpdatedTransaction);
 
             return new SuccessResponse<TransactionViewModel>(mapper.Map<TransactionViewModel>(transaction));
         }

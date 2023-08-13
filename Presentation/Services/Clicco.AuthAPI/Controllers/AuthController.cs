@@ -1,13 +1,10 @@
 ﻿using Clicco.AuthAPI.Models;
 using Clicco.AuthAPI.Models.Extensions;
+using Clicco.AuthAPI.Models.Request;
 using Clicco.AuthAPI.Models.Response;
 using Clicco.AuthAPI.Services.Contracts;
-using Clicco.AuthAPI.Models.Request;
-using Microsoft.AspNetCore.Mvc;
 using Clicco.AuthServiceAPI.Models.Request;
-using Clicco.AuthAPI.Data.Validators;
-using static Clicco.AuthAPI.Data.Validators.UserValidators;
-using Clicco.AuthServiceAPI.Helpers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Clicco.AuthAPI.Controllers
 {

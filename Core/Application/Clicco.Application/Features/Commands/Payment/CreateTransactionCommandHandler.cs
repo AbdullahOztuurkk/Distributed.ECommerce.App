@@ -5,7 +5,6 @@ using Clicco.Application.Interfaces.Services;
 using Clicco.Application.Interfaces.Services.External;
 using Clicco.Domain.Core;
 using Clicco.Domain.Model;
-using Clicco.Domain.Shared.Models.Email;
 using Clicco.Domain.Shared.Models.Payment;
 using MediatR;
 
@@ -19,7 +18,6 @@ namespace Clicco.Application.Features.Commands.Payment
         private readonly ICouponService couponService;
         private readonly IPaymentService paymentService;
         private readonly IClaimHelper claimHelper;
-        private readonly IEmailService emailService;
         private readonly ICacheManager cacheManager;
         private readonly IInvoiceService invoiceService;
         public CreateTransactionCommandHandler(
@@ -28,7 +26,6 @@ namespace Clicco.Application.Features.Commands.Payment
             IPaymentService paymentService,
             IClaimHelper claimHelper,
             ITransactionDetailRepository transactionDetailRepository,
-            IEmailService emailService,
             ICacheManager cacheManager,
             ICouponService couponService,
             IInvoiceService invoiceService)
@@ -38,7 +35,6 @@ namespace Clicco.Application.Features.Commands.Payment
             this.paymentService = paymentService;
             this.claimHelper = claimHelper;
             this.transactionDetailRepository = transactionDetailRepository;
-            this.emailService = emailService;
             this.cacheManager = cacheManager;
             this.couponService = couponService;
             this.invoiceService = invoiceService;
@@ -89,66 +85,34 @@ namespace Clicco.Application.Features.Commands.Payment
             var bankRequest = new PaymentBankRequest
             {
                 BankId = request.BankId,
+                TransactionId = transaction.Id,
                 CardInformation = request.CardInformation,
                 DealerName = product.Vendor.Name,
                 ProductName = product.Name,
+                FullName = claimHelper.GetUserName(),
+                OrderNumber = transaction.Code,
+                To = userEmail,
+                PaymentMethod = "Credit / Bank Card",
                 TotalAmount = (int)(transaction.DiscountedAmount < transaction.TotalAmount
                         ? transaction.DiscountedAmount
                         : transaction.TotalAmount),
             };
 
-            var result = await paymentService.Pay(bankRequest);
-
-            if (result.IsSuccess)
-            {
-                transaction.TransactionStatus = TransactionStatus.Success;
-
-                await emailService.SendSuccessPaymentEmailAsync(new PaymentSuccessEmailRequest
-                {
-                    Amount = transaction.DiscountedAmount < transaction.TotalAmount
-                        ? string.Format("{0:N2}", transaction.DiscountedAmount)
-                        : string.Format("{0:N2}", transaction.TotalAmount),
-                    FullName = claimHelper.GetUserName(),
-                    OrderNumber = transaction.Code,
-                    PaymentMethod = "Credit / Bank Card",
-                    ProductName = product.Name,
-                    To = userEmail,
-                });
-
-            }
-            else
-            {
-                transaction.TransactionStatus = TransactionStatus.Failed;
-
-                await emailService.SendFailedPaymentEmailAsync(new PaymentFailedEmailRequest
-                {
-                    Amount = transaction.DiscountedAmount < transaction.TotalAmount
-                        ? string.Format("{0:N2}", transaction.DiscountedAmount)
-                        : string.Format("{0:N2}", transaction.TotalAmount),
-                    FullName = claimHelper.GetUserName(),
-                    OrderNumber = transaction.Code,
-                    PaymentMethod = "Credit / Bank Card",
-                    ProductName = product.Name,
-                    To = claimHelper.GetUserEmail(),
-                    Error = result.Message
-                });
-            }
-
-            await transactionRepository.SaveChangesAsync();
+            await paymentService.Pay(bankRequest);
 
             await invoiceService.CreateInvoice(userEmail, transaction, product, address);
 
-            if(request.CouponId.HasValue)
+            if (request.CouponId.HasValue)
                 await cacheManager.RemoveAsync(CacheKeys.GetSingleKey<Coupon>(request.CouponId.Value));
 
-            return result.IsSuccess ? new SuccessPaymentResult() : new FailedPaymentResult(result.Message);
+            return new SuccessPaymentResult("Your payment request has been received. You will be informed via email.");
         }
 
         private string GetUniqueCode()
         {
             DateTime now = DateTime.Now;
             string year = now.Year.ToString();
-            string month = now.Month.ToString("00");
+            string month = now.Month.ToString("00");    
             string day = now.Day.ToString("00");
             string hour = now.Hour.ToString("00");
             string minute = now.Minute.ToString("00");

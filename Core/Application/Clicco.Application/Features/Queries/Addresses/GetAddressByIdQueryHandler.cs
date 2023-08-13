@@ -25,7 +25,6 @@ namespace Clicco.Application.Features.Queries
         }
         public async Task<BaseResponse<AddressViewModel>> Handle(GetAddressByIdQuery request, CancellationToken cancellationToken)
         {
-            //TODO: Cache
             return new SuccessResponse<AddressViewModel>(mapper.Map<AddressViewModel>(await addressRepository.GetByIdAsync(request.Id)));
         }
     }

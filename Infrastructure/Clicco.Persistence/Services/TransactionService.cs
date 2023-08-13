@@ -1,7 +1,5 @@
 ﻿using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
-using Clicco.Application.Interfaces.Services.External;
-using Clicco.Domain.Core.Exceptions;
 using Clicco.Domain.Model;
 using Clicco.Domain.Model.Exceptions;
 
@@ -13,17 +11,14 @@ namespace Clicco.Persistence.Services
         private readonly IAddressRepository addressRepository;
         private readonly ICouponRepository couponRepository;
         private readonly IProductRepository productRepository;
-        private readonly IUserService userService;
         public TransactionService(
             IAddressRepository addressRepository,
             ITransactionRepository transactionRepository,
-            IUserService userService,
             IProductRepository productRepository,
             ICouponRepository couponRepository)
         {
             this.addressRepository = addressRepository;
             this.transactionRepository = transactionRepository;
-            this.userService = userService;
             this.productRepository = productRepository;
             this.couponRepository = couponRepository;
         }
@@ -44,13 +39,6 @@ namespace Clicco.Persistence.Services
         {
             var result = await transactionRepository.GetByIdAsync(entityId);
             ThrowExceptionIfNull(result, err ?? CustomErrors.TransactionNotFound);
-        }
-
-        public async Task CheckUserIdAsync(int userId)
-        {
-            var result = await userService.IsExistAsync(userId);
-            if (!result)
-                throw new CustomException(CustomErrors.UserNotFound);
         }
 
         public async Task<Address> GetAddressByIdAsync(int addressId)

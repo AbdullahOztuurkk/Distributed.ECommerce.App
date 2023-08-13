@@ -12,13 +12,15 @@ namespace Clicco.InvoiceServiceAPI.Data.Context
 
         private readonly MongoClient client;
         private readonly IMongoDatabase database;
+        private readonly IMongoDbSettings settings;
         public MongoDbContext(IOptions<MongoDbSettings> options)
         {
-            var mongoUrl = new MongoUrl(options.Value.ConnectionString);
+            settings = options.Value;
+            var mongoUrl = new MongoUrl(settings.ConnectionString);
 
             client = new MongoClient(mongoUrl);
-            database = client.GetDatabase(options.Value.DatabaseName);
-            Invoices = new InvoiceCollection(database.GetCollection<Invoice>(options.Value.InvoiceCollectionName));
+            database = client.GetDatabase(settings.DatabaseName);
+            Invoices = new InvoiceCollection(database.GetCollection<Invoice>(settings.InvoiceCollectionName));
         }
     }
 }

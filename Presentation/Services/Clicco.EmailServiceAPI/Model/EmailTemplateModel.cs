@@ -5,6 +5,10 @@ using static Clicco.EmailServiceAPI.Model.Common.Global;
 
 namespace Clicco.EmailServiceAPI.Model
 {
+    interface IConvertableFrom<T>
+    {
+        T Convert(T value);
+    }
     public class EmailTemplateModel
     {
         [DisplayElement("#EMAIL#")]

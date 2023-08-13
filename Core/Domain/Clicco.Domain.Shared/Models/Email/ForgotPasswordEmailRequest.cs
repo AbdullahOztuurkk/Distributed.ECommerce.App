@@ -1,4 +1,6 @@
-﻿namespace Clicco.Domain.Shared.Models.Email
+﻿using MediatR;
+
+namespace Clicco.Domain.Shared.Models.Email
 {
     public class ForgotPasswordEmailRequest : BaseEmailRequest
     {

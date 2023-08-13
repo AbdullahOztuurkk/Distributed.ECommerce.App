@@ -4,9 +4,9 @@ namespace Clicco.PaymentServiceAPI.Models.Contracts
 {
     public interface IBaseBank
     {
-        Task<PaymentResult> Pay(PaymentRequest request);
-        Task<PaymentResult> Provision(PaymentRequest request);
-        Task<PaymentResult> Cancel(PaymentRequest request);
-        Task<PaymentResult> Refund(PaymentRequest request);
+        Task<PaymentResult> Pay(PaymentBankRequest request);
+        Task<PaymentResult> Provision(PaymentBankRequest request);
+        Task<PaymentResult> Cancel(PaymentBankRequest request);
+        Task<PaymentResult> Refund(PaymentBankRequest request);
     }
 }

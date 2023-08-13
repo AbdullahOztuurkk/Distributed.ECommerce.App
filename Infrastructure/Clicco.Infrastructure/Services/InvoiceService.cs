@@ -2,20 +2,19 @@
 using Clicco.Domain.Core;
 using Clicco.Domain.Model;
 using Clicco.Domain.Shared.Models.Invoice;
+using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.Infrastructure.Services
 {
     public class InvoiceService : IInvoiceService
     {
-        private readonly HttpClient httpClient;
-        private readonly IHttpClientFactory httpClientFactory;
-        public InvoiceService(IHttpClientFactory httpClientFactory)
+        private readonly IQueueService rabbitMqService;
+        public InvoiceService(IQueueService rabbitMqService)
         {
-            this.httpClientFactory = httpClientFactory;
-            httpClient = httpClientFactory.CreateClient(nameof(InvoiceService));
+            this.rabbitMqService = rabbitMqService;
         }
 
-        public async Task<bool> CreateInvoice(string BuyerEmail,Transaction transaction, Product product, Address address)
+        public async Task CreateInvoice(string BuyerEmail, Transaction transaction, Product product, Address address)
         {
             var transactionAddress = address;
             var transactionProduct = product;
@@ -77,14 +76,12 @@ namespace Clicco.Infrastructure.Services
                 }
             };
 
-            var response = await httpClient.PostAsJsonAsync("invoices/Create", model);
-            return response.IsSuccessStatusCode;
+            await rabbitMqService.PushMessage(ExchangeNames.EventExchange, model, EventNames.CreateInvoice);
         }
 
-        public async Task<bool> SendEmailByTransactionId(int transactionId)
+        public async Task SendEmailByTransactionId(int transactionId)
         {
-            var response = await httpClient.GetAsync($"invoices/SendInvoiceEmail/{transactionId}");
-            return response.IsSuccessStatusCode;
+            await rabbitMqService.PushMessage(ExchangeNames.EmailExchange, new SendInvoiceDetailsEmailModel { Id = transactionId }, EventNames.InvoiceMail);
         }
     }
 }

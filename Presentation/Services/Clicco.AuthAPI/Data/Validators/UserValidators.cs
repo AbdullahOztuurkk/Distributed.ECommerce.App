@@ -11,7 +11,7 @@ namespace Clicco.AuthAPI.Data.Validators
             public LoginModelValidator()
             {
                 RuleFor(x => x.Email).MatchEmailRegex();
-                RuleFor(x => x.Password).MatchPasswordRegex();
+                //RuleFor(x => x.Password).MatchPasswordRegex();
             }
         }
 

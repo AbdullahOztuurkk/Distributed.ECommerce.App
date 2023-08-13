@@ -4,12 +4,12 @@ using MediatR;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetInvoiceEmailByTransactionIdQuery : IRequest<bool>
+    public class GetInvoiceEmailByTransactionIdQuery : IRequest
     {
         public int TransactionId { get; set; }
     }
 
-    public class GetInvoiceEmailByTransactionIdQueryHandler : IRequestHandler<GetInvoiceEmailByTransactionIdQuery, bool>
+    public class GetInvoiceEmailByTransactionIdQueryHandler : IRequestHandler<GetInvoiceEmailByTransactionIdQuery>
     {
         private readonly ITransactionService transactionService;
         private readonly IInvoiceService invoiceService;
@@ -22,11 +22,11 @@ namespace Clicco.Application.Features.Queries
             this.invoiceService = invoiceService;
         }
 
-        public async Task<bool> Handle(GetInvoiceEmailByTransactionIdQuery request, CancellationToken cancellationToken)
+        public async Task Handle(GetInvoiceEmailByTransactionIdQuery request, CancellationToken cancellationToken)
         {
             await transactionService.CheckSelfId(request.TransactionId);
 
-            return await invoiceService.SendEmailByTransactionId(transactionId: request.TransactionId);
+            await invoiceService.SendEmailByTransactionId(transactionId: request.TransactionId);
         }
     }
 }

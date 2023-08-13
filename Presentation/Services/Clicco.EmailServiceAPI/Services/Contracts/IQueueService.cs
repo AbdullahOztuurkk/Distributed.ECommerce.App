@@ -1,10 +1,8 @@
-﻿using Clicco.EmailServiceAPI.Model;
-
-namespace Clicco.EmailServiceAPI.Services.Contracts
+﻿namespace Clicco.EmailServiceAPI.Services.Contracts
 {
     public interface IQueueService
     {
-        Task PushMessage<TModel>(TModel model) where TModel : EmailTemplateModel;
-        Task ReceiveMessages<TModel>(string queueName, Action<TModel> messageHandler) where TModel : EmailTemplateModel;
+        Task PushMessage<TModel>(string ExchangeName, TModel model, string routingKey);
+        Task ReceiveMessages<TModel>(string ExchangeName, string queueName, string routingKey, Action<TModel> messageHandler);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Clicco.InvoiceServiceAPI.Configurations;
 using Clicco.InvoiceServiceAPI.Services.Contracts;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -8,10 +9,8 @@ using System.Text.Json;
 
 namespace Clicco.InvoiceServiceAPI.Services
 {
-    public class RabbitMqService : IRabbitMqService, IDisposable
+    public class RabbitMqService : IQueueService, IDisposable
     {
-        public const string EventExchange = "event_exchange";
-
         private readonly RabbitMqSettings settings;
         private readonly IConnection _connection;
         private readonly IModel _channel;
@@ -28,8 +27,6 @@ namespace Clicco.InvoiceServiceAPI.Services
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-
-            _channel.ExchangeDeclare(exchange: EventExchange, type: ExchangeType.Direct, durable: true);
         }
 
         public void Dispose()
@@ -38,31 +35,37 @@ namespace Clicco.InvoiceServiceAPI.Services
             _connection.Dispose();
         }
 
-        public Task PushMessage<TModel>(TModel model, string routingKey)
+        public Task PushMessage<TModel>(string ExchangeName, TModel model, string routingKey)
         {
-            var message = JsonSerializer.Serialize(model);
+            _channel.ExchangeDeclare(exchange: ExchangeName, type: ExchangeType.Direct, durable: true);
+
+            var message = JsonConvert.SerializeObject(model);
             var body = Encoding.UTF8.GetBytes(message);
 
             var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
 
-            _channel.BasicPublish(exchange: EventExchange, routingKey: routingKey, basicProperties: properties, body: body);
+            _channel.BasicPublish(exchange: ExchangeName, routingKey: routingKey, basicProperties: properties, body: body);
 
             return Task.CompletedTask;
         }
 
-        public Task ReceiveMessages<TModel>(string queueName, Action<TModel> messageHandler)
+        public Task ReceiveMessages<TModel>(string ExchangeName, string queueName, string routingKey, Action<TModel> messageHandler)
         {
+            _channel.ExchangeDeclare(exchange: ExchangeName, type: ExchangeType.Direct, durable: true);
+
             _channel.QueueDeclare(queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
-            _channel.QueueBind(queue: queueName, exchange: EventExchange, routingKey: queueName);
+            _channel.QueueBind(queue: queueName, exchange: ExchangeName, routingKey: routingKey);
+
+            var modelType = typeof(TModel);
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-                var modelObj = JsonSerializer.Deserialize<TModel>(message);
+                var modelObj = JsonConvert.DeserializeObject<TModel>(message);
                 messageHandler(modelObj);
                 _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
             };

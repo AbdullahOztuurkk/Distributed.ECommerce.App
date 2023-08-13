@@ -1,3 +1,4 @@
+using Clicco.InvoiceServiceAPI;
 using Clicco.InvoiceServiceAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddApplicationDependencies(builder.Configuration);
+
+builder.Services.AddHostedService<InvoiceWorker>();
 
 var app = builder.Build();
 

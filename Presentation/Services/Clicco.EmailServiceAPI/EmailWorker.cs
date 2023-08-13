@@ -1,7 +1,8 @@
-﻿using Clicco.EmailServiceAPI.Model;
+﻿using Clicco.Domain.Shared.Models.Email;
+using Clicco.EmailServiceAPI.Extensions;
+using Clicco.EmailServiceAPI.Model;
 using Clicco.EmailServiceAPI.Services.Contracts;
-using System.Reflection;
-using static Clicco.EmailServiceAPI.Model.Common.Global;
+using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.EmailServiceAPI
 {
@@ -23,21 +24,47 @@ namespace Clicco.EmailServiceAPI
         {
             await Task.WhenAll
             (
-                ProcessSendEmailOperationAsync<RegistrationEmailTemplateModel>(QueueNames.RegistrationEmailQueue),
-                ProcessSendEmailOperationAsync<ForgotPasswordEmailTemplateModel>(QueueNames.ForgotPasswordEmailQueue),
-                ProcessSendEmailOperationAsync<SuccessPaymentEmailTemplateModel>(QueueNames.SuccessPaymentEmailQueue),
-                ProcessSendEmailOperationAsync<FailedPaymentEmailTemplateModel>(QueueNames.FailedPaymentEmailQueue),
-                ProcessSendEmailOperationAsync<InvoiceEmailTemplateModel>(QueueNames.InvoiceEmailQueue),
-                ProcessSendEmailOperationAsync<ResetPasswordEmailTemplateModel>(QueueNames.ResetPasswordEmailQueue)
+                ProcessEmailRequestOperationAsync<ForgotPasswordEmailRequest,ForgotPasswordEmailTemplateModel>(
+                    QueueNames.ForgotPasswordEmailQueue, EventNames.ForgotPasswordMailRequest,(model) =>
+                {
+                    return model.ConvertToEmailModel();
+                }),
+                ProcessEmailRequestOperationAsync<RegistrationEmailRequest, RegistrationEmailTemplateModel>(
+                    QueueNames.RegistrationEmailQueue, EventNames.RegistrationMailRequest, (model) =>
+                {
+                    return model.ConvertToEmailModel();
+                }),
+                ProcessEmailRequestOperationAsync<PaymentSuccessEmailRequest, SuccessPaymentEmailTemplateModel>(
+                    QueueNames.SuccessPaymentEmailQueue, EventNames.PaymentSucceedMailRequest, (model) =>
+                {
+                    return model.ConvertToEmailModel();
+                }),
+                ProcessEmailRequestOperationAsync<PaymentFailedEmailRequest,FailedPaymentEmailTemplateModel>(
+                    QueueNames.FailedPaymentEmailQueue, EventNames.PaymentFailedMailRequest,(model) =>
+                {
+                    return model.ConvertToEmailModel();
+                }),
+                ProcessEmailRequestOperationAsync<ResetPasswordEmailRequest, ResetPasswordEmailTemplateModel>(
+                    QueueNames.ResetPasswordEmailQueue, EventNames.ResetPasswordMailRequest, (model) =>
+                {
+                    return model.ConvertToEmailModel();
+                }),
+                ProcessEmailRequestOperationAsync<InvoiceEmailRequest, InvoiceEmailTemplateModel>(
+                    QueueNames.ResetPasswordEmailQueue, EventNames.ResetPasswordMailRequest, (model) =>
+                {
+                    return model.ConvertToEmailModel();
+                })
             );
         }
 
-        private async Task ProcessSendEmailOperationAsync<T>(string queueName) where T : EmailTemplateModel
+        private async Task ProcessEmailRequestOperationAsync<TEmailRequestModel, TEmailTemplateModel>(string queueName, string routingKey, Func<TEmailRequestModel, TEmailTemplateModel> func) 
+            where TEmailRequestModel : BaseEmailRequest
+            where TEmailTemplateModel : EmailTemplateModel
         {
-            await queueService.ReceiveMessages<T>(queueName, async model =>
+            await queueService.ReceiveMessages<TEmailRequestModel>(ExchangeNames.EmailExchange, queueName, routingKey, async model =>
             {
-                await emailService.SendEmailAsync(model);
-                logger.LogInformation($"Send {model.EmailType} email to {model.To} at {DateTime.Now}");
+                var emailModel = func(model);
+                await emailService.SendEmailAsync(emailModel);
             });
         }
     }

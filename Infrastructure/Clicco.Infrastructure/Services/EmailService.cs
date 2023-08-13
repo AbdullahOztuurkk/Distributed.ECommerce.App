@@ -1,35 +1,25 @@
 ﻿using Clicco.Application.Interfaces.Services.External;
 using Clicco.Domain.Shared.Models.Email;
-using Microsoft.Extensions.Configuration;
+using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.Infrastructure.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly HttpClient httpClient;
-        private readonly IHttpClientFactory httpClientFactory;
-        public EmailService(IHttpClientFactory httpClientFactory)
+        private readonly IQueueService rabbitMqService;
+        public EmailService(IQueueService rabbitMqService)
         {
-            this.httpClientFactory = httpClientFactory;
-            httpClient = httpClientFactory.CreateClient(nameof(EmailService));
+            this.rabbitMqService = rabbitMqService;
         }
 
-        public async Task<bool> SendFailedPaymentEmailAsync(PaymentFailedEmailRequest request)
+        public async Task SendFailedPaymentEmailAsync(PaymentFailedEmailRequest request)
         {
-            var response = await httpClient.PostAsJsonAsync("Email/SendFailedPaymentEmail", request);
-            return response.IsSuccessStatusCode;
+            await rabbitMqService.PushMessage(ExchangeNames.EmailExchange, request, EventNames.PaymentFailed);
         }
 
-        public async Task<bool> SendInvoiceEmailAsync(object request)
+        public async Task SendSuccessPaymentEmailAsync(PaymentSuccessEmailRequest request)
         {
-            var response = await httpClient.PostAsJsonAsync("Email/SendInvoiceEmail", request);
-            return response.IsSuccessStatusCode;
-        }
-
-        public async Task<bool> SendSuccessPaymentEmailAsync(PaymentSuccessEmailRequest request)
-        {
-            var response = await httpClient.PostAsJsonAsync("Email/SendSuccessPaymentEmail", request);
-            return response.IsSuccessStatusCode;
+            await rabbitMqService.PushMessage(ExchangeNames.EmailExchange, request, EventNames.PaymentSucceed);
         }
     }
 }

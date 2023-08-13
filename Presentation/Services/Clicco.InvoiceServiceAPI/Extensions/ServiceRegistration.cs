@@ -25,18 +25,9 @@ namespace Clicco.InvoiceServiceAPI.Extensions
             services.Configure<MongoDbSettings>(configuration.GetSection(nameof(MongoDbSettings)));
             services.Configure<RabbitMqSettings>(configuration.GetSection(nameof(RabbitMqSettings)));
 
-            services.AddHttpClient(nameof(EmailService), client =>
-                 {
-                     client.BaseAddress = new Uri(configuration["URLS:EMAIL_SERVICE_API"]);
-                 });
-
             services
                 .AddScoped<IInvoiceRepository, InvoiceRepository>()
-                .AddScoped<IEmailService, EmailService>()
-                .AddScoped<IRabbitMqService,RabbitMqService>()
-                .AddScoped<IInvoiceService, InvoiceService>();
-
-            services.AddHostedService<InvoiceWorker>();
+                .AddScoped<IQueueService, RabbitMqService>();
 
             return services;
         }

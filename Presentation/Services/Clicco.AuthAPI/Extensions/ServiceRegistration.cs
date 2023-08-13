@@ -1,13 +1,13 @@
 ﻿using Clicco.AuthAPI.Data.Context;
 using Clicco.AuthAPI.Data.Contracts;
 using Clicco.AuthAPI.Data.Repositories;
-using Clicco.AuthAPI.Data.Validators;
 using Clicco.AuthAPI.Models;
 using Clicco.AuthAPI.Services;
 using Clicco.AuthAPI.Services.Contracts;
 using Clicco.AuthServiceAPI.Data.Contracts;
 using Clicco.AuthServiceAPI.Data.Repositories;
-using FluentValidation;
+using Clicco.AuthServiceAPI.Services;
+using Clicco.AuthServiceAPI.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -47,20 +47,13 @@ namespace Clicco.AuthAPI.Extensions
                 opt.EnableSensitiveDataLogging();
             });
 
-            services.AddHttpClient(nameof(EmailService), client =>
-            {
-                client.BaseAddress = new Uri(configuration["URLS:EMAIL_SERVICE_API"]);
-            });
-
-            services.AddHttpContextAccessor();
-
             services.AddScoped<IAuthService, AuthService>();
-
-            services.AddScoped<IUserService, UserService>();
             
             services.AddScoped<IEmailService,EmailService>();
             
             services.AddScoped<IUserRepository,UserRepository>();
+
+            services.AddScoped<IQueueService, RabbitMqService>();
 
             services.AddScoped<IResetCodeRepository, ResetCodeRepository>();
 

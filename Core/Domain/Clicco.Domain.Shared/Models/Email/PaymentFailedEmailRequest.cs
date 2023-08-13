@@ -1,8 +1,7 @@
 ﻿namespace Clicco.Domain.Shared.Models.Email
 {
-    public class PaymentFailedEmailRequest
+    public class PaymentFailedEmailRequest : BaseEmailRequest
     {
-        public string To { get; set; }
         public string FullName { get; set; }
         public string OrderNumber { get; set; }
         public string Amount { get; set; }

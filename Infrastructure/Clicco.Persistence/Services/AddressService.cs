@@ -10,10 +10,8 @@ namespace Clicco.Persistence.Services
     public class AddressService : GenericService<Address>, IAddressService
     {
         private readonly IAddressRepository addressRepository;
-        private readonly IUserService userService;
-        public AddressService(IUserService userService, IAddressRepository addressRepository)
+        public AddressService( IAddressRepository addressRepository)
         {
-            this.userService = userService;
             this.addressRepository = addressRepository;
         }
 
@@ -21,13 +19,6 @@ namespace Clicco.Persistence.Services
         {
             var result = await addressRepository.GetByIdAsync(entityId);
             ThrowExceptionIfNull(result, err ?? CustomErrors.AddressNotFound);
-        }
-
-        public async Task CheckUserIdAsync(int userId)
-        {
-            var result = await userService.IsExistAsync(userId);
-            if (!result)
-                throw new CustomException(CustomErrors.UserNotFound);
         }
     }
 }

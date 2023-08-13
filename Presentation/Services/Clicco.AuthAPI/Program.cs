@@ -1,5 +1,6 @@
 using Clicco.AuthAPI.Data.Validators;
 using Clicco.AuthAPI.Extensions;
+using Clicco.AuthServiceAPI.Configurations;
 using Clicco.AuthServiceAPI.Filters;
 using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
@@ -14,6 +15,7 @@ builder.Services.AddControllers(opt =>
 })
     .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserValidators>())
     .ConfigureApiBehaviorOptions(opt => opt.SuppressModelStateInvalidFilter = true);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -49,6 +51,8 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+builder.Services.Configure<RabbitMqSettings>(builder.Configuration.GetSection(nameof(RabbitMqSettings)));
 
 var app = builder.Build();
 

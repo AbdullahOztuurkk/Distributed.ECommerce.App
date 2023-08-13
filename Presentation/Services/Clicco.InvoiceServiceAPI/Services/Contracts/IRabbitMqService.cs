@@ -1,8 +1,8 @@
 ﻿namespace Clicco.InvoiceServiceAPI.Services.Contracts
 {
-    public interface IRabbitMqService
+    public interface IQueueService
     {
-        Task PushMessage<TModel>(TModel model, string routingKey);
-        Task ReceiveMessages<TModel>(string queueName, Action<TModel> messageHandler);
+        Task PushMessage<TModel>(string ExchangeName, TModel model, string routingKey);
+        Task ReceiveMessages<TModel>(string ExchangeName, string queueName, string routingKey, Action<TModel> messageHandler);
     }
 }
