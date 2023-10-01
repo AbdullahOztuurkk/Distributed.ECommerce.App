@@ -1,0 +1,125 @@
+version: '3.4'
+
+services:
+  web.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:5000"
+    networks:
+      - net_backendservices
+      - net_apigateway
+    depends_on:
+      - web.api.gateway
+      - s_rabbitmq
+      - s_redis
+      - s_sqlserver
+
+  payment.service.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5003:5003"
+    networks:
+      - net_apigateway
+      - net_backendservices
+    depends_on:
+      - web.api.gateway
+
+  invoice.service.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5004:5004"
+    networks:
+      - net_backendservices
+      - net_apigateway
+    depends_on:
+      - web.api.gateway
+      - s_rabbitmq
+      - s_mongo
+
+
+  email.service.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5002:5002"
+    networks:
+      - net_backendservices
+      - net_apigateway
+    depends_on:
+      - web.api.gateway
+      - s_rabbitmq
+      - s_sqlserver
+
+
+  auth.service.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5001:5001"
+    networks:
+      - net_backendservices
+      - net_apigateway
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - web.api.gateway
+      - s_rabbitmq
+      - s_sqlserver
+
+  web.api.gateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5010:5010"
+    networks:
+      - net_apigateway
+
+  s_sqlserver:
+    user: port
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Abdullah123!
+    volumes:
+      - sqlserver_data:/var/opt/mssql/data
+      - sqlserver_log:/var/opt/mssql/log
+    networks:
+      - net_backendservices
+
+
+  s_rabbitmq:
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+    networks:
+      - net_backendservices
+      - net_apigateway
+
+  s_redis:
+    ports:
+      - 6379:6379
+    volumes:
+      - /opt/app_data/redis/:/data
+    networks:
+      - net_backendservices
+      - net_apigateway
+
+networks:
+    net_apigateway:
+        driver: bridge
+        external: true
+    net_backendservices :
+        driver: bridge
+        external: true
+
+volumes:
+    rabbitmq:
+    sqlserver_data:
+    sqlserver_log:

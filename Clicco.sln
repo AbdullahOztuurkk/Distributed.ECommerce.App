@@ -48,7 +48,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.Tests", "Tests\WebAp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateways", "ApiGateways", "{0F901A9D-7136-498C-8282-CFB10E2EF251}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clicco.Web.ApiGateway", "Presentation\ApiGateways\Clicco.Web.ApiGateway\Clicco.Web.ApiGateway.csproj", "{C01FABC1-CD88-4181-BC1F-0F199A215097}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clicco.Web.ApiGateway", "Presentation\ApiGateways\Clicco.Web.ApiGateway\Clicco.Web.ApiGateway.csproj", "{C01FABC1-CD88-4181-BC1F-0F199A215097}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{5A1D6A29-F1CF-40E4-B38E-3A0D9484C0D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,6 +110,10 @@ Global
 		{C01FABC1-CD88-4181-BC1F-0F199A215097}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C01FABC1-CD88-4181-BC1F-0F199A215097}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C01FABC1-CD88-4181-BC1F-0F199A215097}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A1D6A29-F1CF-40E4-B38E-3A0D9484C0D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A1D6A29-F1CF-40E4-B38E-3A0D9484C0D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A1D6A29-F1CF-40E4-B38E-3A0D9484C0D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A1D6A29-F1CF-40E4-B38E-3A0D9484C0D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

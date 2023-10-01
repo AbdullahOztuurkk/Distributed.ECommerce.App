@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Clicco.Tests": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

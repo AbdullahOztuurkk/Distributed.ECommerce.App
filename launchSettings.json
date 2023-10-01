@@ -1,0 +1,17 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "clicco.webapi": "StartDebugging",
+        "clicco.paymentserviceapi": "StartDebugging",
+        "clicco.invoiceserviceapi": "StartDebugging",
+        "clicco.emailserviceapi": "StartDebugging",
+        "clicco.authserviceapi": "StartDebugging",
+        "clicco.web.apigateway": "StartDebugging",
+        "clicco.tests": "StartDebugging"
+      }
+    }
+  }
+}
