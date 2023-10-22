@@ -41,13 +41,6 @@ services:
       context: .
       dockerfile: Presentation/ApiGateways/Clicco.Web.ApiGateway/Dockerfile
 
-
-  test.project:
-    image: ${DOCKER_REGISTRY-}cliccotests
-    build:
-      context: .
-      dockerfile: Tests/WebApi/Clicco.Tests/Dockerfile
-
   s_redis:
     container_name: c_redis
     image: redis
@@ -59,10 +52,6 @@ services:
   s_sqlserver:
     container_name: c_sqlserver
     image: mcr.microsoft.com/mssql/server:2019-latest
-
-  s_mongo:
-    container_name: c_mongo
-    image: mongo
 
 networks:
     net_apiqateway:

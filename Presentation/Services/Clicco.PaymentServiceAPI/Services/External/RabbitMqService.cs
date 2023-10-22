@@ -20,6 +20,7 @@ namespace Clicco.PaymentServiceAPI.Services.External
             var factory = new ConnectionFactory
             {
                 HostName = settings.Host,
+                Port = settings.Port,
                 UserName = settings.UserName,
                 Password = settings.Password,
             };

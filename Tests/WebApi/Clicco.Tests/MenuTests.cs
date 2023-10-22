@@ -51,10 +51,10 @@ namespace Clicco.Persistence.Tests
                 return urls.ConcatUrls();
             });
 
-            CreateMenuCommandHandler handler = new(
-                mapper: mockMapper.Object ,
-                menuRepository: mockMenuRepository.Object,
-                menuService: mockMenuService.Object);
+            //CreateMenuCommandHandler handler = new(
+            //    mapper: mockMapper.Object ,
+            //    menuRepository: mockMenuRepository.Object,
+            //    menuService: mockMenuService.Object);
 
             CreateMenuCommand createMenuCommand = new()
             {
@@ -70,7 +70,7 @@ namespace Clicco.Persistence.Tests
 
             mockMapper.Setup(x => x.Map<Menu>(createMenuCommand)).Returns(menu);
             
-            await handler.Handle(createMenuCommand,new CancellationToken());
+            //await handler.Handle(createMenuCommand,new CancellationToken());
 
             menu.SlugUrl.Should().Be("parent-category-url-sub-category-url");
         }

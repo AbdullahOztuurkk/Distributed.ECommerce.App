@@ -1,45 +1,30 @@
-version: '3.4'
-
+﻿version: '3.4'
+# sql tarafı ve testting tarafı kaldı 
 services:
   web.api:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Development 
     ports:
       - "5000:5000"
     networks:
       - net_backendservices
       - net_apigateway
+    restart: always
     depends_on:
       - web.api.gateway
       - s_rabbitmq
       - s_redis
       - s_sqlserver
-
-  payment.service.api:
+    mem_limit: 1g
+  web.api.gateway:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "5003:5003"
+      - "5010:5010"
+    restart: always
     networks:
       - net_apigateway
-      - net_backendservices
-    depends_on:
-      - web.api.gateway
-
-  invoice.service.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "5004:5004"
-    networks:
-      - net_backendservices
-      - net_apigateway
-    depends_on:
-      - web.api.gateway
-      - s_rabbitmq
-      - s_mongo
-
-
+    mem_limit: 512m
   email.service.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -48,12 +33,42 @@ services:
     networks:
       - net_backendservices
       - net_apigateway
+    restart: always
     depends_on:
       - web.api.gateway
       - s_rabbitmq
       - s_sqlserver
-
-
+    labels:
+        Names: email.service.api
+    mem_limit: 512m
+  invoice.service.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "MongoDbSettings:ConnectionString=mongodb://catalogdb:27017"
+    ports:
+      - "5004:5004"
+    restart: always
+    networks:
+      - net_backendservices
+      - net_apigateway
+    depends_on:
+      - web.api.gateway
+      - s_rabbitmq
+      - s_mongo
+    mem_limit: 512m
+  payment.service.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5003:5003"
+    restart: always
+    networks:
+      - net_apigateway
+      - net_backendservices
+    depends_on:
+      - web.api.gateway
+      - s_rabbitmq
+    mem_limit: 512m
   auth.service.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -62,36 +77,31 @@ services:
     networks:
       - net_backendservices
       - net_apigateway
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
     depends_on:
       - web.api.gateway
       - s_rabbitmq
       - s_sqlserver
-
-  web.api.gateway:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "5010:5010"
-    networks:
-      - net_apigateway
-
+    mem_limit: 512m
+  test.project:
+   environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+   mem_limit: 1g
   s_sqlserver:
-    user: port
-    ports:
-      - 1433:1433
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: mssql2019
+    restart: always
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=Abdullah123!
+      SA_PASSWORD: "sqlsa"
+      ACCEPT_EULA: "Y" 
+    ports:
+      - "1433:1433"
+    labels:
+      NAME: "s_sqlserver"
     volumes:
-      - sqlserver_data:/var/opt/mssql/data
-      - sqlserver_log:/var/opt/mssql/log
+      - ./mssql_volume:/var/opt/mssql
     networks:
       - net_backendservices
-
-
+    mem_limit: 2g
   s_rabbitmq:
     ports:
       - 5672:5672
@@ -101,7 +111,9 @@ services:
     networks:
       - net_backendservices
       - net_apigateway
-
+    labels:
+     Names: s_rabbitmq
+    mem_limit: 1g
   s_redis:
     ports:
       - 6379:6379
@@ -110,14 +122,22 @@ services:
     networks:
       - net_backendservices
       - net_apigateway
+    mem_limit: 1g
+  s_mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    labels:
+      Names: s_mongo
+    mem_limit: 1g
 
 networks:
     net_apigateway:
         driver: bridge
-        external: true
+        #external: true
     net_backendservices :
         driver: bridge
-        external: true
+        #external: true
 
 volumes:
     rabbitmq:

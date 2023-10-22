@@ -21,6 +21,7 @@ namespace Clicco.InvoiceServiceAPI.Services
             var factory = new ConnectionFactory
             {
                 HostName = settings.Host,
+                Port = settings.Port,
                 UserName = settings.UserName,
                 Password = settings.Password,
             };

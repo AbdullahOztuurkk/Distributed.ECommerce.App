@@ -16,11 +16,22 @@ namespace Clicco.InvoiceServiceAPI.Data.Context
         public MongoDbContext(IOptions<MongoDbSettings> options)
         {
             settings = options.Value;
-            var mongoUrl = new MongoUrl(settings.ConnectionString);
+            Console.WriteLine("-----------Message-----------");
+            Console.WriteLine(settings.ConnectionString);
+            try
+            {
+                var mongoUrl = new MongoUrl(settings.ConnectionString);
 
-            client = new MongoClient(mongoUrl);
-            database = client.GetDatabase(settings.DatabaseName);
-            Invoices = new InvoiceCollection(database.GetCollection<Invoice>(settings.InvoiceCollectionName));
+                client = new MongoClient(mongoUrl);
+                database = client.GetDatabase(settings.DatabaseName);
+                Console.WriteLine(database.DatabaseNamespace);
+                Invoices = new InvoiceCollection(database.GetCollection<Invoice>(settings.InvoiceCollectionName));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Message 2");
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
