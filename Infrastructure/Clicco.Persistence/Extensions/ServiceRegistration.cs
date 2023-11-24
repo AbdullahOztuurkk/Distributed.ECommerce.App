@@ -1,15 +1,15 @@
 ﻿using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.Services;
+using Clicco.Application.Interfaces.UnitOfWork;
 using Clicco.Infrastructure.Context;
 using Clicco.Infrastructure.Repositories;
 using Clicco.Infrastructure.Services;
-using Clicco.Persistence.Repositories;
 using Clicco.Persistence.Services;
+using Clicco.Persistence.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace Clicco.Infrastructure.Extensions
 {
@@ -19,7 +19,7 @@ namespace Clicco.Infrastructure.Extensions
         {
             services.AddDbContext<CliccoContext>(opt =>
             {
-                opt.UseSqlServer(configuration.GetConnectionString("CliccoContext"),sqlOpt =>
+                opt.UseSqlServer(configuration.GetConnectionString("CliccoContext"), sqlOpt =>
                 {
                     sqlOpt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null);
                 });
@@ -28,27 +28,13 @@ namespace Clicco.Infrastructure.Extensions
 
             services.AddScoped<ICacheManager, RedisCacheManager>();
 
+            services.AddScoped<IUnitOfWork, UnitOfWork<CliccoContext>>();
+
             services.AddHttpContextAccessor();
 
             #region Repositories
-            
-            services.AddScoped<ITransactionDetailRepository,TransactionDetailRepository>();
-
-            services.AddScoped<ITransactionRepository, TransactionRepository>();
-
-            services.AddScoped<IProductRepository, ProductRepository>();
-
-            services.AddScoped<IReviewRepository, ReviewRepository>();
-
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-
-            services.AddScoped<ICouponRepository, CouponRepository>();
-
-            services.AddScoped<IAddressRepository, AddressRepository>();
 
             services.AddScoped<IMenuRepository, MenuRepository>();
-
-            services.AddScoped<IVendorRepository, VendorRepository>();
 
             #endregion
 
@@ -60,17 +46,13 @@ namespace Clicco.Infrastructure.Extensions
 
             services.AddScoped<IProductService, ProductService>();
 
-            services.AddScoped<IReviewService, ReviewService>();
-
             services.AddScoped<ICategoryService, CategoryService>();
 
-            services.AddScoped<ICouponService, CouponService>();
+            services.AddScoped<ICouponManagementHelper, CouponManagementHelper>();
 
             services.AddScoped<IAddressService, AddressService>();
 
             services.AddScoped<IMenuService, MenuService>();
-
-            services.AddScoped<IVendorService, VendorService>();
 
             #endregion
 

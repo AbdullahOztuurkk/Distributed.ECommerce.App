@@ -1,13 +1,14 @@
-﻿using Clicco.Domain.Shared.Models.Invoice;
+﻿using Clicco.Domain.Shared.Models.Email;
+using Clicco.Domain.Shared.Models.Invoice;
 using System.ComponentModel.DataAnnotations;
 using static Clicco.Domain.Shared.Global;
 using static Clicco.EmailServiceAPI.Model.Common.Global;
 
 namespace Clicco.EmailServiceAPI.Model
 {
-    interface IConvertableFrom<T>
+    interface IConvertableFrom<TSource, TDestination>
     {
-        T Convert(T value);
+        TSource Convert(TDestination value);
     }
     public class EmailTemplateModel
     {
@@ -25,22 +26,31 @@ namespace Clicco.EmailServiceAPI.Model
         public EmailType EmailType { get; set; }
     }
 
-    public class RegistrationEmailTemplateModel : EmailTemplateModel
+    public class RegistrationEmailTemplateModel : EmailTemplateModel, IConvertableFrom<RegistrationEmailTemplateModel, RegistrationEmailRequestDto>
     {
         public RegistrationEmailTemplateModel()
         {
-            EmailType = EmailType.NewUser;    
+            EmailType = EmailType.NewUser;
         }
 
         [DisplayElement("#FULL_NAME#")]
         public string FullName { get; set; }
+
+        public RegistrationEmailTemplateModel Convert(RegistrationEmailRequestDto value)
+        {
+            return new RegistrationEmailTemplateModel()
+            {
+                To = value.To,
+                FullName = value.FullName,
+            };
+        }
     }
 
     public class ForgotPasswordEmailTemplateModel : EmailTemplateModel
     {
         public ForgotPasswordEmailTemplateModel()
         {
-            EmailType = EmailType.ForgotPassword;    
+            EmailType = EmailType.ForgotPassword;
         }
 
         [DisplayElement("#FULL_NAME#")]
@@ -54,7 +64,7 @@ namespace Clicco.EmailServiceAPI.Model
     {
         public SuccessPaymentEmailTemplateModel()
         {
-            EmailType = EmailType.SuccessPayment;    
+            EmailType = EmailType.SuccessPayment;
         }
 
         [DisplayElement("#FULL_NAME#")]
@@ -77,7 +87,7 @@ namespace Clicco.EmailServiceAPI.Model
     {
         public FailedPaymentEmailTemplateModel()
         {
-            EmailType = EmailType.FailedPayment;    
+            EmailType = EmailType.FailedPayment;
         }
 
         [DisplayElement("#FULL_NAME#")]

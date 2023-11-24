@@ -1,5 +1,4 @@
-﻿using Clicco.Domain.Core;
-using Clicco.Domain.Model;
+﻿using Clicco.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,18 +1,11 @@
-﻿using AutoMapper;
-using Clicco.Application.Interfaces.CacheManager;
-using Clicco.Application.Interfaces.Repositories;
-using Clicco.Application.ViewModels;
-using Clicco.Domain.Core.ResponseModel;
-using MediatR;
-
-namespace Clicco.Application.Features.Queries
+﻿namespace Clicco.Application.Features.Queries
 {
-    public class GetReviewByIdQuery : IRequest<BaseResponse<ReviewViewModel>>
+    public class GetReviewByIdQuery : IRequest<ResponseDto>
     {
         public int Id { get; set; }
     }
 
-    public class GetReviewByIdQueryHandler : IRequestHandler<GetReviewByIdQuery, BaseResponse<ReviewViewModel>>
+    public class GetReviewByIdQueryHandler : IRequestHandler<GetReviewByIdQuery, ResponseDto>
     {
         private readonly IReviewRepository reviewRepository;
         private readonly IMapper mapper;
@@ -23,9 +16,9 @@ namespace Clicco.Application.Features.Queries
             this.mapper = mapper;
             this.cacheManager = cacheManager;
         }
-        public async Task<BaseResponse<ReviewViewModel>> Handle(GetReviewByIdQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseDto> Handle(GetReviewByIdQuery request, CancellationToken cancellationToken)
         {
-            return new SuccessResponse<ReviewViewModel>(mapper.Map<ReviewViewModel>(await reviewRepository.GetByIdAsync(request.Id, x => x.Product)));
+            return new SuccessResponse(mapper.Map<ReviewResponseDto>(await reviewRepository.GetByIdAsync(request.Id, x => x.Product)));
         }
     }
 }

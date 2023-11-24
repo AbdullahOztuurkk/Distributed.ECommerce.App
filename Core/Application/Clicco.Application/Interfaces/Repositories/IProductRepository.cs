@@ -1,8 +1,6 @@
-﻿using Clicco.Domain.Model;
-
-namespace Clicco.Application.Interfaces.Repositories
+﻿namespace Clicco.Application.Interfaces.Repositories
 {
-    public interface IProductRepository : IGenericRepository<Product>
+    public interface IProductRepository : IRepository<Product>
     {
 
     }

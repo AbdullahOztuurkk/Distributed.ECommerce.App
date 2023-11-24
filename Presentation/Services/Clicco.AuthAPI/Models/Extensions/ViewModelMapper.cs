@@ -4,9 +4,9 @@ namespace Clicco.AuthAPI.Models.Extensions
 {
     public static class ViewModelMapper
     {
-        public static NewUserViewModel AsViewModel(this User user)
+        public static RegisteredUserDto AsViewModel(this User user)
         {
-            return new NewUserViewModel
+            return new RegisteredUserDto
             {
                 Email = user.Email,
                 FirstName = user.FirstName,

@@ -4,7 +4,7 @@ namespace Clicco.Domain.Core.Extensions
 {
     public static class StringExtensions
     {
-        public static string ToSeoFriendlyUrl(this string str)
+        public static string AsSlug(this string str)
         {
             str = str.ToLower().Trim();
             str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
@@ -12,11 +12,6 @@ namespace Clicco.Domain.Core.Extensions
             str = str.Replace(" ", "-");
             str = Regex.Replace(str, @"-+", "-");
             return str;
-        }
-
-        public static string ConcatUrls(this List<string> seoUrls)
-        {
-            return string.Join('-',seoUrls);
         }
     }
 }

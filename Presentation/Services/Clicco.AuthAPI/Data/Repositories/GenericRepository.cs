@@ -1,11 +1,11 @@
 ﻿using Clicco.AuthAPI.Data.Contracts;
-using Clicco.AuthAPI.Models.Common;
+using Clicco.Domain.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Clicco.AuthAPI.Data.Repositories
 {
-    public class GenericRepository<TEntity, TContext> : IGenericRepository<TEntity>
+    public class GenericRepository<TEntity, TContext> : IRepository<TEntity>
         where TEntity : BaseEntity
         where TContext : DbContext, new()
     {

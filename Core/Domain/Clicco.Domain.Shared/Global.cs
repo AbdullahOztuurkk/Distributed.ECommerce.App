@@ -63,10 +63,10 @@
 
         public class DisplayElementAttribute : Attribute
         {
-            public string ParameterName { get; private set; }
+            public string Name { get; private set; }
             public DisplayElementAttribute(string parameterName)
             {
-                ParameterName = parameterName;
+                Name = parameterName;
             }
         }
 

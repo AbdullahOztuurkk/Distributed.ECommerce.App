@@ -3,7 +3,7 @@ using Clicco.AuthServiceAPI.Models;
 
 namespace Clicco.AuthServiceAPI.Data.Contracts
 {
-    public interface IResetCodeRepository : IGenericRepository<ResetCode>
+    public interface IResetCodeRepository : IRepository<ResetCode>
     {
     }
 }

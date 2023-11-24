@@ -1,6 +1,5 @@
-﻿using Clicco.Application.Interfaces.Services;
-using Clicco.Application.Interfaces.Services.External;
-using MediatR;
+﻿using Clicco.Application.Services.Abstract;
+using Clicco.Application.Services.Abstract.External;
 
 namespace Clicco.Application.Features.Queries
 {
@@ -24,7 +23,7 @@ namespace Clicco.Application.Features.Queries
 
         public async Task Handle(GetInvoiceEmailByTransactionIdQuery request, CancellationToken cancellationToken)
         {
-            await transactionService.CheckSelfId(request.TransactionId);
+            //await transactionService.CheckById(request.TransactionId);
 
             await invoiceService.SendEmailByTransactionId(transactionId: request.TransactionId);
         }

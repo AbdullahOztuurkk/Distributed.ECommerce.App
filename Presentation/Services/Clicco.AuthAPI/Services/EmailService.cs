@@ -14,17 +14,17 @@ namespace Clicco.AuthAPI.Services
             this.queueService = queueService;
         }
 
-        public async Task SendForgotPasswordEmailAsync(ForgotPasswordEmailRequest request)
+        public async Task SendForgotPasswordEmailAsync(ForgotPasswordEmailRequestDto request)
         {
             await queueService.PushMessage(ExchangeNames.EmailExchange, request, EventNames.ForgotPasswordMailRequest);
         }
 
-        public async Task SendRegistrationEmailAsync(RegistrationEmailRequest request)
+        public async Task SendRegistrationEmailAsync(RegistrationEmailRequestDto request)
         {
             await queueService.PushMessage(ExchangeNames.EmailExchange, request, EventNames.RegistrationMailRequest);
         }
 
-        public async Task SendResetPasswordEmailAsync(ResetPasswordEmailRequest request)
+        public async Task SendResetPasswordEmailAsync(ResetPasswordEmailRequestDto request)
         {
             await queueService.PushMessage(ExchangeNames.EmailExchange, request, EventNames.ResetPasswordMailRequest);
 

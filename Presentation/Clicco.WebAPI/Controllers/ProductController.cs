@@ -1,6 +1,5 @@
 ﻿using Clicco.Application.Features.Commands;
 using Clicco.Application.Features.Queries;
-using Clicco.Application.ViewModels;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.WebAPI.Models;
 using MediatR;
@@ -24,7 +23,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<ProductViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<ProductResponseDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll([FromQuery] PaginationFilter paginationFilter)
         {
             var result = await mediator.Send(new GetAllProductQuery(paginationFilter));
@@ -33,7 +32,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(ProductViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProductResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
@@ -43,7 +42,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPost("Create")]
-        [ProducesResponseType(typeof(BaseResponse<ProductViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateProductCommand command)
         {
@@ -52,7 +51,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(BaseResponse<ProductViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateProductCommand command)
         {
@@ -61,7 +60,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpDelete("Delete")]
-        [ProducesResponseType(typeof(BaseResponse<ProductViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromBody] DeleteProductCommand command)
         {

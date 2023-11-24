@@ -1,4 +1,4 @@
-﻿using Clicco.Application.Interfaces.Services.External;
+﻿using Clicco.Application.Services.Abstract.External;
 using Clicco.Domain.Shared.Models.Email;
 using static Clicco.Domain.Shared.Global;
 
@@ -6,20 +6,20 @@ namespace Clicco.Infrastructure.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly IQueueService rabbitMqService;
+        private readonly IQueueService _bus;
         public EmailService(IQueueService rabbitMqService)
         {
-            this.rabbitMqService = rabbitMqService;
+            this._bus = rabbitMqService;
         }
 
-        public async Task SendFailedPaymentEmailAsync(PaymentFailedEmailRequest request)
+        public async Task SendFailedPaymentEmailAsync(PaymentFailedEmailRequestDto request)
         {
-            await rabbitMqService.PushMessage(ExchangeNames.EmailExchange, request, EventNames.PaymentFailed);
+            await _bus.PushMessage(ExchangeNames.EmailExchange, request, EventNames.PaymentFailed);
         }
 
-        public async Task SendSuccessPaymentEmailAsync(PaymentSuccessEmailRequest request)
+        public async Task SendSuccessPaymentEmailAsync(PaymentSuccessEmailRequestDto request)
         {
-            await rabbitMqService.PushMessage(ExchangeNames.EmailExchange, request, EventNames.PaymentSucceed);
+            await _bus.PushMessage(ExchangeNames.EmailExchange, request, EventNames.PaymentSucceed);
         }
     }
 }

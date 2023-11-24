@@ -1,5 +1,4 @@
-﻿using Clicco.EmailServiceAPI.Model.Common;
-using static Clicco.EmailServiceAPI.Model.Common.Global;
+﻿using static Clicco.EmailServiceAPI.Model.Common.Global;
 
 namespace Clicco.EmailServiceAPI.Services.Contracts
 {

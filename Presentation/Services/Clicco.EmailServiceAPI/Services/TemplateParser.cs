@@ -32,7 +32,7 @@ namespace Clicco.EmailServiceAPI.Services
                 {
                     if (displayAttr != null)
                     {
-                        string parameterName = displayAttr.ParameterName;
+                        string parameterName = displayAttr.Name;
                         object propertyValue = property.GetValue(model);
                         htmlTemplate = htmlTemplate.Replace(parameterName, propertyValue == null ? string.Empty : propertyValue.ToString());
                     }
@@ -47,7 +47,7 @@ namespace Clicco.EmailServiceAPI.Services
 
                         if (displayAttr != null)
                         {
-                            string parameterName = displayAttr.ParameterName;
+                            string parameterName = displayAttr.Name;
                             object propertyValue = propInfo.GetValue(property.GetValue(model));
                             htmlTemplate = htmlTemplate.Replace(parameterName, propertyValue == null ? string.Empty : propertyValue.ToString());
                         }

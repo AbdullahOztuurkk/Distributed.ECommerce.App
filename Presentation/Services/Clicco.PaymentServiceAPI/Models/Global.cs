@@ -30,7 +30,8 @@ namespace Clicco.PaymentServiceAPI.Models
             }
         }
 
-        public enum BankServices{
+        public enum BankServices
+        {
             Ziraat = 10,
             Akbank = 20,
             Garanti = 30,

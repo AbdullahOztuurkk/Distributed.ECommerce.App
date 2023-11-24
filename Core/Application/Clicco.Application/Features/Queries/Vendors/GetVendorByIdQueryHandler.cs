@@ -1,39 +1,38 @@
-﻿using AutoMapper;
-using Clicco.Application.Interfaces.CacheManager;
-using Clicco.Application.Interfaces.Repositories;
-using Clicco.Application.Interfaces.Services;
-using Clicco.Application.ViewModels;
-using Clicco.Domain.Core;
-using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Model;
-using MediatR;
-
-namespace Clicco.Application.Features.Queries
+﻿namespace Clicco.Application.Features.Queries
 {
-    public class GetVendorsByIdQuery : IRequest<BaseResponse<VendorViewModel>>
+    public class GetVendorsByIdQuery : IRequest<ResponseDto>
     {
         public int Id { get; set; }
     }
 
-    public class GetVendorByIdQueryHandler : IRequestHandler<GetVendorsByIdQuery, BaseResponse<VendorViewModel>>
+    public class GetVendorByIdQueryHandler : IRequestHandler<GetVendorsByIdQuery, ResponseDto>
     {
         private readonly IVendorRepository vendorRepository;
         private readonly IMapper mapper;
-        private readonly IVendorService vendorService;
         public GetVendorByIdQueryHandler(
             IVendorRepository vendorRepository,
-            IMapper mapper,
-            IVendorService vendorService)
+            IMapper mapper)
         {
             this.vendorRepository = vendorRepository;
             this.mapper = mapper;
-            this.vendorService = vendorService;
         }
-        public async Task<BaseResponse<VendorViewModel>> Handle(GetVendorsByIdQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseDto> Handle(GetVendorsByIdQuery request, CancellationToken cancellationToken)
         {
-            await vendorService.CheckSelfId(request.Id);
+            ResponseDto response = new();
 
-            return new SuccessResponse<VendorViewModel>(mapper.Map<VendorViewModel>(await vendorRepository.GetByIdAsync(request.Id)));
+            var vendor = await vendorRepository.GetByIdAsync(request.Id);
+
+            if (vendor == null)
+            {
+                response.IsSuccess = false;
+                response.Error = Errors.VendorNotFound;
+                return response;
+            }
+
+            var data = mapper.Map<VendorResponseDto>(vendor);
+            response.Data = data;
+
+            return response;
         }
     }
 }

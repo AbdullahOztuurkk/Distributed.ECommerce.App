@@ -24,32 +24,32 @@ namespace Clicco.EmailServiceAPI
         {
             await Task.WhenAll
             (
-                ProcessEmailRequestOperationAsync<ForgotPasswordEmailRequest,ForgotPasswordEmailTemplateModel>(
-                    QueueNames.ForgotPasswordEmailQueue, EventNames.ForgotPasswordMailRequest,(model) =>
+                ProcessEmailRequestOperationAsync<ForgotPasswordEmailRequestDto, ForgotPasswordEmailTemplateModel>(
+                    QueueNames.ForgotPasswordEmailQueue, EventNames.ForgotPasswordMailRequest, (model) =>
                 {
                     return model.ConvertToEmailModel();
                 }),
-                ProcessEmailRequestOperationAsync<RegistrationEmailRequest, RegistrationEmailTemplateModel>(
+                ProcessEmailRequestOperationAsync<RegistrationEmailRequestDto, RegistrationEmailTemplateModel>(
                     QueueNames.RegistrationEmailQueue, EventNames.RegistrationMailRequest, (model) =>
                 {
                     return model.ConvertToEmailModel();
                 }),
-                ProcessEmailRequestOperationAsync<PaymentSuccessEmailRequest, SuccessPaymentEmailTemplateModel>(
+                ProcessEmailRequestOperationAsync<PaymentSuccessEmailRequestDto, SuccessPaymentEmailTemplateModel>(
                     QueueNames.SuccessPaymentEmailQueue, EventNames.PaymentSucceedMailRequest, (model) =>
                 {
                     return model.ConvertToEmailModel();
                 }),
-                ProcessEmailRequestOperationAsync<PaymentFailedEmailRequest,FailedPaymentEmailTemplateModel>(
-                    QueueNames.FailedPaymentEmailQueue, EventNames.PaymentFailedMailRequest,(model) =>
+                ProcessEmailRequestOperationAsync<PaymentFailedEmailRequestDto, FailedPaymentEmailTemplateModel>(
+                    QueueNames.FailedPaymentEmailQueue, EventNames.PaymentFailedMailRequest, (model) =>
                 {
                     return model.ConvertToEmailModel();
                 }),
-                ProcessEmailRequestOperationAsync<ResetPasswordEmailRequest, ResetPasswordEmailTemplateModel>(
+                ProcessEmailRequestOperationAsync<ResetPasswordEmailRequestDto, ResetPasswordEmailTemplateModel>(
                     QueueNames.ResetPasswordEmailQueue, EventNames.ResetPasswordMailRequest, (model) =>
                 {
                     return model.ConvertToEmailModel();
                 }),
-                ProcessEmailRequestOperationAsync<InvoiceEmailRequest, InvoiceEmailTemplateModel>(
+                ProcessEmailRequestOperationAsync<InvoiceEmailRequestDto, InvoiceEmailTemplateModel>(
                     QueueNames.ResetPasswordEmailQueue, EventNames.ResetPasswordMailRequest, (model) =>
                 {
                     return model.ConvertToEmailModel();
@@ -57,7 +57,7 @@ namespace Clicco.EmailServiceAPI
             );
         }
 
-        private async Task ProcessEmailRequestOperationAsync<TEmailRequestModel, TEmailTemplateModel>(string queueName, string routingKey, Func<TEmailRequestModel, TEmailTemplateModel> func) 
+        private async Task ProcessEmailRequestOperationAsync<TEmailRequestModel, TEmailTemplateModel>(string queueName, string routingKey, Func<TEmailRequestModel, TEmailTemplateModel> func)
             where TEmailRequestModel : BaseEmailRequest
             where TEmailTemplateModel : EmailTemplateModel
         {

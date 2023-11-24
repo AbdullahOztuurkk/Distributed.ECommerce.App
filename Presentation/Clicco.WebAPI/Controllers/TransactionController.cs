@@ -1,7 +1,6 @@
 ﻿using Clicco.Application.Features.Commands;
 using Clicco.Application.Features.Queries;
 using Clicco.Application.Features.Queries.Transactions;
-using Clicco.Application.ViewModels;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.WebAPI.Models;
 using MediatR;
@@ -23,7 +22,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(TransactionViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(TransactionResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
@@ -33,7 +32,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(BaseResponse<TransactionViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateTransactionCommand command)
         {
@@ -42,7 +41,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpGet("{id}/details")]
-        [ProducesResponseType(typeof(BaseResponse<TransactionDetailViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto<TransactionDetailResponseDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
@@ -59,7 +58,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpDelete("Delete")]
-        [ProducesResponseType(typeof(BaseResponse<TransactionViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromBody] DeleteTransactionCommand command)
         {

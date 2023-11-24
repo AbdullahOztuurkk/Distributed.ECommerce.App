@@ -2,7 +2,7 @@
 
 namespace Clicco.Domain.Model
 {
-    public class Coupon: BaseEntity, ISoftDeletable
+    public class Coupon : BaseEntity, ISoftDeletable
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -16,4 +16,10 @@ namespace Clicco.Domain.Model
 
         //Relationship
         public Transaction Transaction { get; set; }
-    }}
+
+        public bool IsValid()
+        {
+            return IsActive && IsDeleted && ExpirationDate > DateTime.UtcNow.AddHours(3);
+        }
+    }
+}

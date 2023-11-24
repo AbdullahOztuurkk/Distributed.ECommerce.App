@@ -2,11 +2,11 @@
 using Clicco.AuthAPI.Models;
 using Clicco.AuthAPI.Services.Contracts;
 using Clicco.AuthServiceAPI.Data.Contracts;
-using Clicco.AuthServiceAPI.Exceptions;
 using Clicco.AuthServiceAPI.Helpers;
 using Clicco.AuthServiceAPI.Models;
 using Clicco.AuthServiceAPI.Models.Request;
-using Clicco.AuthServiceAPI.Models.Response;
+using Clicco.Domain.Core.Exceptions;
+using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Shared.Models.Email;
 
 namespace Clicco.AuthAPI.Services
@@ -16,42 +16,42 @@ namespace Clicco.AuthAPI.Services
         private readonly IEmailService emailService;
         private readonly IUserRepository userRepository;
         private readonly IResetCodeRepository resetCodeRepository;
-        private readonly IHttpContextAccessor contextAccessor;
 
         public AuthService(IUserRepository userRepository,
             IEmailService emailService,
-            IResetCodeRepository resetLinkRepository,
-            IHttpContextAccessor contextAccessor)
+            IResetCodeRepository resetLinkRepository)
         {
             this.userRepository = userRepository;
             this.emailService = emailService;
             this.resetCodeRepository = resetLinkRepository;
-            this.contextAccessor = contextAccessor;
         }
-        public async Task<User> LoginAsync(string email, string password)
+        public async Task<ResponseDto> LoginAsync(string email, string password)
         {
-            bool isAdminLogin = false;
+            bool isSA = false;
             if (email.StartsWith('#'))
             {
                 //Get original email address without # character
                 email = email.Substring(1);
-                isAdminLogin = true;
+                isSA = true;
             }
             var user = await userRepository.GetSingleAsync(m => m.Email == email);
 
-            if ((isAdminLogin) && (user != null && !user.IsSA))
+            if ((isSA) && (user != null && !user.IsSA))
             {
-                throw new AuthException("You dont have an access!");
+                return new FailedResponse(Errors.UnauthorizedOperation);
             }
 
-            if (user == null || (user != null && !HashingHelper.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)))
+            else if (user == null || (user != null && !HashingHelper.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)))
             {
-                throw new AuthException("Username or password is wrong!");
+                return new FailedResponse(Errors.IncorrectLogin);
             }
-            return user;
+
+            SuccessResponse response = new(user);
+
+            return response;
         }
 
-        public async Task<User> RegisterAsync(User user, string password)
+        public async Task<ResponseDto> RegisterAsync(User user, string password)
         {
             byte[] passwordHash, passwordSalt;
             HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -62,22 +62,25 @@ namespace Clicco.AuthAPI.Services
             await userRepository.AddAsync(user);
             await userRepository.SaveChangesAsync();
 
-            await emailService.SendRegistrationEmailAsync(new RegistrationEmailRequest
+            await emailService.SendRegistrationEmailAsync(new RegistrationEmailRequestDto
             {
                 FullName = user.ToString(),
                 To = user.Email
             });
 
-            return user;
+            SuccessResponse response = new(user);
+            return response;
         }
 
-        public async Task<bool> UserExistsAsync(string email)
+        public async Task<ResponseDto> UserExistsAsync(string email)
         {
             var user = await userRepository.Get(x => x.Email == email);
-            return user != null && user.Count != 0;
+            return (user != null && user.Count != 0)
+                ? new SuccessResponse()
+                : new FailedResponse();
         }
 
-        public async Task ForgotPasswordAsync(string email)
+        public async Task<ResponseDto> ForgotPasswordAsync(string email)
         {
             var user = await userRepository.GetSingleAsync(x => x.Email == email);
             if (user != null)
@@ -94,7 +97,7 @@ namespace Clicco.AuthAPI.Services
 
                 await resetCodeRepository.SaveChangesAsync();
 
-                await emailService.SendForgotPasswordEmailAsync(new ForgotPasswordEmailRequest
+                await emailService.SendForgotPasswordEmailAsync(new ForgotPasswordEmailRequestDto
                 {
                     FullName = user.ToString(),
                     ResetCode = resetCode.Code,
@@ -103,16 +106,16 @@ namespace Clicco.AuthAPI.Services
             }
             else
             {
-                throw new AuthException("User not found!");
+                return new FailedResponse(Errors.UserNotFound);
             }
 
-            await Task.CompletedTask;
+            return new SuccessResponse();
         }
 
-        public async Task<AuthResult> ResetPasswordAsync(ResetPasswordDto dtoModel)
+        public async Task<ResponseDto> ResetPasswordAsync(ResetPasswordDto dtoModel)
         {
             var resetCode = await resetCodeRepository.GetSingleAsync(x => x.Code == dtoModel.ResetCode);
-            if (resetCode.IsAvailable())
+            if (resetCode.IsValid())
             {
                 resetCode.IsActive = false;
                 await resetCodeRepository.SaveChangesAsync();
@@ -126,16 +129,16 @@ namespace Clicco.AuthAPI.Services
                 userRepository.Update(user);
                 await userRepository.SaveChangesAsync();
 
-                await emailService.SendResetPasswordEmailAsync(new ResetPasswordEmailRequest
+                await emailService.SendResetPasswordEmailAsync(new ResetPasswordEmailRequestDto
                 {
                     To = user.Email,
                     FullName = user.ToString(),
                 });
 
-                return new SuccessAuthResult("Your password has been reset successfully!");
+                return new SuccessResponse("Your password has been reset successfully!");
             }
             else
-                return new FailedAuthResult("Reset code is invalid!");
+                return new FailedResponse(Errors.InvalidResetCode);
         }
     }
 }

@@ -4,36 +4,35 @@ using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core;
 using Clicco.Domain.Core.Exceptions;
 using Clicco.Domain.Model;
-using Clicco.Domain.Model.Exceptions;
 using Clicco.Persistence.Services;
 using FluentAssertions;
-using Moq;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace Clicco.Persistence.Tests
 {
     public class CouponTests
     {
-        private Mock<ITransactionRepository> mockTransactionRepository;
-        private Mock<ICouponRepository> mockCouponRepository;
-        private Mock<IProductRepository> mockProductRepository;
-        private Mock<ICacheManager> mockCacheManager;
-        private ICouponService couponService;
+        private ITransactionRepository mockTransactionRepository;
+        private ICouponRepository mockCouponRepository;
+        private IProductRepository mockProductRepository;
+        private ICacheManager mockCacheManager;
+        private ICouponManagementHelper couponService;
         private Transaction transaction { get; set; }
 
         [OneTimeSetUp]
         public void Setup()
         {
-            mockTransactionRepository = new Mock<ITransactionRepository>();
-            mockCacheManager = new Mock<ICacheManager>();
-            mockCouponRepository = new Mock<ICouponRepository>();
-            mockProductRepository = new Mock<IProductRepository>();
+            mockTransactionRepository = Substitute.For<ITransactionRepository>();
+            mockCacheManager = Substitute.For<ICacheManager>();
+            mockCouponRepository = Substitute.For<ICouponRepository>();
+            mockProductRepository = Substitute.For<IProductRepository>();
 
-            couponService = new CouponService(
-                mockCouponRepository.Object,
-                mockTransactionRepository.Object,
-                mockProductRepository.Object,
-                mockCacheManager.Object);
+            couponService = new CouponManagementHelper(
+                mockCouponRepository,
+                mockTransactionRepository,
+                mockProductRepository,
+                mockCacheManager);
 
             transaction = new Transaction();
             transaction.TotalAmount = 1000;
@@ -77,13 +76,13 @@ namespace Clicco.Persistence.Tests
                 DiscountAmount = 23,
             };
 
-            mockCacheManager.Setup(x => x.ExistAsync(CacheKeys.GetSingleKey<Coupon>(coupon.Id))).ReturnsAsync(true);
+            mockCacheManager.ExistAsync(Arg.Any<string>()).Returns(true);
 
-            Func<Task> act = async () => { await couponService.IsAvailable(It.IsAny<Product>(), coupon); };
+            Func<Task> act = async () => { await couponService.IsAvailable(new Product(), coupon); };
 
             await act.Should()
                 .ThrowAsync<CustomException>()
-                .Where(o => o.CustomError == CustomErrors.CouponIsNowUsed);
+                .Where(o => o.CustomError == Errors.CouponIsNowUsed);
         }
 
         [Test]
@@ -102,13 +101,13 @@ namespace Clicco.Persistence.Tests
                 TypeId = 2
             };
 
-            mockCacheManager.Setup(x => x.ExistAsync(CacheKeys.GetSingleKey<Coupon>(coupon.Id))).ReturnsAsync(false);
+            mockCacheManager.ExistAsync(Arg.Any<string>()).Returns(false);
 
             Func<Task> act = async () => { await couponService.IsAvailable(product, coupon); };
 
             await act.Should()
                 .ThrowAsync<CustomException>()
-                .Where(o => o.CustomError == CustomErrors.CouponCannotUsed);
+                .Where(o => o.CustomError == Errors.CouponCannotUsed);
 
         }
     }

@@ -1,5 +1,4 @@
-﻿using Clicco.Application.Interfaces.Services.External;
-using Clicco.Domain.Core;
+﻿using Clicco.Domain.Core.Extensions;
 using Clicco.Domain.Model;
 using Clicco.Domain.Shared.Models.Invoice;
 using static Clicco.Domain.Shared.Global;
@@ -8,10 +7,10 @@ namespace Clicco.Infrastructure.Services
 {
     public class InvoiceService : IInvoiceService
     {
-        private readonly IQueueService rabbitMqService;
-        public InvoiceService(IQueueService rabbitMqService)
+        private readonly IQueueService _bus;
+        public InvoiceService(IQueueService bus)
         {
-            this.rabbitMqService = rabbitMqService;
+            this._bus = bus;
         }
 
         public async Task CreateInvoice(string BuyerEmail, Transaction transaction, Product product, Address address)
@@ -33,12 +32,7 @@ namespace Clicco.Infrastructure.Services
                     DiscountedAmount = transaction.DiscountedAmount,
                     Id = transaction.Id,
                     TotalAmount = transaction.TotalAmount,
-                    TransactionStatus = transaction.TransactionStatus switch
-                    {
-                        TransactionStatus.Failed => "Failed",
-                        TransactionStatus.Pending => "Pending",
-                        TransactionStatus.Success => "Successful"
-                    }
+                    TransactionStatus = transaction.TransactionStatus.GetDescription(),
                 },
                 Address = new InvoiceAddress
                 {
@@ -52,9 +46,9 @@ namespace Clicco.Infrastructure.Services
                 {
                     Description = transactionCoupon == null ? "Not Found" : transactionCoupon.Description,
                     DiscountAmount = transactionCoupon == null ? 0 : (int)(transactionCoupon.DiscountAmount),
-                    DiscountType = transactionCoupon == null ? "Not Found" : Enum.ToObject(typeof(DiscountType), transactionCoupon.DiscountType).ToString(),
-                    Type = transactionCoupon == null ? "Not Found" : Enum.ToObject(typeof(CouponType), transactionCoupon.Type).ToString(),
-                    ExpirationDate = transactionCoupon == null ? DateTime.MinValue : (DateTime)(transactionCoupon.ExpirationDate),
+                    DiscountType = transactionCoupon == null ? "Not Found" : transactionCoupon.DiscountType.GetDescription(),
+                    Type = transactionCoupon == null ? "Not Found" : transactionCoupon.Type.GetDescription(),
+                    ExpirationDate = transactionCoupon == null ? DateTime.MinValue : transactionCoupon.ExpirationDate,
                     Name = transactionCoupon == null ? "Not Found" : transactionCoupon.Name,
                 },
                 Product = new InvoiceProduct
@@ -76,12 +70,12 @@ namespace Clicco.Infrastructure.Services
                 }
             };
 
-            await rabbitMqService.PushMessage(ExchangeNames.EventExchange, model, EventNames.CreateInvoice);
+            await _bus.PushMessage(ExchangeNames.EventExchange, model, EventNames.CreateInvoice);
         }
 
         public async Task SendEmailByTransactionId(int transactionId)
         {
-            await rabbitMqService.PushMessage(ExchangeNames.EmailExchange, new SendInvoiceDetailsEmailModel { Id = transactionId }, EventNames.InvoiceMail);
+            await _bus.PushMessage(ExchangeNames.EmailExchange, new SendInvoiceDetailsEmailModel { Id = transactionId }, EventNames.InvoiceMail);
         }
     }
 }

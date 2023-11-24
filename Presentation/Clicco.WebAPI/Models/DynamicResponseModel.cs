@@ -12,9 +12,9 @@ namespace Clicco.WebAPI.Models
             this.ErrorType = ErrorType;
         }
 
-        public DynamicResponseModel(string ErrorMessage) : this(ErrorMessage,nameof(HttpStatusCode.BadRequest))
+        public DynamicResponseModel(string ErrorMessage) : this(ErrorMessage, nameof(HttpStatusCode.BadRequest))
         {
-            
+
         }
 
     }

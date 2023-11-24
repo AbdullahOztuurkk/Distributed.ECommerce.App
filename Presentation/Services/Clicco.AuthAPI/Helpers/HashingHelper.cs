@@ -1,7 +1,7 @@
 ﻿namespace Clicco.AuthServiceAPI.Helpers
 {
     public static class HashingHelper
-    { 
+    {
         public static bool VerifyPasswordHash(string password, byte[] userPasswordHash, byte[] userPasswordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512(userPasswordSalt))

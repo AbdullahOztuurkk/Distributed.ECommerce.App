@@ -1,21 +1,11 @@
-﻿using AutoMapper;
-using Clicco.Application.Interfaces.CacheManager;
-using Clicco.Application.Interfaces.Repositories;
-using Clicco.Application.Interfaces.Services;
-using Clicco.Application.ViewModels;
-using Clicco.Domain.Core;
-using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Model;
-using MediatR;
-
-namespace Clicco.Application.Features.Commands
+﻿namespace Clicco.Application.Features.Commands
 {
-    public class DeleteVendorCommand : IRequest<BaseResponse<VendorViewModel>>
+    public class DeleteVendorCommand : IRequest<ResponseDto>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteVendorCommandHandler : IRequestHandler<DeleteVendorCommand, BaseResponse<VendorViewModel>>
+    public class DeleteVendorCommandHandler : IRequestHandler<DeleteVendorCommand, ResponseDto>
     {
         private readonly IVendorRepository vendorRepository;
         private readonly IVendorService vendorService;
@@ -25,16 +15,16 @@ namespace Clicco.Application.Features.Commands
             this.vendorRepository = vendorRepository;
             this.vendorService = vendorService;
         }
-        
-        public async Task<BaseResponse<VendorViewModel>> Handle(DeleteVendorCommand request, CancellationToken cancellationToken)
+
+        public async Task<ResponseDto> Handle(DeleteVendorCommand request, CancellationToken cancellationToken)
         {
-            await vendorService.CheckSelfId(request.Id);
+            await vendorService.CheckById(request.Id);
 
             var vendor = await vendorRepository.GetByIdAsync(request.Id);
             vendorRepository.Delete(vendor);
             await vendorRepository.SaveChangesAsync();
 
-            return new SuccessResponse<VendorViewModel>("Transaction has been deleted!");
+            return new SuccessResponse("Transaction has been deleted!");
         }
     }
 }

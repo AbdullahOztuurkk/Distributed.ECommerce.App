@@ -1,4 +1,4 @@
-﻿using Clicco.AuthAPI.Models.Common;
+﻿using Clicco.Domain.Core;
 
 namespace Clicco.AuthAPI.Models
 {

@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Clicco.Domain.Core;
 using Microsoft.AspNetCore.Mvc;
-using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Core;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Clicco.WebAPI.Filters
 {
@@ -17,7 +16,7 @@ namespace Clicco.WebAPI.Filters
             if (!context.ModelState.IsValid)
             {
                 var errors = context.ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-                context.Result = new BadRequestObjectResult(new ErrorResponse<BaseEntity>(errors.ToArray()));
+                context.Result = new BadRequestObjectResult(new ErrorResponse<BaseEntity>(errors[0]));
                 return;
             }
             await next();

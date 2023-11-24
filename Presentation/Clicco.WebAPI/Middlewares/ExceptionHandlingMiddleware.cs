@@ -1,6 +1,4 @@
 ﻿using Clicco.Domain.Core.Exceptions;
-using Clicco.Domain.Model.Exceptions;
-using Microsoft.Extensions.Logging;
 using System.Net;
 
 namespace Clicco.WebAPI.Middlewares
@@ -19,8 +17,8 @@ namespace Clicco.WebAPI.Middlewares
                 await next(context);
             }
             catch (Exception error)
-             {
-                CustomError customError;
+            {
+                Error customError;
                 var response = context.Response;
                 switch (error)
                 {
@@ -30,7 +28,7 @@ namespace Clicco.WebAPI.Middlewares
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     default:
-                        customError = CustomErrors.UnexceptedError;
+                        customError = Errors.UnexceptedError;
                         _logger.LogError(error.ToString());
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;

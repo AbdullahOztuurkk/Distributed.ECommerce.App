@@ -1,6 +1,5 @@
 ﻿using Clicco.Application.Features.Commands;
 using Clicco.Application.Features.Queries;
-using Clicco.Application.ViewModels;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.WebAPI.Models;
 using MediatR;
@@ -24,7 +23,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(ReviewViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ReviewResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
@@ -36,7 +35,7 @@ namespace Clicco.WebAPI.Controllers
         // v1/api/controller/action/2012-12-31
         [HttpGet("GetByProductId/{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<ReviewViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<ReviewResponseDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetByProductId([FromQuery] PaginationFilter paginationFilter, int id)
         {
@@ -45,7 +44,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPost("Create")]
-        [ProducesResponseType(typeof(BaseResponse<CreateReviewCommand>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto<CreateReviewCommand>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateReviewCommand command)
         {
@@ -54,7 +53,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(BaseResponse<ReviewViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateReviewCommand command)
         {
@@ -63,7 +62,7 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpDelete("Delete")]
-        [ProducesResponseType(typeof(BaseResponse<ReviewViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromBody] DeleteReviewCommand command)
         {

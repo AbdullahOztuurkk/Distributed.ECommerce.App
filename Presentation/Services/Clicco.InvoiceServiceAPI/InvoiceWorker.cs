@@ -68,7 +68,7 @@ namespace Clicco.InvoiceServiceAPI
                         Invoice result = await invoiceRepository.FindOneAsync(x => x.Transaction.Id == Convert.ToInt32(id));
                         if (result != null)
                         {
-                            var invoiceRequestModel = new InvoiceEmailRequest
+                            var invoiceRequestModel = new InvoiceEmailRequestDto
                             {
                                 Address = result.Address,
                                 Coupon = result.Coupon,

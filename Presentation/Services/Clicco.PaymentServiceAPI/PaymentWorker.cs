@@ -19,9 +19,9 @@ namespace Clicco.PaymentServiceAPI
             await Task.WhenAll
             (
                 ProcessPayOperationAsync(QueueNames.BankPayOperationQueue, EventNames.PaymentRequest)
-                //ProcessProvisionOperationAsync(QueueNames.BankProvisionOperationQueue, EventNames.PaymentProvisionRequest),
-                //ProcessRefundOperationAsync(QueueNames.BankRefundOperationQueue, EventNames.PaymentRefundRequest),
-                //ProcessCancelOperationAsync(QueueNames.BankCancelOperationQueue, EventNames.PaymentCancelRequest)
+            //ProcessProvisionOperationAsync(QueueNames.BankProvisionOperationQueue, EventNames.PaymentProvisionRequest),
+            //ProcessRefundOperationAsync(QueueNames.BankRefundOperationQueue, EventNames.PaymentRefundRequest),
+            //ProcessCancelOperationAsync(QueueNames.BankCancelOperationQueue, EventNames.PaymentCancelRequest)
             );
         }
 

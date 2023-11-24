@@ -1,12 +1,10 @@
-﻿using Clicco.Application.Features.Commands;
-using Clicco.Domain.Shared.Models.Payment;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Clicco.Application.Validations.Transactions
 {
     public class TransactionValidators
     {
-        public class CreateTransactionValidator : AbstractValidator<PaymentRequest>
+        public class CreateTransactionValidator : AbstractValidator<CreateTransactionDto>
         {
             public CreateTransactionValidator()
             {

@@ -6,67 +6,40 @@ using System.Linq.Expressions;
 
 namespace Clicco.Infrastructure.Repositories
 {
-    public class GenericRepository<TEntity, TContext> : IGenericRepository<TEntity>
+    public class GenericRepository<TEntity, TContext> : IRepository<TEntity>
         where TEntity : BaseEntity
         where TContext : DbContext, new()
     {
-        private readonly TContext context;
-        private DbSet<TEntity> Table => context.Set<TEntity>();
+        public readonly TContext context;
+        public DbSet<TEntity> Table => context.Set<TEntity>();
         public IQueryable<TEntity> Query => Table.AsQueryable();
-        public GenericRepository()
+        public GenericRepository(TContext context)
         {
-            context = new TContext();
+            this.context = context;
         }
-        public virtual async Task<TEntity> AddAsync(TEntity entity)
+        public async Task<TEntity> AddAsync(TEntity entity)
         {
             await Table.AddAsync(entity);
             return entity;
         }
 
-        public virtual TEntity Delete(TEntity entity)
+        public TEntity Delete(TEntity entity)
         {
             Table.Remove(entity);
             return entity;
         }
 
-        public virtual async Task<List<TEntity>> Get(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, params Expression<Func<TEntity, object>>[] includes)
-        {
-            IQueryable<TEntity> query = Query;
-
-            foreach (Expression<Func<TEntity, object>> include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            if (orderBy != null)
-            {
-                query = orderBy(query);
-            }
-
-            return await query.ToListAsync();
-        }
-
-        public virtual Task<List<TEntity>> Get(Expression<Func<TEntity, bool>> filter = null, params Expression<Func<TEntity, object>>[] includes)
+        public async Task<List<TEntity>> GetManyAsync(Expression<Func<TEntity, bool>> filter = null, params Expression<Func<TEntity, object>>[] includes)
         {
             return Get(filter, null, includes);
         }
 
-        public virtual async Task<List<TEntity>> GetAll()
-        {
-            return await Table.ToListAsync();
-        }
-
-        public virtual async Task<TEntity> GetById(int id)
+        public async Task<TEntity> GetByIdAsync(int id)
         {
             return await Table.FindAsync(id);
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(int id, params Expression<Func<TEntity, object>>[] includes)
+        public async Task<TEntity> GetByIdAsync(int id, params Expression<Func<TEntity, object>>[] includes)
         {
             IQueryable<TEntity> query = Query;
 
@@ -78,7 +51,7 @@ namespace Clicco.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public virtual async Task<TEntity> GetSingleAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes)
+        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes)
         {
             IQueryable<TEntity> query = Query;
 
@@ -95,7 +68,7 @@ namespace Clicco.Infrastructure.Repositories
             return await context.SaveChangesAsync();
         }
 
-        public virtual TEntity Update(TEntity entity)
+        public TEntity Update(TEntity entity)
         {
             Table.Update(entity);
             return entity;

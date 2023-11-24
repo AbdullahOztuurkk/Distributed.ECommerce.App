@@ -1,11 +1,7 @@
-﻿using Clicco.Application.ViewModels;
-using Clicco.Domain.Model;
-
-namespace Clicco.Application.Interfaces.Repositories
+﻿namespace Clicco.Application.Interfaces.Repositories
 {
-    public interface ITransactionRepository : IGenericRepository<Transaction>
+    public interface ITransactionRepository : IRepository<Transaction>
     {
-        Task<TransactionDetailViewModel> GetDetailsByTransactionIdAsync(int transactionId);
 
     }
 }

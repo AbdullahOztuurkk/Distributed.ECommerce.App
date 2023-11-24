@@ -1,16 +1,6 @@
-﻿using AutoMapper;
-using Clicco.Application.Interfaces.CacheManager;
-using Clicco.Application.Interfaces.Repositories;
-using Clicco.Application.Interfaces.Services;
-using Clicco.Application.ViewModels;
-using Clicco.Domain.Core;
-using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Model;
-using MediatR;
-
-namespace Clicco.Application.Features.Commands
+﻿namespace Clicco.Application.Features.Commands
 {
-    public class UpdateVendorCommand : IRequest<BaseResponse<VendorViewModel>>
+    public class UpdateVendorCommand : IRequest<ResponseDto>
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -19,7 +9,7 @@ namespace Clicco.Application.Features.Commands
         public string Region { get; set; }
         public string Address { get; set; }
     }
-    public class UpdateVendorCommandHandler : IRequestHandler<UpdateVendorCommand, BaseResponse<VendorViewModel>>
+    public class UpdateVendorCommandHandler : IRequestHandler<UpdateVendorCommand, ResponseDto>
     {
         private readonly IVendorRepository vendorRepository;
         private readonly IMapper mapper;
@@ -30,15 +20,15 @@ namespace Clicco.Application.Features.Commands
             this.mapper = mapper;
             this.vendorService = vendorService;
         }
-        public async Task<BaseResponse<VendorViewModel>> Handle(UpdateVendorCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseDto> Handle(UpdateVendorCommand request, CancellationToken cancellationToken)
         {
-            await vendorService.CheckSelfId(request.Id);
+            await vendorService.CheckById(request.Id);
 
             var vendor =  await vendorRepository.GetByIdAsync(request.Id);
             vendorRepository.Update(mapper.Map(request, vendor));
             await vendorRepository.SaveChangesAsync();
 
-            return new SuccessResponse<VendorViewModel>(mapper.Map<VendorViewModel>(vendor));
+            return new SuccessResponse(mapper.Map<VendorResponseDto>(vendor));
         }
     }
 }

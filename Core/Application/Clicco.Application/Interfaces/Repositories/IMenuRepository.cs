@@ -1,8 +1,6 @@
-﻿using Clicco.Domain.Model;
-
-namespace Clicco.Application.Interfaces.Repositories
+﻿namespace Clicco.Application.Interfaces.Repositories
 {
-    public interface IMenuRepository : IGenericRepository<Menu>
+    public interface IMenuRepository : IRepository<Menu>
     {
         string GetExactSlugUrlByCategoryId(int categoryId);
     }

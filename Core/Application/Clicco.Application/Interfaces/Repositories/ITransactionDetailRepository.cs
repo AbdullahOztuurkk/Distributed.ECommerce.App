@@ -1,8 +1,6 @@
-﻿using Clicco.Domain.Model;
-
-namespace Clicco.Application.Interfaces.Repositories
+﻿namespace Clicco.Application.Interfaces.Repositories
 {
-    public interface ITransactionDetailRepository : IGenericRepository<TransactionDetail>
+    public interface ITransactionDetailRepository : IRepository<TransactionDetail>
     {
     }
 }

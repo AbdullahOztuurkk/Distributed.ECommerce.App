@@ -1,9 +1,7 @@
-﻿using Clicco.Application.Behaviours;
-using Clicco.Application.Helpers;
-using Clicco.Application.Helpers.Contracts;
-using Clicco.Application.Profiles;
+﻿using Clicco.Application.Profiles;
+using Clicco.Application.Services.Abstract;
+using Clicco.Application.Services.Concrete;
 using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -17,18 +15,23 @@ namespace Clicco.Application.Extensions
             {
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             });
-            
+
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            
+
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<GeneralProfile>();
-                cfg.AddProfile<ViewModelProfile>();
+                cfg.AddProfile<ResponseProfile>();
             });
 
-            services.AddScoped<IClaimHelper, ClaimHelper>();
+            services.AddScoped<IUserSessionService, UserSessionService>();
 
-            //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            services.AddScoped<IAddressService, AddressService>();
+
+            services.AddScoped<ICategoryService, CategoryService>();
+
+            services.AddScoped<ICouponService, CouponService>();
+
             return services;
         }
     }

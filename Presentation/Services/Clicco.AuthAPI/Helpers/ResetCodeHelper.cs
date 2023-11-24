@@ -1,5 +1,4 @@
-﻿using Clicco.AuthServiceAPI.Models.Request;
-using System.Text;
+﻿using System.Text;
 
 namespace Clicco.AuthServiceAPI.Helpers
 {

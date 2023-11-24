@@ -1,13 +1,10 @@
-using Clicco.Application.Features.Commands;
-using Clicco.Application.Features.Queries;
-using Clicco.Application.ViewModels;
+using Clicco.Application.Services.Abstract;
 using Clicco.Domain.Core.ResponseModel;
+using Clicco.Domain.Model.Dtos.Address;
 using Clicco.WebAPI.Models;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.WebAPI.Controllers
 {
@@ -16,66 +13,58 @@ namespace Clicco.WebAPI.Controllers
     [Authorize]
     public class AddressController : ControllerBase
     {
-        private readonly IMediator mediator;
-        public AddressController(IMediator mediator)
+        private readonly IAddressService _addressService;
+        public AddressController(IAddressService addressService)
         {
-            this.mediator = mediator;
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        [ProducesResponseType(typeof(List<AddressViewModel>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll([FromQuery] PaginationFilter paginationFilter)
-        {
-            var result = await mediator.Send(new GetAllAddressesQuery(paginationFilter));
-            return Ok(result);
+            this._addressService = addressService;
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(AddressViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AddressResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
         {
-            var address = await mediator.Send(new GetAddressByIdQuery { Id = id });
-            return Ok(address);
+            var response = await _addressService.Get(id);
+            return Ok(response);
         }
 
-        [HttpGet("GetByUserId")]
-        [ProducesResponseType(typeof(AddressViewModel), (int)HttpStatusCode.OK)]
+        [HttpGet("GetMyAddresses")]
+        [Authorize]
+        [ProducesResponseType(typeof(AddressResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetAddressesByUserId()
         {
-            var address = await mediator.Send(new GetAddressesByUserIdQuery());
-            return Ok(address);
+            var response = await _addressService.GetMyAddresses();
+            return Ok(response);
         }
 
         [HttpPost("Create")]
-        [ProducesResponseType(typeof(BaseResponse<AddressViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Create([FromBody]CreateAddressCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateAddressDto dto)
         {
-            var result = await mediator.Send(command);
-            return Ok(result);
+            var response = await _addressService.Create(dto);
+            return Ok(response);
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(BaseResponse<AddressViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Update([FromBody] UpdateAddressCommand command)
+        public async Task<IActionResult> Update([FromBody] UpdateAddressDto dto)
         {
-            var result = await mediator.Send(command);
-            return Ok(result);
+            var response = await _addressService.Update(dto);
+            return Ok(response);
         }
 
         [HttpDelete("Delete")]
-        [ProducesResponseType(typeof(BaseResponse<AddressViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Delete([FromBody] DeleteAddressCommand command)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await mediator.Send(command);
-            return Ok(result);
+            var response = await _addressService.Delete(id);
+            return Ok(response);
         }
     }
 }

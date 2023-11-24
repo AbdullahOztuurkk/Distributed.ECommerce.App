@@ -1,6 +1,4 @@
-﻿using Clicco.Application.Features.Commands;
-using Clicco.Application.Validations.Common;
-using Clicco.Domain.Core;
+﻿using Clicco.Application.Validations.Common;
 using FluentValidation;
 
 namespace Clicco.Application.Validations.Coupons

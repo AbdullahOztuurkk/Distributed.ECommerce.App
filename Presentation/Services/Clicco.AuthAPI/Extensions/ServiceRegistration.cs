@@ -48,16 +48,16 @@ namespace Clicco.AuthAPI.Extensions
             });
 
             services.AddScoped<IAuthService, AuthService>();
-            
-            services.AddScoped<IEmailService,EmailService>();
-            
-            services.AddScoped<IUserRepository,UserRepository>();
+
+            services.AddScoped<IEmailService, EmailService>();
+
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IQueueService, RabbitMqService>();
 
             services.AddScoped<IResetCodeRepository, ResetCodeRepository>();
 
-            services.AddScoped<ITokenHandler<User>,Services.TokenHandler>();
+            services.AddScoped<ITokenHandler<User>, Services.TokenHandler>();
 
             return services;
         }

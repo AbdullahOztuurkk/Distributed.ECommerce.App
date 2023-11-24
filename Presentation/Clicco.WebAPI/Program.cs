@@ -27,7 +27,8 @@ builder.Services.ConfigureAuth(builder.Configuration);
 builder.Services.AddScoped<SystemAdministratorFilter>();
 builder.Services.AddScoped<ExceptionHandlingMiddleware>();
 
-builder.Services.AddSwaggerGen(c => {
+builder.Services.AddSwaggerGen(c =>
+{
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Clicco API",

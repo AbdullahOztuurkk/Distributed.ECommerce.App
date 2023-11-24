@@ -1,13 +1,8 @@
-﻿using AutoMapper;
-using Clicco.Application.Interfaces.Repositories;
-using Clicco.Application.ViewModels;
-using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Shared;
-using MediatR;
+﻿using Clicco.Domain.Shared;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetAllVendorsQuery : IRequest<BaseResponse<List<VendorViewModel>>>
+    public class GetAllVendorsQuery : IRequest<ResponseDto>
     {
         public GetAllVendorsQuery(Global.PaginationFilter paginationFilter)
         {
@@ -17,7 +12,7 @@ namespace Clicco.Application.Features.Queries
         public Global.PaginationFilter PaginationFilter { get; }
     }
 
-    public class GetAllVendorsQueryHandler : IRequestHandler<GetAllVendorsQuery, BaseResponse<List<VendorViewModel>>>
+    public class GetAllVendorsQueryHandler : IRequestHandler<GetAllVendorsQuery, ResponseDto>
     {
         private readonly IVendorRepository vendorRepository;
         private readonly IMapper mapper;
@@ -27,9 +22,9 @@ namespace Clicco.Application.Features.Queries
             this.vendorRepository = vendorRepository;
             this.mapper = mapper;
         }
-        public async Task<BaseResponse<List<VendorViewModel>>> Handle(GetAllVendorsQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseDto> Handle(GetAllVendorsQuery request, CancellationToken cancellationToken)
         {
-            return new SuccessResponse<List<VendorViewModel>>(mapper.Map<List<VendorViewModel>>(await vendorRepository.PaginateAsync(paginationFilter: request.PaginationFilter)));
+            return new SuccessResponse(mapper.Map<List<VendorResponseDto>>(await vendorRepository.PaginateAsync(paginationFilter: request.PaginationFilter)));
         }
     }
 }

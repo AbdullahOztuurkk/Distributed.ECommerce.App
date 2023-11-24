@@ -1,5 +1,4 @@
 ﻿using Clicco.Application.Interfaces.Repositories;
-using Clicco.Application.Interfaces.Services.External;
 using Clicco.Domain.Core;
 using Clicco.Domain.Shared.Models.Email;
 using Clicco.Domain.Shared.Models.Payment;
@@ -26,11 +25,11 @@ namespace Clicco.Infrastructure.HostedServices
                 //Send email for success transaction to buyer
                 queueService.ReceiveMessages<PaymentBankResponse>(ExchangeNames.EventExchange, QueueNames.PaidSucceedTransactionsQueue, EventNames.PaymentSucceed, async (model) =>
                 {
-                    var transaction = await transactionRepository.GetById(model.TransactionId);
+                    var transaction = await transactionRepository.GetByIdAsync(model.TransactionId);
 
                     transaction.TransactionStatus = TransactionStatus.Success;
 
-                    var emailRequest = new PaymentSuccessEmailRequest
+                    var emailRequest = new PaymentSuccessEmailRequestDto
                     {
                         Amount = transaction.DiscountedAmount < transaction.TotalAmount
                             ? string.Format("{0:N2}", transaction.DiscountedAmount)
@@ -48,11 +47,11 @@ namespace Clicco.Infrastructure.HostedServices
                 //Send email for failed transaction to buyer
                 queueService.ReceiveMessages<PaymentBankResponse>(ExchangeNames.EventExchange, QueueNames.PaidFailedTransactionsQueue, EventNames.PaymentFailed, async (model) =>
                 {
-                    var transaction = await transactionRepository.GetById(model.TransactionId);
+                    var transaction = await transactionRepository.GetByIdAsync(model.TransactionId);
 
                     transaction.TransactionStatus = TransactionStatus.Failed;
 
-                    var emailRequest = new PaymentFailedEmailRequest
+                    var emailRequest = new PaymentFailedEmailRequestDto
                     {
                         Amount = transaction.DiscountedAmount < transaction.TotalAmount
                             ? string.Format("{0:N2}", transaction.DiscountedAmount)

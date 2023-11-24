@@ -5,7 +5,7 @@ using Clicco.AuthServiceAPI.Models;
 
 namespace Clicco.AuthServiceAPI.Data.Repositories
 {
-    public class ResetCodeRepository : GenericRepository<ResetCode,AuthContext> , IResetCodeRepository
+    public class ResetCodeRepository : GenericRepository<ResetCode, AuthContext>, IResetCodeRepository
     {
     }
 }

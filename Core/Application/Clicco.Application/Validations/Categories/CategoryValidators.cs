@@ -1,5 +1,4 @@
-﻿using Clicco.Application.Features.Commands;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Clicco.Application.Validations.Categories
 {

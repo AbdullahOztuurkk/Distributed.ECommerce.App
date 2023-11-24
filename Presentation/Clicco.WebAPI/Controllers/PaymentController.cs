@@ -1,5 +1,5 @@
-﻿using Clicco.Domain.Shared.Models.Payment;
-using MediatR;
+﻿using Clicco.Application.Services.Abstract;
+using Clicco.Domain.Shared.Models.Payment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,18 +10,19 @@ namespace Clicco.WebAPI.Controllers
     [Route("api/payments")]
     public class PaymentController : ControllerBase
     {
-        private readonly IMediator mediator;
-        public PaymentController(IMediator mediator)
+        private readonly ITransactionService _transactionService;
+
+        public PaymentController(ITransactionService transactionService)
         {
-            this.mediator = mediator;
+            this._transactionService = transactionService;
         }
 
         [HttpPost]
         [Route("pay")]
-        public async Task<IActionResult> Pay(PaymentRequest paymentRequest)
+        public async Task<IActionResult> Pay(CreateTransactionDto paymentRequest)
         {
-            var result = await mediator.Send(paymentRequest);
-            return result.IsSuccess ? Ok(result) : BadRequest(result);
+            var response = await _transactionService.Create(paymentRequest);
+            return Ok(response);
         }
     }
 }

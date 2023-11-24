@@ -2,7 +2,7 @@
 
 namespace Clicco.AuthAPI.Data.Contracts
 {
-    public interface IUserRepository : IGenericRepository<User>
+    public interface IUserRepository : IRepository<User>
     {
 
     }

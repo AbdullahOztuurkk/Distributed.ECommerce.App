@@ -1,9 +1,7 @@
-﻿using Clicco.Application.Features.Commands;
-using Clicco.Application.Features.Queries;
-using Clicco.Application.ViewModels;
+﻿using Clicco.Application.Services.Abstract;
 using Clicco.Domain.Core.ResponseModel;
+using Clicco.Domain.Model.Dtos.Category;
 using Clicco.WebAPI.Models;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -16,67 +14,68 @@ namespace Clicco.WebAPI.Controllers
     [Authorize]
     public class CategoryController : ControllerBase
     {
-        private readonly IMediator mediator;
-        public CategoryController(IMediator mediator)
+        private readonly ICategoryService _categoryService;
+
+        public CategoryController(ICategoryService categoryService)
         {
-            this.mediator = mediator;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<CategoryViewModel>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll()
+        [ProducesResponseType(typeof(List<CategoryResponseDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAll(PaginationFilter filter)
         {
-            var result = await mediator.Send(new GetAllCategoriesQuery());
-            return Ok(result);
+            var response = await _categoryService.GetAll(filter);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(CategoryViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CategoryResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
         {
-            var result = await mediator.Send(new GetCategoryByIdQuery { Id = id });
-            return Ok(result);
+            var response = await _categoryService.Get(id);
+            return Ok(response);
         }
 
         [HttpGet("GetByUrl/{url}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(CategoryViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CategoryResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetCategoryByUrl(string url)
         {
-            var result = await mediator.Send(new GetCategoryByURLQuery { Url = url });
-            return Ok(result);
+            var response = await _categoryService.GetByUrl(url);
+            return Ok(response);
         }
 
         [HttpPost("Create")]
-        [ProducesResponseType(typeof(BaseResponse<CategoryViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateCategoryCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
         {
-            var result = await mediator.Send(command);
-            return Ok(result);
+            var response = await _categoryService.Create(dto);
+            return Ok(response);
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(BaseResponse<CategoryViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Update([FromBody] UpdateCategoryCommand command)
+        public async Task<IActionResult> Update([FromBody] UpdateCategoryDto dto)
         {
-            var result = await mediator.Send(command);
-            return Ok(result);
+            var response = await _categoryService.Update(dto);
+            return Ok(response);
         }
 
         [HttpDelete("Delete")]
-        [ProducesResponseType(typeof(BaseResponse<CategoryViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Delete([FromBody] DeleteCategoryCommand command)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await mediator.Send(command);
-            return Ok(result);
+            var response = await _categoryService.Delete(id);
+            return Ok(response);
         }
     }
 }

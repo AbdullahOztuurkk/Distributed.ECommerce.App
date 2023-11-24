@@ -1,4 +1,4 @@
-﻿using Clicco.AuthAPI.Models.Common;
+﻿using Clicco.Domain.Core;
 
 namespace Clicco.AuthServiceAPI.Models
 {
@@ -10,9 +10,6 @@ namespace Clicco.AuthServiceAPI.Models
         public DateTime ExpirationDate { get; set; }
         public bool IsActive { get; set; } = true;
 
-        public bool IsAvailable()
-        {
-            return (Code != null) && IsActive && (ExpirationDate >= DateTime.Now);
-        }
+        public bool IsValid() => (Code != null) && IsActive && (ExpirationDate >= DateTime.Now);
     }
 }

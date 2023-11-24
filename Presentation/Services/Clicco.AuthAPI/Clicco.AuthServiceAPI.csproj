@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Domain\Clicco.Domain.Core\Clicco.Domain.Core.csproj" />
     <ProjectReference Include="..\..\..\Core\Domain\Clicco.Domain.Shared\Clicco.Domain.Shared.csproj" />
   </ItemGroup>
 

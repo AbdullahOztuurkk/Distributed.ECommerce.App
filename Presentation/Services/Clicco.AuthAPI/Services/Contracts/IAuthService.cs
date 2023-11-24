@@ -1,15 +1,15 @@
 ﻿using Clicco.AuthAPI.Models;
 using Clicco.AuthServiceAPI.Models.Request;
-using Clicco.AuthServiceAPI.Models.Response;
+using Clicco.Domain.Core.ResponseModel;
 
 namespace Clicco.AuthAPI.Services.Contracts
 {
     public interface IAuthService
     {
-        Task<User> RegisterAsync(User user, string password);
-        Task<User> LoginAsync(string email, string password);
-        Task ForgotPasswordAsync(string email);
-        Task<bool> UserExistsAsync(string email);
-        Task<AuthResult> ResetPasswordAsync(ResetPasswordDto dtoModel);
+        Task<ResponseDto> RegisterAsync(User user, string password);
+        Task<ResponseDto> LoginAsync(string email, string password);
+        Task<ResponseDto> ForgotPasswordAsync(string email);
+        Task<ResponseDto> UserExistsAsync(string email);
+        Task<ResponseDto> ResetPasswordAsync(ResetPasswordDto dtoModel);
     }
 }

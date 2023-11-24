@@ -4,6 +4,8 @@ using Clicco.AuthAPI.Models.Request;
 using Clicco.AuthAPI.Models.Response;
 using Clicco.AuthAPI.Services.Contracts;
 using Clicco.AuthServiceAPI.Models.Request;
+using Clicco.Domain.Core.Exceptions;
+using Clicco.Domain.Core.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clicco.AuthAPI.Controllers
@@ -22,12 +24,12 @@ namespace Clicco.AuthAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto request)
+        public async Task<ResponseDto> Register([FromBody] RegisterDto request)
         {
             var result = await authService.UserExistsAsync(request.Email);
             if (result)
             {
-                return BadRequest("User already exists");
+                return new FailedResponse(Errors.UserAlreadyExist);
             }
 
             var CreateToUser = new User
@@ -43,22 +45,22 @@ namespace Clicco.AuthAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto dtoModel)
+        public async Task<ResponseDto> Login([FromBody] LoginDto dtoModel)
         {
             var user = await authService.LoginAsync(dtoModel.Email, dtoModel.Password);
             if (user == null)
-            {   
-                return Unauthorized();
+            {
+                return new FailedResponse(Errors.UnauthorizedOperation);
             }
 
             var tokenHandler = new Services.TokenHandler(configuration);
             var token = tokenHandler.CreateAccessToken(user);
-            LoggedUserViewModel model = new(token, dtoModel.Email);
-            return Ok(model);
+            LoginResponseDto model = new(token, dtoModel.Email);
+            return new SuccessResponse(model);
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordDto dtoModel)
+        public async Task<ResponseDto> ForgotPassword([FromBody] ForgotPasswordDto dtoModel)
         {
             var result = await authService.UserExistsAsync(dtoModel.Email);
             if (result)
@@ -70,12 +72,9 @@ namespace Clicco.AuthAPI.Controllers
         }
 
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dtoModel)
+        public async Task<ResponseDto> ResetPassword([FromBody] ResetPasswordDto dtoModel)
         {
-            var result = await authService.ResetPasswordAsync(dtoModel);
-            return result.IsSuccess 
-                ? Ok(result) 
-                : BadRequest(result);
+            return (await authService.ResetPasswordAsync(dtoModel));
         }
     }
 }

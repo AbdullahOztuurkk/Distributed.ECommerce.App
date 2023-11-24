@@ -1,9 +1,7 @@
-﻿using Clicco.Application.Features.Commands;
-using Clicco.Application.Features.Queries;
-using Clicco.Application.ViewModels;
+﻿using Clicco.Application.Services.Abstract;
 using Clicco.Domain.Core.ResponseModel;
+using Clicco.Domain.Model.Dtos.Menu;
 using Clicco.WebAPI.Models;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -16,68 +14,69 @@ namespace Clicco.WebAPI.Controllers
     [Authorize]
     public class MenuController : ControllerBase
     {
-        private readonly IMediator mediator;
-        public MenuController(IMediator mediator)
+        private readonly IMenuService _menuService;
+
+        public MenuController(IMenuService menuService)
         {
-            this.mediator = mediator;
+            _menuService = menuService;
         }
 
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<MenuViewModel>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll()
+        [ProducesResponseType(typeof(List<MenuResponseDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAll(PaginationFilter filter)
         {
-            var result = await mediator.Send(new GetAllMenusQuery());
-            return Ok(result);
+            var response = await _menuService.GetAll(filter);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(MenuViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MenuResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
         {
-            var result = await mediator.Send(new GetMenuByIdQuery { Id = id });
-            return Ok(result);
+            var response = await _menuService.Get(id);
+            return Ok(response);
         }
 
         // v1/api/controller/action/clicco-e-commerce-menu-url
         [HttpGet("GetByUrl/{url}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<MenuViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<MenuResponseDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetMenuByUrl(string url)
         {
-            var result = await mediator.Send(new GetMenuByUrlQuery { Url = url });
-            return Ok(result);
+            var response = await _menuService.GetByUrl(url);
+            return Ok(response);
         }
 
         [HttpPost("Create")]
-        [ProducesResponseType(typeof(BaseResponse<MenuViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateMenuCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateMenuDto dto)
         {
-            var result = await mediator.Send(command);
-            return Ok(result);
+            var response = await _menuService.Create(dto);
+            return Ok(response);
         }
 
         [HttpPut("Update")]
-        [ProducesResponseType(typeof(BaseResponse<MenuViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Update([FromBody] UpdateMenuCommand command)
+        public async Task<IActionResult> Update([FromBody] UpdateMenuDto dto)
         {
-            var result = await mediator.Send(command);
-            return Ok(result);
+            var response = await _menuService.Update(dto);
+            return Ok(response);
         }
 
         [HttpDelete("Delete")]
-        [ProducesResponseType(typeof(BaseResponse<MenuViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Delete([FromBody] DeleteMenuCommand command)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await mediator.Send(command);
-            return Ok(result);
+            var response = await _menuService.Delete(id);
+            return Ok(response);
         }
     }
 }

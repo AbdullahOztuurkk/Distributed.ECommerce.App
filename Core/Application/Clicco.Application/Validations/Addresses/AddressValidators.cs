@@ -1,11 +1,11 @@
-﻿using Clicco.Application.Features.Commands;
+﻿using Clicco.Domain.Model.Dtos.Address;
 using FluentValidation;
 
 namespace Clicco.Application.Validations.Addresses
 {
     public class AddressValidators
     {
-        public class CreateAddressValidator : AbstractValidator<CreateAddressCommand>
+        public class CreateAddressValidator : AbstractValidator<CreateAddressDto>
         {
             public CreateAddressValidator()
             {
@@ -36,7 +36,7 @@ namespace Clicco.Application.Validations.Addresses
             }
         }
 
-        public class DeleteAddressValidator : AbstractValidator<DeleteAddressCommand>
+        public class DeleteAddressValidator : AbstractValidator<DeleteAddressDto>
         {
             public DeleteAddressValidator()
             {

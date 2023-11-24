@@ -1,16 +1,8 @@
-﻿using AutoMapper;
-using Clicco.Application.Interfaces.CacheManager;
-using Clicco.Application.Interfaces.Repositories;
-using Clicco.Application.ViewModels;
-using Clicco.Domain.Core;
-using Clicco.Domain.Core.ResponseModel;
-using Clicco.Domain.Model;
-using Clicco.Domain.Shared;
-using MediatR;
+﻿using Clicco.Domain.Shared;
 
 namespace Clicco.Application.Features.Queries
 {
-    public class GetAllProductQuery : IRequest<BaseResponse<List<ProductViewModel>>>
+    public class GetAllProductQuery : IRequest<ResponseDto>
     {
         public GetAllProductQuery(Global.PaginationFilter paginationFilter)
         {
@@ -20,7 +12,7 @@ namespace Clicco.Application.Features.Queries
         public Global.PaginationFilter PaginationFilter { get; }
     }
 
-    public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQuery, BaseResponse<List<ProductViewModel>>>
+    public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQuery, ResponseDto>
     {
         private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
@@ -36,9 +28,9 @@ namespace Clicco.Application.Features.Queries
             this.cacheManager = cacheManager;
         }
 
-        public async Task<BaseResponse<List<ProductViewModel>>> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseDto> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
         {
-            return new SuccessResponse<List<ProductViewModel>>(mapper.Map<List<ProductViewModel>>(
+            return new SuccessResponse(mapper.Map<List<ProductResponseDto>>(
                 await productRepository.PaginateAsync(paginationFilter: request.PaginationFilter, x => x.Category, x => x.Vendor)));
         }
     }

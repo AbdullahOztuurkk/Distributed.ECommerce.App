@@ -1,4 +1,4 @@
-﻿using Clicco.Application.Interfaces.Services.External;
+﻿using Clicco.Application.Services.Abstract.External;
 using Clicco.Infrastructure.Configurations;
 using Clicco.Infrastructure.HostedServices;
 using Clicco.Infrastructure.Services;

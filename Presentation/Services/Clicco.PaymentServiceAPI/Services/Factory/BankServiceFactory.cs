@@ -1,5 +1,4 @@
-﻿using Clicco.PaymentServiceAPI.Models.Contracts;
-using Clicco.PaymentServiceAPI.Services.Contracts;
+﻿using Clicco.PaymentServiceAPI.Services.Contracts;
 using static Clicco.PaymentServiceAPI.Models.Global;
 
 namespace Clicco.PaymentServiceAPI.Services.Factory

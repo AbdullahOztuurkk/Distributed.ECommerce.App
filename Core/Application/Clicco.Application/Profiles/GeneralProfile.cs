@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Clicco.Application.Features.Commands;
-using Clicco.Domain.Core.Extensions;
-using Clicco.Domain.Model;
+﻿using Clicco.Domain.Model.Dtos.Address;
 
 namespace Clicco.Application.Profiles
 {
@@ -9,12 +6,12 @@ namespace Clicco.Application.Profiles
     {
         public GeneralProfile()
         {
-            CreateMap<CreateAddressCommand, Address>();
-            CreateMap<UpdateAddressCommand, Address>();
-            CreateMap<DeleteAddressCommand, Address>();
+            CreateMap<CreateAddressDto, Address>();
+            CreateMap<UpdateAddressDto, Address>();
+            CreateMap<DeleteAddressDto, Address>();
 
             CreateMap<CreateCategoryCommand, Category>()
-                .ForMember(x => x.SlugUrl, opt => opt.MapFrom(z => z.Name.ToSeoFriendlyUrl()));
+                .ForMember(x => x.SlugUrl, opt => opt.MapFrom(z => z.Name.AsSlug()));
             CreateMap<UpdateCategoryCommand, Category>();
             CreateMap<DeleteCategoryCommand, Category>();
 
@@ -23,7 +20,7 @@ namespace Clicco.Application.Profiles
             CreateMap<UpdateMenuCommand, Menu>();
 
             CreateMap<CreateProductCommand, Product>()
-                .ForMember(x => x.SlugUrl, opt => opt.MapFrom(z => z.Name.ToSeoFriendlyUrl()));
+                .ForMember(x => x.SlugUrl, opt => opt.MapFrom(z => z.Name.AsSlug()));
             CreateMap<UpdateProductCommand, Product>();
             CreateMap<DeleteProductCommand, Product>();
 

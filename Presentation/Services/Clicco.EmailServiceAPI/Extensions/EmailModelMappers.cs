@@ -5,7 +5,7 @@ namespace Clicco.EmailServiceAPI.Extensions
 {
     public static class EmailModelMappers
     {
-        public static RegistrationEmailTemplateModel ConvertToEmailModel(this RegistrationEmailRequest request)
+        public static RegistrationEmailTemplateModel ConvertToEmailModel(this RegistrationEmailRequestDto request)
         {
             return new RegistrationEmailTemplateModel()
             {
@@ -14,7 +14,7 @@ namespace Clicco.EmailServiceAPI.Extensions
             };
         }
 
-        public static ForgotPasswordEmailTemplateModel ConvertToEmailModel(this ForgotPasswordEmailRequest request)
+        public static ForgotPasswordEmailTemplateModel ConvertToEmailModel(this ForgotPasswordEmailRequestDto request)
         {
             return new ForgotPasswordEmailTemplateModel()
             {
@@ -24,7 +24,7 @@ namespace Clicco.EmailServiceAPI.Extensions
             };
         }
 
-        public static SuccessPaymentEmailTemplateModel ConvertToEmailModel(this PaymentSuccessEmailRequest request)
+        public static SuccessPaymentEmailTemplateModel ConvertToEmailModel(this PaymentSuccessEmailRequestDto request)
         {
             return new SuccessPaymentEmailTemplateModel()
             {
@@ -37,7 +37,7 @@ namespace Clicco.EmailServiceAPI.Extensions
             };
         }
 
-        public static FailedPaymentEmailTemplateModel ConvertToEmailModel(this PaymentFailedEmailRequest request)
+        public static FailedPaymentEmailTemplateModel ConvertToEmailModel(this PaymentFailedEmailRequestDto request)
         {
             return new FailedPaymentEmailTemplateModel()
             {
@@ -50,7 +50,7 @@ namespace Clicco.EmailServiceAPI.Extensions
                 Error = request.Error
             };
         }
-        public static InvoiceEmailTemplateModel ConvertToEmailModel(this InvoiceEmailRequest request)
+        public static InvoiceEmailTemplateModel ConvertToEmailModel(this InvoiceEmailRequestDto request)
         {
             return new InvoiceEmailTemplateModel()
             {
@@ -63,7 +63,7 @@ namespace Clicco.EmailServiceAPI.Extensions
             };
         }
 
-        public static ResetPasswordEmailTemplateModel ConvertToEmailModel(this ResetPasswordEmailRequest request)
+        public static ResetPasswordEmailTemplateModel ConvertToEmailModel(this ResetPasswordEmailRequestDto request)
         {
             return new ResetPasswordEmailTemplateModel()
             {
