@@ -1,17 +1,15 @@
-﻿using Clicco.Application.Interfaces.CacheManager;
-using Clicco.Application.Interfaces.Helpers;
+﻿using Clicco.Application.Interfaces.Helpers;
 using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.UnitOfWork;
-using Clicco.Infrastructure.Context;
-using Clicco.Infrastructure.Repositories;
-using Clicco.Infrastructure.Services;
+using Clicco.Persistence.Context;
+using Clicco.Persistence.Repositories;
 using Clicco.Persistence.Services;
 using Clicco.Persistence.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Clicco.Infrastructure.Extensions
+namespace Clicco.Persistence.Extensions
 {
     public static class ServiceRegistration
     {
@@ -26,8 +24,6 @@ namespace Clicco.Infrastructure.Extensions
                 opt.EnableSensitiveDataLogging();
             });
 
-            services.AddScoped<ICacheManager, RedisCacheManager>();
-
             services.AddScoped<IUnitOfWork, UnitOfWork<CliccoContext>>();
 
             services.AddHttpContextAccessor();
@@ -40,19 +36,7 @@ namespace Clicco.Infrastructure.Extensions
 
             #region Services
 
-            services.AddScoped<ITransactionDetailService, TransactionDetailService>();
-
-            services.AddScoped<ITransactionService, TransactionService>();
-
-            services.AddScoped<IProductService, ProductService>();
-
-            services.AddScoped<ICategoryService, CategoryService>();
-
             services.AddScoped<ICouponManagementHelper, CouponManagementHelper>();
-
-            services.AddScoped<IAddressService, AddressService>();
-
-            services.AddScoped<IMenuService, MenuService>();
 
             #endregion
 

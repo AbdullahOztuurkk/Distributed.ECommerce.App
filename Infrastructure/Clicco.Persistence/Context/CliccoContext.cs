@@ -1,10 +1,10 @@
 ﻿using Clicco.Domain.Core;
 using Clicco.Domain.Model;
-using Clicco.Infrastructure.EntityConfigurations;
+using Clicco.Persistence.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Clicco.Infrastructure.Context
+namespace Clicco.Persistence.Context
 {
     public class CliccoContext : DbContext
     {

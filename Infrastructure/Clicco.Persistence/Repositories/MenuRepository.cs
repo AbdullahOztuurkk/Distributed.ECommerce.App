@@ -1,9 +1,9 @@
 ﻿using Clicco.Application.Interfaces.Repositories;
 using Clicco.Domain.Model;
-using Clicco.Infrastructure.Context;
+using Clicco.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Clicco.Infrastructure.Repositories
+namespace Clicco.Persistence.Repositories
 {
     public class MenuRepository : GenericRepository<Menu, CliccoContext>, IMenuRepository
     {

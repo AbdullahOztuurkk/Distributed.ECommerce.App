@@ -1,4 +1,5 @@
-﻿using Clicco.Application.Services.Abstract;
+﻿using Clicco.Application.Interfaces.Helpers;
+using Clicco.Application.Services.Abstract;
 using Clicco.Application.Services.Concrete;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;

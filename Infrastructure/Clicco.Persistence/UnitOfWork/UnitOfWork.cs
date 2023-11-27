@@ -1,7 +1,7 @@
 ﻿using Clicco.Application.Interfaces.Repositories;
 using Clicco.Application.Interfaces.UnitOfWork;
 using Clicco.Domain.Core;
-using Clicco.Infrastructure.Repositories;
+using Clicco.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Clicco.Persistence.UnitOfWork

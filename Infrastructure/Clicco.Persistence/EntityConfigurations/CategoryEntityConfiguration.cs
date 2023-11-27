@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Clicco.Infrastructure.EntityConfigurations
+namespace Clicco.Persistence.EntityConfigurations
 {
     public class CategoryEntityConfiguration : IEntityTypeConfiguration<Category>
     {

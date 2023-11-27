@@ -1,4 +1,5 @@
-﻿using Clicco.Application.Services.Abstract.External;
+﻿using Clicco.Application.Interfaces.CacheManager;
+using Clicco.Application.Services.Abstract.External;
 using Clicco.Infrastructure.Configurations;
 using Clicco.Infrastructure.HostedServices;
 using Clicco.Infrastructure.Services;
@@ -18,6 +19,8 @@ namespace Clicco.Infrastructure.Extensions
                 .AddScoped<IEmailService, EmailService>()
                 .AddScoped<IInvoiceService, InvoiceService>()
                 .AddScoped<IQueueService, RabbitMqService>();
+
+            services.AddScoped<ICacheManager, RedisCacheManager>();
 
             services.AddHostedService<TransactionWorker>();
 

@@ -4,7 +4,7 @@ using Clicco.Domain.Shared;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Clicco.Infrastructure.Repositories
+namespace Clicco.Persistence.Repositories
 {
     public class GenericRepository<TEntity, TContext> : IRepository<TEntity>
         where TEntity : BaseEntity
