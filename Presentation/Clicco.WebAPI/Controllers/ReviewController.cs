@@ -1,8 +1,6 @@
-﻿using Clicco.Application.Features.Commands;
-using Clicco.Application.Features.Queries;
+﻿using Clicco.Application.Services.Abstract;
 using Clicco.Domain.Core.ResponseModel;
-using Clicco.WebAPI.Models;
-using MediatR;
+using Clicco.Domain.Model.Dtos.Review;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -15,58 +13,58 @@ namespace Clicco.WebAPI.Controllers
     [Authorize]
     public class ReviewController : ControllerBase
     {
-        private readonly IMediator mediator;
-        public ReviewController(IMediator mediator)
+        private readonly IReviewService _reviewService;
+
+        public ReviewController(IReviewService reviewService)
         {
-            this.mediator = mediator;
+            _reviewService = reviewService;
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(ReviewResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto<ReviewResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
         {
-            var result = await mediator.Send(new GetReviewByIdQuery { Id = id });
+            var result = await _reviewService.Get(id);
             return Ok(result);
         }
 
-        // v1/api/controller/action/2012-12-31
         [HttpGet("GetByProductId/{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<ReviewResponseDto>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetByProductId([FromQuery] PaginationFilter paginationFilter, int id)
+        [ProducesResponseType(typeof(ResponseDto<List<ReviewResponseDto>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetByProductId([FromQuery] PaginationFilter filter, int id)
         {
-            var result = await mediator.Send(new GetReviewsByProductIdQuery(paginationFilter) { ProductId = id });
+            var result = await _reviewService.GetAllByProductId(id, filter);
             return Ok(result);
         }
 
         [HttpPost("Create")]
-        [ProducesResponseType(typeof(ResponseDto<CreateReviewCommand>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateReviewCommand command)
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Create([FromBody] CreateReviewDto dto)
         {
-            var result = await mediator.Send(command);
+            var result = await _reviewService.Create(dto);
             return Ok(result);
         }
 
         [HttpPut("Update")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Update([FromBody] UpdateReviewCommand command)
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Update([FromBody] UpdateReviewDto dto)
         {
-            var result = await mediator.Send(command);
+            var result = await _reviewService.Update(dto);
             return Ok(result);
         }
 
         [HttpDelete("Delete")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Delete([FromBody] DeleteReviewCommand command)
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await mediator.Send(command);
+            var result = await _reviewService.Delete(id);
             return Ok(result);
         }
     }

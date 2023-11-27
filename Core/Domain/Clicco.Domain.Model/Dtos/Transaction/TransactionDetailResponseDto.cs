@@ -1,6 +1,7 @@
 ﻿using Clicco.Domain.Core.Extensions;
 using Clicco.Domain.Model.Dtos.Address;
 using Clicco.Domain.Model.Dtos.Coupon;
+using Clicco.Domain.Model.Dtos.Product;
 
 namespace Clicco.Domain.Model.Dtos.Transaction
 {
@@ -10,7 +11,8 @@ namespace Clicco.Domain.Model.Dtos.Transaction
         public decimal TotalAmount { get; set; }
         public string Dealer { get; set; }
         public DateTime DeliveryDate { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
         public string TransactionStatus { get; set; }
         public AddressResponseDto Address { get; set; }
         public CouponResponseDto Coupon { get; set; }

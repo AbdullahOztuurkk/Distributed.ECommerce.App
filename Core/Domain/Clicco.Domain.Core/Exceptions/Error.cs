@@ -2,6 +2,7 @@
 {
     public static class Errors
     {
+        public record Error(string ErrorCode, string ErrorMessage);
 
         public static readonly Error UnexceptedError = new("E_100", "Unexcepted error occurred!");
 
@@ -32,18 +33,8 @@
         public static readonly Error IncorrectLogin = new("E_309","Username or password is wrong!");
         public static readonly Error InvalidResetCode = new("E_310","Reset code is invalid!");
         public static readonly Error CategoryAlreadyExist = new("E_311","Category already exists!");
+        public static readonly Error VendorAlreadyExist = new("E_312","Vendor already exists!");
 
         #endregion
-    }
-
-    public class Error
-    {
-        public readonly string ErrorCode;
-        public readonly string ErrorMessage;
-        public Error(string errorCode, string errorMessage)
-        {
-            this.ErrorCode = errorCode;
-            this.ErrorMessage = errorMessage;
-        }
     }
 }

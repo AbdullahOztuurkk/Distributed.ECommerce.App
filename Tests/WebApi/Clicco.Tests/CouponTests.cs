@@ -1,6 +1,6 @@
 using Clicco.Application.Interfaces.CacheManager;
+using Clicco.Application.Interfaces.Helpers;
 using Clicco.Application.Interfaces.Repositories;
-using Clicco.Application.Interfaces.Services;
 using Clicco.Domain.Core;
 using Clicco.Domain.Core.Exceptions;
 using Clicco.Domain.Model;

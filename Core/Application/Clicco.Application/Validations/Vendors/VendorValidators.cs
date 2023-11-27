@@ -1,11 +1,12 @@
 ﻿using Clicco.Application.Validations.Common;
+using Clicco.Domain.Model.Dtos.Vendor;
 using FluentValidation;
 
 namespace Clicco.Application.Validations.Transactions
 {
     public class VendorValidators
     {
-        public class CreateVendorValidator : AbstractValidator<CreateVendorCommand>
+        public class CreateVendorValidator : AbstractValidator<CreateVendorDto>
         {
             public CreateVendorValidator()
             {
@@ -27,13 +28,13 @@ namespace Clicco.Application.Validations.Transactions
                     .NotEmpty();
             }
         }
-        public class DeleteVendorValidator : AbstractValidator<DeleteVendorCommand>
-        {
-            public DeleteVendorValidator()
-            {
-                RuleFor(x => x.Id)
-                    .NotEmpty();
-            }
-        }
+        //public class DeleteVendorValidator : AbstractValidator<DeleteVendorCommand>
+        //{
+        //    public DeleteVendorValidator()
+        //    {
+        //        RuleFor(x => x.Id)
+        //            .NotEmpty();
+        //    }
+        //}
     }
 }

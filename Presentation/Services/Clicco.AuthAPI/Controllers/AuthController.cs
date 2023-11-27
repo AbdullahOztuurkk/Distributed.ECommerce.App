@@ -1,10 +1,5 @@
-﻿using Clicco.AuthAPI.Models;
-using Clicco.AuthAPI.Models.Extensions;
-using Clicco.AuthAPI.Models.Request;
-using Clicco.AuthAPI.Models.Response;
-using Clicco.AuthAPI.Services.Contracts;
-using Clicco.AuthServiceAPI.Models.Request;
-using Clicco.Domain.Core.Exceptions;
+﻿using Clicco.AuthAPI.Services.Abstract;
+using Clicco.AuthServiceAPI.Models.Dtos;
 using Clicco.Domain.Core.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,67 +9,41 @@ namespace Clicco.AuthAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService authService;
+        private readonly IAuthService _authService;
         private readonly IConfiguration configuration;
 
         public AuthController(IAuthService authRepository, IConfiguration configuration)
         {
-            this.authService = authRepository;
+            this._authService = authRepository;
             this.configuration = configuration;
         }
 
         [HttpPost("register")]
         public async Task<ResponseDto> Register([FromBody] RegisterDto request)
         {
-            var result = await authService.UserExistsAsync(request.Email);
-            if (result)
-            {
-                return new FailedResponse(Errors.UserAlreadyExist);
-            }
-
-            var CreateToUser = new User
-            {
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Gender = request.Gender,
-                PhoneNumber = request.PhoneNumber,
-            };
-            var createdUser = await authService.RegisterAsync(CreateToUser, request.Password);
-            return StatusCode(201, createdUser.AsViewModel());
+            var result = await _authService.RegisterAsync(request, request.Password);
+            return result;
         }
 
         [HttpPost("login")]
         public async Task<ResponseDto> Login([FromBody] LoginDto dtoModel)
         {
-            var user = await authService.LoginAsync(dtoModel.Email, dtoModel.Password);
-            if (user == null)
-            {
-                return new FailedResponse(Errors.UnauthorizedOperation);
-            }
-
-            var tokenHandler = new Services.TokenHandler(configuration);
-            var token = tokenHandler.CreateAccessToken(user);
-            LoginResponseDto model = new(token, dtoModel.Email);
-            return new SuccessResponse(model);
+            var result = await _authService.LoginAsync(dtoModel.Email, dtoModel.Password);
+            return result;
         }
 
         [HttpPost("forgot-password")]
         public async Task<ResponseDto> ForgotPassword([FromBody] ForgotPasswordDto dtoModel)
         {
-            var result = await authService.UserExistsAsync(dtoModel.Email);
-            if (result)
-            {
-                await authService.ForgotPasswordAsync(dtoModel.Email);
-                return Ok("Temporary password sent to email address!");
-            }
-            return BadRequest("User not found!");
+            var result = await _authService.ForgotPasswordAsync(dtoModel);
+            return result;
         }
 
         [HttpPost("reset-password")]
         public async Task<ResponseDto> ResetPassword([FromBody] ResetPasswordDto dtoModel)
         {
-            return (await authService.ResetPasswordAsync(dtoModel));
+            var result = await _authService.ResetPasswordAsync(dtoModel);
+            return result;
         }
     }
 }

@@ -7,15 +7,12 @@ namespace Clicco.Application.Services.Concrete
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheManager _cacheManager;
-        private readonly IMapper _mapper;
         public CategoryService(
             IUnitOfWork unitOfWork,
-            ICacheManager cacheManager,
-            IMapper mapper)
+            ICacheManager cacheManager)
         {
             _unitOfWork = unitOfWork;
             _cacheManager = cacheManager;
-            _mapper = mapper;
         }
         public async Task<ResponseDto> Create(CreateCategoryDto dto)
         {
@@ -33,7 +30,14 @@ namespace Clicco.Application.Services.Concrete
                     return response.Fail(Errors.MenuNotFound);
             }
 
-            var category = _mapper.Map<Category>(dto);
+            Category category = new()
+            {
+                Name = dto.Name,
+                MenuId = dto.MenuId,
+                ParentId = dto.ParentId,
+                CreatedDate = DateTime.UtcNow.AddHours(3),
+            };
+
             await _unitOfWork.GetRepository<Category>().AddAsync(category);
             await _unitOfWork.SaveChangesAsync();
             await _cacheManager.RemoveAsync(CacheKeys.GetListKey<CategoryResponseDto>());
@@ -69,7 +73,7 @@ namespace Clicco.Application.Services.Concrete
             if (category == null)
                 return response.Fail(Errors.CategoryNotFound);
 
-            response.Data = category;
+            response.Data = new CategoryResponseDto().Map(category);
 
             return response;
         }
@@ -81,7 +85,8 @@ namespace Clicco.Application.Services.Concrete
             filter.PageSize = filter.PageNumber > 10 ? filter.PageNumber : 10;
 
             var categories = await _unitOfWork.GetRepository<Category>().PaginateAsync(filter,null);
-            response.Data = categories;
+            var data = categories.Select(x => new CategoryResponseDto().Map(x));
+            response.Data = data;
             return response;
         }
 
@@ -94,7 +99,7 @@ namespace Clicco.Application.Services.Concrete
             if (category == null)
                 return response.Fail(Errors.CategoryNotFound);
 
-            response.Data = category;
+            response.Data = new CategoryResponseDto().Map(category);
 
             return response;
         }
@@ -127,6 +132,7 @@ namespace Clicco.Application.Services.Concrete
 
             category.Name = dto.Name;
             category.SlugUrl = dto.Name.AsSlug();
+            category.UpdatedDate = DateTime.UtcNow.AddHours(3);
 
             await _unitOfWork.SaveChangesAsync();
             await _cacheManager.RemoveAsync(CacheKeys.GetListKey<Category>());

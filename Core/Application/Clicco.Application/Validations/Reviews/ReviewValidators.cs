@@ -1,10 +1,11 @@
-﻿using FluentValidation;
+﻿using Clicco.Domain.Model.Dtos.Review;
+using FluentValidation;
 
 namespace Clicco.Application.Validations.Reviews
 {
     public class ReviewValidators
     {
-        public class CreateReviewValidator : AbstractValidator<CreateReviewCommand>
+        public class CreateReviewValidator : AbstractValidator<CreateReviewDto>
         {
             public CreateReviewValidator()
             {
@@ -27,14 +28,14 @@ namespace Clicco.Application.Validations.Reviews
             }
         }
 
-        public class DeleteReviewValidator : AbstractValidator<DeleteReviewCommand>
-        {
-            public DeleteReviewValidator()
-            {
-                RuleFor(x => x.Id)
-                    .GreaterThan(0)
-                    .NotEmpty();
-            }
-        }
+        //public class DeleteReviewValidator : AbstractValidator<DeleteReviewCommand>
+        //{
+        //    public DeleteReviewValidator()
+        //    {
+        //        RuleFor(x => x.Id)
+        //            .GreaterThan(0)
+        //            .NotEmpty();
+        //    }
+        //}
     }
 }

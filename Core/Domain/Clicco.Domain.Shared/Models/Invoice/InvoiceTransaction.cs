@@ -1,4 +1,5 @@
-﻿using static Clicco.Domain.Shared.Global;
+﻿using System.ComponentModel;
+using static Clicco.Domain.Shared.Global;
 
 namespace Clicco.Domain.Shared.Models.Invoice
 {
@@ -6,25 +7,25 @@ namespace Clicco.Domain.Shared.Models.Invoice
     {
         public int Id { get; set; }
 
-        [DisplayElement("#TRANSACTION_CODE#")]
+        [Description("#TRANSACTION_CODE#")]
         public string Code { get; set; }
 
-        [DisplayElement("#TRANSACTION_TOTAL_AMOUNT#")]
+        [Description("#TRANSACTION_TOTAL_AMOUNT#")]
         public decimal TotalAmount { get; set; }
 
-        [DisplayElement("#TRANSACTION_DISCOUNT_AMOUNT#")]
+        [Description("#TRANSACTION_DISCOUNT_AMOUNT#")]
         public decimal DiscountedAmount { get; set; }
 
-        [DisplayElement("#TRANSACTION_DEALER_NAME#")]
+        [Description("#TRANSACTION_DEALER_NAME#")]
         public string Dealer { get; set; }
 
-        [DisplayElement("#TRANSACTION_DELIVERY_DATE#")]
+        [Description("#TRANSACTION_DELIVERY_DATE#")]
         public DateTime DeliveryDate { get; set; }
 
-        [DisplayElement("#TRANSACTION_CREATED_DATE#")]
-        public DateTime CreatedDate { get; set; }
+        [Description("#TRANSACTION_CREATED_DATE#")]
+        public DateTime? CreatedDate { get; set; }
 
-        [DisplayElement("#TRANSACTION_STATUS#")]
+        [Description("#TRANSACTION_STATUS#")]
         public string TransactionStatus { get; set; }
     }
 }

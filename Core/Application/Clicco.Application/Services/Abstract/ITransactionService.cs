@@ -10,5 +10,6 @@ namespace Clicco.Application.Services.Abstract
         Task<ResponseDto> Get(int id);
         Task<ResponseDto> GetAll(PaginationFilter paginationFilter);
         Task<ResponseDto> GetTransactionDetailById(int id);
+        Task<ResponseDto> GetInvoiceEmailByTransactionId(int Id);
     }
 }

@@ -2,12 +2,11 @@
 
 namespace Clicco.Domain.Model
 {
-    public class Menu : BaseEntity, ISoftDeletable
+    public class Menu : BaseEntity
     {
         public string SlugUrl { get; set; }
         public string Name { get; set; }
         public bool IsActive { get; set; } = true;
-        public bool IsDeleted { get; set; } = false;
 
         //Relationship
         public Category Category { get; set; }

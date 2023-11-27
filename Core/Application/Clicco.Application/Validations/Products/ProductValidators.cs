@@ -1,10 +1,11 @@
-﻿using FluentValidation;
+﻿using Clicco.Domain.Model.Dtos.Product;
+using FluentValidation;
 
 namespace Clicco.Application.Validations.Products
 {
     public class ProductValidators
     {
-        public class CreateProductValidator : AbstractValidator<CreateProductCommand>
+        public class CreateProductValidator : AbstractValidator<CreateProductDto>
         {
             public CreateProductValidator()
             {
@@ -33,14 +34,14 @@ namespace Clicco.Application.Validations.Products
             }
         }
 
-        public class DeleteProductValidator : AbstractValidator<DeleteProductCommand>
-        {
-            public DeleteProductValidator()
-            {
-                RuleFor(x => x.Id)
-                    .GreaterThan(0)
-                    .NotEmpty();
-            }
-        }
+        //public class DeleteProductValidator : AbstractValidator<DeleteProductCommand>
+        //{
+        //    public DeleteProductValidator()
+        //    {
+        //        RuleFor(x => x.Id)
+        //            .GreaterThan(0)
+        //            .NotEmpty();
+        //    }
+        //}
     }
 }

@@ -31,13 +31,13 @@ namespace Clicco.Application.Validations.Transactions
             }
         }
 
-        public class DeleteTransactionValidator : AbstractValidator<DeleteTransactionCommand>
-        {
-            public DeleteTransactionValidator()
-            {
-                RuleFor(x => x.Id)
-                    .NotEmpty();
-            }
-        }
+        //public class DeleteTransactionValidator : AbstractValidator<DeleteTransactionCommand>
+        //{
+        //    public DeleteTransactionValidator()
+        //    {
+        //        RuleFor(x => x.Id)
+        //            .NotEmpty();
+        //    }
+        //}
     }
 }

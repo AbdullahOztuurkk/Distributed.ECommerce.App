@@ -2,7 +2,7 @@
 
 namespace Clicco.Domain.Model
 {
-    public class Product : BaseEntity, ISoftDeletable
+    public class Product : BaseEntity
     {
         public string Name { get; set; }
         public string Code { get; set; }
@@ -10,8 +10,6 @@ namespace Clicco.Domain.Model
         public int Quantity { get; set; }
         public int UnitPrice { get; set; }
         public string SlugUrl { get; set; }
-        public bool IsDeleted { get; set; } = false;
-
 
         //Relationship
         public Vendor Vendor { get; set; }

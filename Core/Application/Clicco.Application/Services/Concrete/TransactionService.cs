@@ -1,8 +1,8 @@
-﻿using Clicco.Application.Interfaces.Services;
+﻿using Clicco.Application.Interfaces.Helpers;
 using Clicco.Application.Services.Abstract;
 using Clicco.Application.Services.Abstract.External;
 using Clicco.Domain.Model.Dtos.Transaction;
-using MediatR;
+using System.Text;
 
 namespace Clicco.Application.Services.Concrete
 {
@@ -13,7 +13,6 @@ namespace Clicco.Application.Services.Concrete
         private readonly ICacheManager _cacheManager;
         private readonly ICouponManagementHelper _couponManagementHelper;
         private readonly IInvoiceService _invoiceService;
-        private readonly IEmailService _emailService;
         private readonly IPaymentService _paymentService;
         public TransactionService(
             IUnitOfWork unitOfWork,
@@ -21,7 +20,6 @@ namespace Clicco.Application.Services.Concrete
             ICacheManager cacheManager,
             ICouponManagementHelper couponManagementHelper,
             IInvoiceService invoiceService,
-            IEmailService emailService,
             IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
@@ -29,7 +27,6 @@ namespace Clicco.Application.Services.Concrete
             _cacheManager = cacheManager;
             _couponManagementHelper = couponManagementHelper;
             _invoiceService = invoiceService;
-            _emailService = emailService;
             _paymentService = paymentService;
         }
         public async Task<ResponseDto> Create(CreateTransactionDto dto)
@@ -44,7 +41,7 @@ namespace Clicco.Application.Services.Concrete
                 return response.Fail(Errors.AddressNotFound);
 
             var userEmail = _userSessionService.GetUserEmail();
-            var transaction = new Transaction();
+            Transaction transaction = new();
 
             transaction.Code = GetUniqueCode();
             transaction.AddressId = dto.AddressId;
@@ -54,6 +51,7 @@ namespace Clicco.Application.Services.Concrete
             transaction.TotalAmount = product.UnitPrice * dto.Quantity;
             transaction.DiscountedAmount = transaction.TotalAmount;
             transaction.UserId = _userSessionService.GetUserId();
+            transaction.CreatedDate = DateTime.UtcNow.AddHours(3);
 
             transaction.TransactionDetail = new TransactionDetail
             {
@@ -63,6 +61,7 @@ namespace Clicco.Application.Services.Concrete
             await _unitOfWork.GetRepository<Transaction>().AddAsync(transaction);
             await _unitOfWork.GetRepository<Transaction>().SaveChangesAsync();
             transaction.TransactionDetailId = transaction.TransactionDetail.Id;
+            transaction.TransactionDetail.CreatedDate = DateTime.UtcNow.AddHours(3);
 
             var cacheKey = string.Format(CacheKeys.ActiveCoupon,dto.CouponId.Value);
             if (dto.CouponId.HasValue)
@@ -117,14 +116,17 @@ namespace Clicco.Application.Services.Concrete
         private string GetUniqueCode()
         {
             DateTime now = DateTime.Now;
-            string year = now.Year.ToString();
-            string month = now.Month.ToString("00");
-            string day = now.Day.ToString("00");
-            string hour = now.Hour.ToString("00");
-            string minute = now.Minute.ToString("00");
-            string second = now.Second.ToString("00");
-            string millisecond = now.Millisecond.ToString("00");
-            return year + month + day + hour + minute + second + millisecond;
+
+            StringBuilder strBuilder = new StringBuilder(17); // Assuming a maximum of 17 characters
+            strBuilder.Append(now.Year);
+            strBuilder.Append(now.Month.ToString("00"));
+            strBuilder.Append(now.Day.ToString("00"));
+            strBuilder.Append(now.Hour.ToString("00"));
+            strBuilder.Append(now.Minute.ToString("00"));
+            strBuilder.Append(now.Second.ToString("00"));
+            strBuilder.Append(now.Millisecond.ToString("000"));
+
+            return strBuilder.ToString();
         }
 
         public async Task<ResponseDto> Delete(int id)
@@ -201,6 +203,7 @@ namespace Clicco.Application.Services.Concrete
             transaction.AddressId = dto.AddressId;
             transaction.Address = address;
             transaction.Code = dto.Code;
+            transaction.UpdatedDate = DateTime.UtcNow.AddHours(3);
 
             _unitOfWork.GetRepository<Transaction>().Update(transaction);
             await _unitOfWork.SaveChangesAsync();
@@ -219,6 +222,20 @@ namespace Clicco.Application.Services.Concrete
 
             response.Data = new TransactionResponseDto().Map(transaction);
 
+            return response;
+        }
+
+        public async Task<ResponseDto> GetInvoiceEmailByTransactionId(int Id)
+        {
+            ResponseDto response = new();
+
+            var transaction = await _unitOfWork.GetRepository<Transaction>().GetAsync(x => x.Id == Id);
+
+            if (transaction == null)
+                return response.Fail(Errors.TransactionNotFound);
+
+            await _invoiceService.SendEmailByTransactionId(transactionId: Id);
+            
             return response;
         }
     }

@@ -1,4 +1,4 @@
-﻿using Clicco.Domain.Core.Exceptions;
+﻿using static Clicco.Domain.Core.Exceptions.Errors;
 
 namespace Clicco.Domain.Core.ResponseModel
 {
@@ -16,6 +16,15 @@ namespace Clicco.Domain.Core.ResponseModel
             Error = error;
             Message = string.Empty;
             return this;
+        }
+    }
+
+    public class ResponseDto<T> : ResponseDto
+    {
+        public new T Data
+        {
+            get => (T)base.Data;
+            set => base.Data = value;
         }
     }
 }

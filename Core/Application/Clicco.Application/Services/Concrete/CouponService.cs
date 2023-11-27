@@ -7,22 +7,31 @@ namespace Clicco.Application.Services.Concrete
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheManager _cacheManager;
-        private readonly IMapper _mapper;
         private readonly IUserSessionService _userSessionService;
         public CouponService(
             IUnitOfWork unitOfWork,
             ICacheManager cacheManager,
-            IMapper mapper,
             IUserSessionService userSessionService)
         {
             _unitOfWork = unitOfWork;
             _cacheManager = cacheManager;
-            _mapper = mapper;
             _userSessionService = userSessionService;
         }
         public async Task<ResponseDto> Create(CreateCouponDto dto)
         {
-            var coupon = _mapper.Map<Coupon>(dto);
+            Coupon coupon = new()
+            {
+                Name = dto.Name,
+                Type = dto.Type,
+                TypeId = dto.TypeId,
+                ExpirationDate = dto.ExpirationDate,
+                DiscountAmount = dto.DiscountAmount,
+                Description = dto.Description,
+                DiscountType = dto.DiscountType,
+                CreatedDate = DateTime.UtcNow.AddHours(3),
+                IsActive = true,
+            };
+
             await _unitOfWork.GetRepository<Coupon>().AddAsync(coupon);
             await _unitOfWork.SaveChangesAsync();
             return new ResponseDto();
@@ -50,7 +59,7 @@ namespace Clicco.Application.Services.Concrete
             if (coupon == null)
                 return response.Fail(Errors.CouponNotFound);
 
-            response.Data = coupon;
+            response.Data = new CouponResponseDto().Map(coupon);
 
             return response;
         }
@@ -61,8 +70,9 @@ namespace Clicco.Application.Services.Concrete
             filter.PageNumber = filter.PageNumber > 1 ? filter.PageNumber : 1;
             filter.PageSize = filter.PageNumber > 10 ? filter.PageNumber : 10;
 
-            var categories = await _unitOfWork.GetRepository<Coupon>().PaginateAsync(filter,null);
-            response.Data = categories;
+            var coupons = await _unitOfWork.GetRepository<Coupon>().PaginateAsync(filter,null);
+            var data = coupons.Select(x => new CouponResponseDto().Map(x));
+            response.Data = data;
             return response;
         }
 
@@ -87,6 +97,7 @@ namespace Clicco.Application.Services.Concrete
             coupon.ExpirationDate = dto.ExpirationDate;
             coupon.DiscountAmount = dto.DiscountAmount;
             coupon.DiscountType = dto.DiscountType;
+            coupon.UpdatedDate = DateTime.UtcNow.AddHours(3);
 
             _unitOfWork.GetRepository<Coupon>().Update(coupon);
             await _unitOfWork.SaveChangesAsync();

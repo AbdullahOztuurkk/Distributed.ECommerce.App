@@ -2,7 +2,7 @@
 
 namespace Clicco.AuthAPI.Models
 {
-    public class User : BaseEntity, ISoftDeletable
+    public class User : BaseEntity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -12,7 +12,6 @@ namespace Clicco.AuthAPI.Models
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public bool IsSA { get; set; } = false;
-        public bool IsDeleted { get; set; } = false;
 
         public override string ToString()
         {

@@ -2,10 +2,8 @@
 
 namespace Clicco.Domain.Model
 {
-    public class TransactionDetail : BaseEntity, ISoftDeletable
+    public class TransactionDetail : BaseEntity
     {
-        public bool IsDeleted { get; set; } = false;
-
         public int ProductId { get; set; }
         public Product Product { get; set; }
         public Transaction Transaction { get; set; }

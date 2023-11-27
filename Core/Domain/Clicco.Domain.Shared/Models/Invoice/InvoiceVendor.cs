@@ -1,18 +1,18 @@
-﻿using static Clicco.Domain.Shared.Global;
+﻿using System.ComponentModel;
 
 namespace Clicco.Domain.Shared.Models.Invoice
 {
     public class InvoiceVendor
     {
-        [DisplayElement("#VENDOR_NAME#")]
+        [Description("#VENDOR_NAME#")]
         public string Name { get; set; }
 
-        [DisplayElement("#VENDOR_EMAIL#")]
+        [Description("#VENDOR_EMAIL#")]
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string Region { get; set; }
 
-        [DisplayElement("#VENDOR_ADDRESS#")]
+        [Description("#VENDOR_ADDRESS#")]
         public string Address { get; set; }
     }
 }

@@ -1,9 +1,7 @@
-﻿using Clicco.Application.Features.Commands;
-using Clicco.Application.Features.Queries;
-using Clicco.Application.Features.Queries.Transactions;
+﻿using Clicco.Application.Services.Abstract;
 using Clicco.Domain.Core.ResponseModel;
-using Clicco.WebAPI.Models;
-using MediatR;
+using Clicco.Domain.Model.Dtos.Transaction;
+using Clicco.Domain.Shared.Models.Payment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -15,54 +13,55 @@ namespace Clicco.WebAPI.Controllers
     [Authorize]
     public class TransactionController : ControllerBase
     {
-        private readonly IMediator mediator;
-        public TransactionController(IMediator mediator)
+        private readonly ITransactionService _transactionService;
+
+        public TransactionController(ITransactionService transactionService)
         {
-            this.mediator = mediator;
+            this._transactionService = transactionService;
+        }
+
+        [HttpPost]
+        [Route("Create")]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Create(CreateTransactionDto paymentRequest)
+        {
+            var response = await _transactionService.Create(paymentRequest);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(TransactionResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto<TransactionResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
         {
-            var result = await mediator.Send(new GetTransactionByIdQuery { Id = id });
+            var result = await _transactionService.Get(id);
             return Ok(result);
         }
 
         [HttpPut("Update")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Update([FromBody] UpdateTransactionCommand command)
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Update([FromBody] UpdateTransactionDto dto)
         {
-            var result = await mediator.Send(command);
+            var result = await _transactionService.Update(dto);
             return Ok(result);
         }
 
         [HttpGet("{id}/details")]
-        [ProducesResponseType(typeof(ResponseDto<TransactionDetailResponseDto>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var result = await mediator.Send(new GetTransactionDetailByTransactionIdQuery { Id = id });
+            var result = await _transactionService.Delete(id);
             return Ok(result);
         }
 
         [HttpGet("{id}/details/SendInvoiceEmail")]
-        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetInvoiceEmailByTransactionId([FromRoute] int id)
         {
-            await mediator.Send(new GetInvoiceEmailByTransactionIdQuery { TransactionId = id });
-            return Ok();
-        }
-
-        [HttpDelete("Delete")]
-        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Delete([FromBody] DeleteTransactionCommand command)
-        {
-            var result = await mediator.Send(command);
+            var result = await _transactionService.GetInvoiceEmailByTransactionId(id);
             return Ok(result);
         }
     }

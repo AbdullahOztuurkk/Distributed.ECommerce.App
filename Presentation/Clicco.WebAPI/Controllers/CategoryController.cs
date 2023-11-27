@@ -1,7 +1,6 @@
 ﻿using Clicco.Application.Services.Abstract;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model.Dtos.Category;
-using Clicco.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -32,8 +31,8 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(CategoryResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto<CategoryResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
         {
@@ -43,8 +42,8 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("GetByUrl/{url}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(CategoryResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto<CategoryResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetCategoryByUrl(string url)
         {
             var response = await _categoryService.GetByUrl(url);
@@ -53,7 +52,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpPost("Create")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
         {
             var response = await _categoryService.Create(dto);
@@ -62,7 +61,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpPut("Update")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateCategoryDto dto)
         {
             var response = await _categoryService.Update(dto);
@@ -71,7 +70,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpDelete("Delete")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _categoryService.Delete(id);

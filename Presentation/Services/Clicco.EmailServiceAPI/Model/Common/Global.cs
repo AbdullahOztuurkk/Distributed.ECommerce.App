@@ -4,12 +4,12 @@
     {
         public enum EmailType
         {
-            NewUser = 10,
-            ForgotPassword = 20,
-            SuccessPayment = 30,
-            FailedPayment = 40,
-            Invoice = 50,
-            ResetPassword = 60,
+            NewUser = 1,
+            ForgotPassword = 2,
+            SuccessPayment = 3,
+            FailedPayment = 4,
+            Invoice = 5,
+            ResetPassword = 6,
         }
     }
 }

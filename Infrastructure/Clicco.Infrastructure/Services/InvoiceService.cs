@@ -1,4 +1,5 @@
-﻿using Clicco.Domain.Core.Extensions;
+﻿using Clicco.Application.Services.Abstract.External;
+using Clicco.Domain.Core.Extensions;
 using Clicco.Domain.Model;
 using Clicco.Domain.Shared.Models.Invoice;
 using static Clicco.Domain.Shared.Global;
@@ -15,8 +16,6 @@ namespace Clicco.Infrastructure.Services
 
         public async Task CreateInvoice(string BuyerEmail, Transaction transaction, Product product, Address address)
         {
-            var transactionAddress = address;
-            var transactionProduct = product;
             var transactionVendor = product.Vendor;
             var transactionCoupon = transaction.Coupon;
 
@@ -36,11 +35,11 @@ namespace Clicco.Infrastructure.Services
                 },
                 Address = new InvoiceAddress
                 {
-                    City = transactionAddress.City,
-                    Country = transactionAddress.Country,
-                    State = transactionAddress.State,
-                    Street = transactionAddress.Street,
-                    ZipCode = transactionAddress.ZipCode,
+                    City = address.City,
+                    Country = address.Country,
+                    State = address.State,
+                    Street = address.Street,
+                    ZipCode = address.ZipCode,
                 },
                 Coupon = new InvoiceCoupon
                 {
@@ -53,12 +52,12 @@ namespace Clicco.Infrastructure.Services
                 },
                 Product = new InvoiceProduct
                 {
-                    Name = transactionProduct.Name,
-                    Description = transactionProduct.Description,
-                    Code = transactionProduct.Code,
-                    Quantity = transactionProduct.Quantity,
-                    SlugUrl = transactionProduct.SlugUrl,
-                    UnitPrice = transactionProduct.UnitPrice,
+                    Name = product.Name,
+                    Description = product.Description,
+                    Code = product.Code,
+                    Quantity = product.Quantity,
+                    SlugUrl = product.SlugUrl,
+                    UnitPrice = product.UnitPrice,
                 },
                 Vendor = new InvoiceVendor
                 {

@@ -1,4 +1,5 @@
 ﻿using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.Services.Abstract.External;
 using Clicco.Domain.Core;
 using Clicco.Domain.Shared.Models.Email;
 using Clicco.Domain.Shared.Models.Payment;
@@ -10,12 +11,12 @@ namespace Clicco.Infrastructure.HostedServices
 {
     internal class TransactionWorker : BackgroundService
     {
-        private readonly IQueueService queueService;
+        private readonly IQueueService _bus;
         private readonly ITransactionRepository transactionRepository;
         public TransactionWorker(IServiceProvider serviceProvider)
         {
             var scope = serviceProvider.CreateScope().ServiceProvider;
-            queueService = scope.GetRequiredService<IQueueService>();
+            _bus = scope.GetRequiredService<IQueueService>();
             transactionRepository = scope.GetRequiredService<ITransactionRepository>();
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -23,7 +24,7 @@ namespace Clicco.Infrastructure.HostedServices
             await Task.WhenAll(
 
                 //Send email for success transaction to buyer
-                queueService.ReceiveMessages<PaymentBankResponse>(ExchangeNames.EventExchange, QueueNames.PaidSucceedTransactionsQueue, EventNames.PaymentSucceed, async (model) =>
+                _bus.ReceiveMessages<PaymentBankResponse>(ExchangeNames.EventExchange, QueueNames.PaidSucceedTransactionsQueue, EventNames.PaymentSucceed, async (model) =>
                 {
                     var transaction = await transactionRepository.GetByIdAsync(model.TransactionId);
 
@@ -41,11 +42,11 @@ namespace Clicco.Infrastructure.HostedServices
                         To = model.To,
                     };
 
-                    await queueService.PushMessage(ExchangeNames.EmailExchange, emailRequest, EventNames.PaymentSucceedMailRequest);
+                    await _bus.PushMessage(ExchangeNames.EmailExchange, emailRequest, EventNames.PaymentSucceedMailRequest);
                 }),
 
                 //Send email for failed transaction to buyer
-                queueService.ReceiveMessages<PaymentBankResponse>(ExchangeNames.EventExchange, QueueNames.PaidFailedTransactionsQueue, EventNames.PaymentFailed, async (model) =>
+                _bus.ReceiveMessages<PaymentBankResponse>(ExchangeNames.EventExchange, QueueNames.PaidFailedTransactionsQueue, EventNames.PaymentFailed, async (model) =>
                 {
                     var transaction = await transactionRepository.GetByIdAsync(model.TransactionId);
 
@@ -64,7 +65,7 @@ namespace Clicco.Infrastructure.HostedServices
                         Error = model.ErrorMessage,
                     };
 
-                    await queueService.PushMessage(ExchangeNames.EmailExchange, emailRequest, EventNames.PaymentFailedMailRequest);
+                    await _bus.PushMessage(ExchangeNames.EmailExchange, emailRequest, EventNames.PaymentFailedMailRequest);
                 })
             );
         }

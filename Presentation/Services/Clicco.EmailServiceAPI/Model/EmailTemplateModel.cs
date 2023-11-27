@@ -1,5 +1,6 @@
 ﻿using Clicco.Domain.Shared.Models.Email;
 using Clicco.Domain.Shared.Models.Invoice;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using static Clicco.Domain.Shared.Global;
 using static Clicco.EmailServiceAPI.Model.Common.Global;
@@ -12,7 +13,7 @@ namespace Clicco.EmailServiceAPI.Model
     }
     public class EmailTemplateModel
     {
-        [DisplayElement("#EMAIL#")]
+        [Description("#EMAIL#")]
         public string To { get; set; }
 
         [Exclude]
@@ -33,7 +34,7 @@ namespace Clicco.EmailServiceAPI.Model
             EmailType = EmailType.NewUser;
         }
 
-        [DisplayElement("#FULL_NAME#")]
+        [Description("#FULL_NAME#")]
         public string FullName { get; set; }
 
         public RegistrationEmailTemplateModel Convert(RegistrationEmailRequestDto value)
@@ -53,10 +54,10 @@ namespace Clicco.EmailServiceAPI.Model
             EmailType = EmailType.ForgotPassword;
         }
 
-        [DisplayElement("#FULL_NAME#")]
+        [Description("#FULL_NAME#")]
         public string FullName { get; set; }
 
-        [DisplayElement("#RESET_CODE#")]
+        [Description("#RESET_CODE#")]
         public string ResetCode { get; set; }
     }
 
@@ -67,19 +68,19 @@ namespace Clicco.EmailServiceAPI.Model
             EmailType = EmailType.SuccessPayment;
         }
 
-        [DisplayElement("#FULL_NAME#")]
+        [Description("#FULL_NAME#")]
         public string FullName { get; set; }
 
-        [DisplayElement("#ORDER_NUMBER#")]
+        [Description("#ORDER_NUMBER#")]
         public string OrderNumber { get; set; }
 
-        [DisplayElement("#PAYMENT_AMOUNT#")]
+        [Description("#PAYMENT_AMOUNT#")]
         public string Amount { get; set; }
 
-        [DisplayElement("#PAYMENT_METHOD#")]
+        [Description("#PAYMENT_METHOD#")]
         public string PaymentMethod { get; set; }
 
-        [DisplayElement("#PRODUCT_NAME#")]
+        [Description("#PRODUCT_NAME#")]
         public string ProductName { get; set; }
     }
 
@@ -90,22 +91,22 @@ namespace Clicco.EmailServiceAPI.Model
             EmailType = EmailType.FailedPayment;
         }
 
-        [DisplayElement("#FULL_NAME#")]
+        [Description("#FULL_NAME#")]
         public string FullName { get; set; }
 
-        [DisplayElement("#ORDER_NUMBER#")]
+        [Description("#ORDER_NUMBER#")]
         public string OrderNumber { get; set; }
 
-        [DisplayElement("#PAYMENT_AMOUNT#")]
+        [Description("#PAYMENT_AMOUNT#")]
         public string Amount { get; set; }
 
-        [DisplayElement("#PAYMENT_METHOD#")]
+        [Description("#PAYMENT_METHOD#")]
         public string PaymentMethod { get; set; }
 
-        [DisplayElement("#PRODUCT_NAME#")]
+        [Description("#PRODUCT_NAME#")]
         public string ProductName { get; set; }
 
-        [DisplayElement("#ERROR#")]
+        [Description("#ERROR#")]
         public string Error { get; set; }
     }
 
@@ -139,7 +140,7 @@ namespace Clicco.EmailServiceAPI.Model
             EmailType = EmailType.ResetPassword;
         }
 
-        [DisplayElement("#FULL_NAME#")]
+        [Description("#FULL_NAME#")]
         public string FullName { get; set; }
     }
 }

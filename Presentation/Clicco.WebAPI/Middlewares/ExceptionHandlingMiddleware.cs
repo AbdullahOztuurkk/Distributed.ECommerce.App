@@ -1,5 +1,7 @@
 ﻿using Clicco.Domain.Core.Exceptions;
+using Clicco.Domain.Core.ResponseModel;
 using System.Net;
+using static Clicco.Domain.Core.Exceptions.Errors;
 
 namespace Clicco.WebAPI.Middlewares
 {
@@ -18,24 +20,25 @@ namespace Clicco.WebAPI.Middlewares
             }
             catch (Exception error)
             {
+                ResponseDto response = new();
                 Error customError;
-                var response = context.Response;
+                var httpResponse = context.Response;
                 switch (error)
                 {
                     case CustomException e:
                         customError = e.CustomError;
                         _logger.LogError(customError.ErrorMessage);
-                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        httpResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     default:
                         customError = Errors.UnexceptedError;
                         _logger.LogError(error.ToString());
-                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        httpResponse.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
                 }
 
-                await response.WriteAsJsonAsync(
-                    customError
+                await httpResponse.WriteAsJsonAsync(
+                    response.Fail(customError)
                 );
             }
         }

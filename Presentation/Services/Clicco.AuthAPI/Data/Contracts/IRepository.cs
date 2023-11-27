@@ -14,5 +14,6 @@ namespace Clicco.AuthAPI.Data.Contracts
         Task<T> AddAsync(T entity);
         T Update(T entity);
         T DeleteAsync(T entity);
+        Task<int> SaveChangesAsync();
     }
 }

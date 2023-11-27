@@ -7,14 +7,11 @@ namespace Clicco.Application.Services.Concrete
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMenuRepository _menuRepository;
-        private readonly ICacheManager _cacheManager;
         public MenuService(
             IUnitOfWork unitOfWork,
-            ICacheManager cacheManager,
             IMenuRepository menuRepository)
         {
             _unitOfWork = unitOfWork;
-            _cacheManager = cacheManager;
             _menuRepository = menuRepository;
         }
         public async Task<ResponseDto> Create(CreateMenuDto dto)
@@ -36,6 +33,7 @@ namespace Clicco.Application.Services.Concrete
                 SlugUrl = exactUri,
                 IsActive = true,
                 Name = dto.Name,
+                CreatedDate = DateTime.UtcNow.AddHours(3),
             };
 
             await _menuRepository.AddAsync(menu);
@@ -48,11 +46,11 @@ namespace Clicco.Application.Services.Concrete
         {
             ResponseDto response = new();
 
-            var address = await _unitOfWork.GetRepository<Coupon>().GetByIdAsync(id);
-            if (address == null)
-                return response.Fail(Errors.AddressNotFound);
+            var menu = await _unitOfWork.GetRepository<Menu>().GetByIdAsync(id);
+            if (menu == null)
+                return response.Fail(Errors.MenuNotFound);
 
-            _unitOfWork.GetRepository<Coupon>().Delete(address);
+            _unitOfWork.GetRepository<Menu>().Delete(menu);
             await _unitOfWork.SaveChangesAsync();
             return response;
         }
@@ -72,7 +70,7 @@ namespace Clicco.Application.Services.Concrete
             if (menu == null)
                 return response.Fail(Errors.MenuNotFound);
 
-            response.Data = menu;
+            response.Data = new MenuResponseDto().Map(menu);
 
             return response;
         }
@@ -84,7 +82,8 @@ namespace Clicco.Application.Services.Concrete
             filter.PageSize = filter.PageNumber > 10 ? filter.PageNumber : 10;
 
             var menus = await _unitOfWork.GetRepository<Menu>().PaginateAsync(filter,null);
-            response.Data = menus;
+            var data = menus.Select(x => new MenuResponseDto().Map(x));
+            response.Data = data;
             return response;
         }
 
@@ -97,7 +96,7 @@ namespace Clicco.Application.Services.Concrete
             if (menu == null)
                 return response.Fail(Errors.MenuNotFound);
 
-            response.Data = menu;
+            response.Data = new MenuResponseDto().Map(menu);
 
             return response;
         }
@@ -122,6 +121,7 @@ namespace Clicco.Application.Services.Concrete
             menu.Name = dto.Name;
             menu.SlugUrl = exactUri;
             menu.CategoryId = dto.CategoryId;
+            menu.UpdatedDate = DateTime.UtcNow.AddHours(3);
 
             _menuRepository.Update(menu);
             await _menuRepository.SaveChangesAsync();

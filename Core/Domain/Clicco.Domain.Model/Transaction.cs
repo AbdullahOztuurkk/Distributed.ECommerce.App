@@ -2,15 +2,13 @@
 
 namespace Clicco.Domain.Model
 {
-    public class Transaction : BaseEntity, ISoftDeletable
+    public class Transaction : BaseEntity
     {
         public string Code { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal DiscountedAmount { get; set; }
         public string Dealer { get; set; }
         public DateTime DeliveryDate { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public bool IsDeleted { get; set; } = false;
         public TransactionStatus TransactionStatus { get; set; } = TransactionStatus.Pending;
 
         //Relationship

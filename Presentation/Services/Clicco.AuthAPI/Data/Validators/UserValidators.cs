@@ -1,5 +1,5 @@
 ﻿using Clicco.AuthAPI.Extensions;
-using Clicco.AuthAPI.Models.Request;
+using Clicco.AuthServiceAPI.Models.Dtos;
 using FluentValidation;
 
 namespace Clicco.AuthAPI.Data.Validators

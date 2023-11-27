@@ -2,7 +2,7 @@
 
 namespace Clicco.Domain.Model
 {
-    public class Coupon : BaseEntity, ISoftDeletable
+    public class Coupon : BaseEntity
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -12,7 +12,6 @@ namespace Clicco.Domain.Model
         public DiscountType DiscountType { get; set; }
         public decimal DiscountAmount { get; set; }
         public bool IsActive { get; set; } = true;
-        public bool IsDeleted { get; set; } = false;
 
         //Relationship
         public Transaction Transaction { get; set; }

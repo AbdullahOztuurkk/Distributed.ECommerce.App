@@ -1,6 +1,6 @@
 ﻿using Clicco.Application.Interfaces.CacheManager;
+using Clicco.Application.Interfaces.Helpers;
 using Clicco.Application.Interfaces.Repositories;
-using Clicco.Application.Interfaces.Services;
 using Clicco.Application.Interfaces.UnitOfWork;
 using Clicco.Infrastructure.Context;
 using Clicco.Infrastructure.Repositories;

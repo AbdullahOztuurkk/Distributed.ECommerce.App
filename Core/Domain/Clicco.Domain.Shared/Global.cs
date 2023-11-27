@@ -61,15 +61,6 @@
 
         }
 
-        public class DisplayElementAttribute : Attribute
-        {
-            public string Name { get; private set; }
-            public DisplayElementAttribute(string parameterName)
-            {
-                Name = parameterName;
-            }
-        }
-
         public class PaginationFilter
         {
             public int PageNumber { get; set; }

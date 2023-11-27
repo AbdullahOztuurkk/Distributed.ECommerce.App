@@ -7,22 +7,30 @@ namespace Clicco.Application.Services.Concrete
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheManager _cacheManager;
-        private readonly IMapper _mapper;
         private readonly IUserSessionService _userSessionService;
         public AddressService(
             IUnitOfWork unitOfWork,
             ICacheManager cacheManager,
-            IMapper mapper,
             IUserSessionService userSessionService)
         {
             _unitOfWork = unitOfWork;
             _cacheManager = cacheManager;
-            _mapper = mapper;
             _userSessionService = userSessionService;
         }
         public async Task<ResponseDto> Create(CreateAddressDto dto)
         {
-            var address = _mapper.Map<Address>(dto);
+            Address address = new()
+            {
+                State = dto.State,
+                City = dto.City,
+                ZipCode = dto.ZipCode,
+                Country = dto.Country,
+                Street = dto.Street,
+                CreatedDate = DateTime.UtcNow.AddHours(3),
+                UpdatedDate = null,
+                UserId = _userSessionService.GetUserId(),
+            };
+
             await _unitOfWork.GetRepository<Address>().AddAsync(address);
             await _unitOfWork.SaveChangesAsync();
             return new ResponseDto();
@@ -49,7 +57,7 @@ namespace Clicco.Application.Services.Concrete
             if (address == null)
                 return response.Fail(Errors.CategoryNotFound);
 
-            response.Data = address;
+            response.Data = new AddressResponseDto().Map(address);
 
             return response;
         }
@@ -58,7 +66,8 @@ namespace Clicco.Application.Services.Concrete
         {
             ResponseDto response = new();
             int userId = _userSessionService.GetUserId();
-            var data = _mapper.Map<List<AddressResponseDto>>(await _unitOfWork.GetRepository<Address>().GetManyAsync(x => x.UserId == userId));
+            var reviews = await _unitOfWork.GetRepository<Address>().GetManyAsync(x => x.UserId == userId);
+            var data = reviews.Select(x => new AddressResponseDto().Map(x));
             response.Data = data;
             return response;
         }
@@ -76,6 +85,7 @@ namespace Clicco.Application.Services.Concrete
             address.Country = dto.Country;
             address.ZipCode = dto.ZipCode;
             address.UserId = _userSessionService.GetUserId();
+            address.UpdatedDate = DateTime.UtcNow.AddHours(3);
 
             _unitOfWork.GetRepository<Address>().Update(address);
 

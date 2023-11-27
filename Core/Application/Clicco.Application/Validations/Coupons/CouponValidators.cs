@@ -1,11 +1,12 @@
 ﻿using Clicco.Application.Validations.Common;
+using Clicco.Domain.Model.Dtos.Coupon;
 using FluentValidation;
 
 namespace Clicco.Application.Validations.Coupons
 {
     public class CouponValidators
     {
-        public class CreateCouponValidator : AbstractValidator<CreateCouponCommand>
+        public class CreateCouponValidator : AbstractValidator<CreateCouponDto>
         {
             public CreateCouponValidator()
             {
@@ -27,8 +28,8 @@ namespace Clicco.Application.Validations.Coupons
                     .GreaterThan(DateTime.UtcNow)
                     .NotEmpty();
 
-                RuleFor(x => x.IsActive)
-                    .NotEmpty();
+                //RuleFor(x => x.IsActive)
+                //    .NotEmpty();
 
                 When(x => x.DiscountType == DiscountType.Percentage, () =>
                 {
@@ -46,14 +47,14 @@ namespace Clicco.Application.Validations.Coupons
             }
         }
 
-        public class DeleteCouponValidator : AbstractValidator<DeleteCouponCommand>
-        {
-            public DeleteCouponValidator()
-            {
-                RuleFor(x => x.Id)
-                    .GreaterThan(0)
-                    .NotEmpty();
-            }
-        }
+        //public class DeleteCouponValidator : AbstractValidator<DeleteCouponCommand>
+        //{
+        //    public DeleteCouponValidator()
+        //    {
+        //        RuleFor(x => x.Id)
+        //            .GreaterThan(0)
+        //            .NotEmpty();
+        //    }
+        //}
     }
 }

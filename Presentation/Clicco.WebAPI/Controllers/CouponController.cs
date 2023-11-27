@@ -1,8 +1,6 @@
 ﻿using Clicco.Application.Services.Abstract;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model.Dtos.Coupon;
-using Clicco.WebAPI.Models;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -24,7 +22,9 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<CouponResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto<List<CouponResponseDto>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
+
         public async Task<IActionResult> GetAll([FromQuery] PaginationFilter paginationFilter)
         {
             var response = await _couponService.GetAll(paginationFilter);
@@ -33,8 +33,8 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(CouponResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto<CouponResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
         {
@@ -44,7 +44,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpPost("Create")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateCouponDto dto)
         {
             var response = await _couponService.Create(dto);
@@ -53,7 +53,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpPut("Update")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateCouponDto dto)
         {
             var response = await _couponService.Update(dto);
@@ -62,7 +62,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpDelete("Delete")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _couponService.Delete(id);

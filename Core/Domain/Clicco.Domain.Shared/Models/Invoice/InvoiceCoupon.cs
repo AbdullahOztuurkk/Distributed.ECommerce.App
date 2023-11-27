@@ -1,24 +1,24 @@
-﻿using static Clicco.Domain.Shared.Global;
+﻿using System.ComponentModel;
 
 namespace Clicco.Domain.Shared.Models.Invoice
 {
     public class InvoiceCoupon
     {
-        [DisplayElement("#COUPON_NAME#")]
+        [Description("#COUPON_NAME#")]
         public string Name { get; set; }
 
-        [DisplayElement("#COUPON_DESCRIPTION#")]
+        [Description("#COUPON_DESCRIPTION#")]
         public string Description { get; set; }
 
-        [DisplayElement("#COUPON_TYPE#")]
+        [Description("#COUPON_TYPE#")]
         public string Type { get; set; }
         public int? TypeId { get; set; }
 
-        [DisplayElement("#COUPON_EXPIRATION_DATE#")]
+        [Description("#COUPON_EXPIRATION_DATE#")]
         public DateTime ExpirationDate { get; set; }
         public string DiscountType { get; set; }
 
-        [DisplayElement("#COUPON_DISCOUNT_AMOUNT#")]
+        [Description("#COUPON_DISCOUNT_AMOUNT#")]
         public int DiscountAmount { get; set; }
     }
 }

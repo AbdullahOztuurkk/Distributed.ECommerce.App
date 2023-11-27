@@ -45,19 +45,40 @@ namespace Clicco.Infrastructure.Context
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AddressEntityConfiguration).Assembly);
         }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            Save();
+            return await base.SaveChangesAsync();
+        }
+
+        public override int SaveChanges()
+        {
+            Save();
+            return base.SaveChanges();
+        }
+
+        private void Save()
         {
             foreach (var entry in ChangeTracker.Entries())
             {
-                if (entry.Entity is ISoftDeletable deletable && entry.State == EntityState.Deleted)
+                if (entry.Entity is BaseEntity entity)
                 {
-                    // Mark the entity as modified instead of deleting it
-                    entry.State = EntityState.Modified;
-                    // Set the Deleted flag to true
-                    deletable.IsDeleted = true;
+                    switch (entry.State)
+                    {
+                        case EntityState.Deleted:
+                            entry.State = EntityState.Modified;
+                            entity.IsDeleted = true;
+
+                            break;
+                        case EntityState.Added:
+                            entity.CreatedDate = DateTime.UtcNow.AddHours(3);
+                            break;
+                        case EntityState.Modified:
+                            entity.UpdatedDate = DateTime.UtcNow.AddHours(3);
+                            break;
+                    }
                 }
             }
-            return base.SaveChangesAsync();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

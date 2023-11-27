@@ -2,11 +2,10 @@
 using Clicco.AuthAPI.Data.Contracts;
 using Clicco.AuthAPI.Data.Repositories;
 using Clicco.AuthAPI.Models;
-using Clicco.AuthAPI.Services;
-using Clicco.AuthAPI.Services.Contracts;
+using Clicco.AuthAPI.Services.Abstract;
 using Clicco.AuthServiceAPI.Data.Contracts;
 using Clicco.AuthServiceAPI.Data.Repositories;
-using Clicco.AuthServiceAPI.Services;
+using Clicco.AuthServiceAPI.Services.Concrete;
 using Clicco.AuthServiceAPI.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -57,7 +56,7 @@ namespace Clicco.AuthAPI.Extensions
 
             services.AddScoped<IResetCodeRepository, ResetCodeRepository>();
 
-            services.AddScoped<ITokenHandler<User>, Services.TokenHandler>();
+            services.AddScoped<ITokenHandler<User>, AuthServiceAPI.Services.Concrete.TokenHandler>();
 
             return services;
         }

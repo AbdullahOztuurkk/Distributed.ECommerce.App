@@ -1,4 +1,6 @@
-﻿namespace Clicco.Domain.Core.Exceptions
+﻿using static Clicco.Domain.Core.Exceptions.Errors;
+
+namespace Clicco.Domain.Core.Exceptions
 {
     public class CustomException : Exception
     {

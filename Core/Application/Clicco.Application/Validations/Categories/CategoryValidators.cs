@@ -1,10 +1,11 @@
-﻿using FluentValidation;
+﻿using Clicco.Domain.Model.Dtos.Category;
+using FluentValidation;
 
 namespace Clicco.Application.Validations.Categories
 {
     public class CategoryValidators
     {
-        public class CreateCategoryCommandHandler : AbstractValidator<CreateCategoryCommand>
+        public class CreateCategoryCommandHandler : AbstractValidator<CreateCategoryDto>
         {
             public CreateCategoryCommandHandler()
             {
@@ -27,14 +28,14 @@ namespace Clicco.Application.Validations.Categories
             }
         }
 
-        public class DeleteCategoryCommandHandler : AbstractValidator<DeleteCategoryCommand>
-        {
-            public DeleteCategoryCommandHandler()
-            {
-                RuleFor(x => x.Id)
-                    .GreaterThan(0)
-                    .NotEmpty();
-            }
-        }
+        //public class DeleteCategoryCommandHandler : AbstractValidator<DeleteCategoryDto>
+        //{
+        //    public DeleteCategoryCommandHandler()
+        //    {
+        //        RuleFor(x => x.Id)
+        //            .GreaterThan(0)
+        //            .NotEmpty();
+        //    }
+        //}
     }
 }

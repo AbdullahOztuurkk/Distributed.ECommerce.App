@@ -1,4 +1,5 @@
-﻿using Clicco.Infrastructure.Configurations;
+﻿using Clicco.Application.Services.Abstract.External;
+using Clicco.Infrastructure.Configurations;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;

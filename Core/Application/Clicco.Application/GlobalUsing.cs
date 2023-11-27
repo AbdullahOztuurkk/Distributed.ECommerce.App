@@ -1,6 +1,4 @@
-﻿global using AutoMapper;
-global using Clicco.Application.Features.Commands;
-global using Clicco.Application.Interfaces.CacheManager;
+﻿global using Clicco.Application.Interfaces.CacheManager;
 global using Clicco.Application.Interfaces.Repositories;
 global using Clicco.Application.Interfaces.UnitOfWork;
 global using Clicco.Domain.Core;
@@ -8,10 +6,6 @@ global using Clicco.Domain.Core.Exceptions;
 global using Clicco.Domain.Core.Extensions;
 global using Clicco.Domain.Core.ResponseModel;
 global using Clicco.Domain.Model;
-global using Clicco.Domain.Model.Dtos;
-global using Clicco.Domain.Shared.Models.Invoice;
 global using Clicco.Domain.Shared.Models.Payment;
-global using Clicco.Domain.Shared.Models.Transaction;
-global using MediatR;
 global using System.Linq.Expressions;
 global using static Clicco.Domain.Shared.Global;

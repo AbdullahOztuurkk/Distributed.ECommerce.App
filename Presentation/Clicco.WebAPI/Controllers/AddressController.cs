@@ -1,7 +1,6 @@
 using Clicco.Application.Services.Abstract;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model.Dtos.Address;
-using Clicco.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -21,8 +20,8 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(AddressResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto<AddressResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
 
         public async Task<IActionResult> Get(int id)
         {
@@ -32,8 +31,8 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("GetMyAddresses")]
         [Authorize]
-        [ProducesResponseType(typeof(AddressResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto<AddressResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetAddressesByUserId()
         {
             var response = await _addressService.GetMyAddresses();
@@ -42,7 +41,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpPost("Create")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateAddressDto dto)
         {
             var response = await _addressService.Create(dto);
@@ -51,7 +50,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpPut("Update")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateAddressDto dto)
         {
             var response = await _addressService.Update(dto);
@@ -59,8 +58,8 @@ namespace Clicco.WebAPI.Controllers
         }
 
         [HttpDelete("Delete")]
-        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto<AddressResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _addressService.Delete(id);
