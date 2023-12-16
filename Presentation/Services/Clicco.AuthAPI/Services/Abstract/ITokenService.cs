@@ -2,7 +2,7 @@
 
 namespace Clicco.AuthAPI.Services.Abstract
 {
-    public interface ITokenHandler
+    public interface ITokenService
     {
         Token CreateAccessToken(User entity);
     }

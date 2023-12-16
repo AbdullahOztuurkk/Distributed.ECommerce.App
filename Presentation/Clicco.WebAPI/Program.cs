@@ -1,5 +1,6 @@
 using Clicco.Application.Extensions;
 using Clicco.Infrastructure.Extensions;
+using Clicco.Persistence.Extensions;
 using Clicco.WebAPI.Filters;
 using Clicco.WebAPI.Middlewares;
 using FluentValidation.AspNetCore;

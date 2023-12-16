@@ -19,7 +19,7 @@ namespace Clicco.Domain.Model.Dtos.Transaction
             this.Id = transaction.Id;
             this.Code = transaction.Code;
             this.Dealer = transaction.Dealer;
-            this.CreatedDate = transaction.CreatedDate;
+            this.CreatedDate = transaction.CreatedDate.Value;
             this.TransactionStatus = transaction.TransactionStatus;
             this.TransactionStatusDesc = transaction.TransactionStatus.GetDescription();
             this.DeliveryDate = transaction.DeliveryDate;

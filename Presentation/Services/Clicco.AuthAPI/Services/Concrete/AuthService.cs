@@ -18,12 +18,12 @@ namespace Clicco.AuthServiceAPI.Services.Concrete
         private readonly IEmailService _emailService;
         private readonly IUserRepository _userRepository;
         private readonly IResetCodeRepository _resetCodeRepository;
-        private readonly ITokenHandler _tokenHandler;
+        private readonly ITokenService _tokenHandler;
 
         public AuthService(IUserRepository userRepository,
             IEmailService emailService,
             IResetCodeRepository resetLinkRepository,
-            ITokenHandler tokenHandler)
+            ITokenService tokenHandler)
         {
             _userRepository = userRepository;
             _emailService = emailService;

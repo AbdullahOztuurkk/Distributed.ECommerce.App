@@ -14,10 +14,8 @@ namespace Clicco.Persistence.Tests
     public class CouponTests
     {
         private ITransactionRepository mockTransactionRepository;
-        private ICouponRepository mockCouponRepository;
-        private IProductRepository mockProductRepository;
         private ICacheManager mockCacheManager;
-        private ICouponManagementHelper couponService;
+        private ICouponManagementHelper couponManagementHelper;
         private Transaction transaction { get; set; }
 
         [OneTimeSetUp]
@@ -25,13 +23,9 @@ namespace Clicco.Persistence.Tests
         {
             mockTransactionRepository = Substitute.For<ITransactionRepository>();
             mockCacheManager = Substitute.For<ICacheManager>();
-            mockCouponRepository = Substitute.For<ICouponRepository>();
-            mockProductRepository = Substitute.For<IProductRepository>();
 
-            couponService = new CouponManagementHelper(
-                mockCouponRepository,
+            couponManagementHelper = new CouponManagementHelper(
                 mockTransactionRepository,
-                mockProductRepository,
                 mockCacheManager);
 
             transaction = new Transaction();
@@ -48,7 +42,7 @@ namespace Clicco.Persistence.Tests
                 DiscountType = DiscountType.Default,
             };
 
-            await couponService.Apply(transaction, defaultCoupon);
+            await couponManagementHelper.Apply(transaction, defaultCoupon);
 
             transaction.DiscountedAmount.Should().Be(900);
         }
@@ -62,7 +56,7 @@ namespace Clicco.Persistence.Tests
                 DiscountType = DiscountType.Percentage,
             };
 
-            await couponService.Apply(transaction, percentageCoupon);
+            await couponManagementHelper.Apply(transaction, percentageCoupon);
 
             transaction.DiscountedAmount.Should().Be(300);
         }
@@ -74,15 +68,14 @@ namespace Clicco.Persistence.Tests
             {
                 Id = 1,
                 DiscountAmount = 23,
+                ExpirationDate = DateTime.UtcNow.AddMonths(1),
             };
 
             mockCacheManager.ExistAsync(Arg.Any<string>()).Returns(true);
 
-            Func<Task> act = async () => { await couponService.IsAvailable(new Product(), coupon); };
+            var response = await couponManagementHelper.IsAvailable(new Product(), coupon);
 
-            await act.Should()
-                .ThrowAsync<CustomException>()
-                .Where(o => o.CustomError == Errors.CouponIsNowUsed);
+            response.Error.Should().Be(Errors.CouponIsNowUsed);
         }
 
         [Test]
@@ -98,17 +91,15 @@ namespace Clicco.Persistence.Tests
                 Id = 1,
                 DiscountAmount = 1,
                 Type = CouponType.Product,
-                TypeId = 2
+                TypeId = 2,
+                ExpirationDate = DateTime.UtcNow.AddMonths(1),
             };
 
             mockCacheManager.ExistAsync(Arg.Any<string>()).Returns(false);
 
-            Func<Task> act = async () => { await couponService.IsAvailable(product, coupon); };
+            var response = await couponManagementHelper.IsAvailable(product, coupon);
 
-            await act.Should()
-                .ThrowAsync<CustomException>()
-                .Where(o => o.CustomError == Errors.CouponCannotUsed);
-
+            response.Error.Should().Be(Errors.CouponCannotUsed);
         }
     }
 }

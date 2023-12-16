@@ -1,7 +1,6 @@
 ﻿using Clicco.Application.Services.Abstract;
 using Clicco.Domain.Core.ResponseModel;
 using Clicco.Domain.Model.Dtos.Menu;
-using Clicco.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -23,7 +22,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<MenuResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseDto<List<MenuResponseDto>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll(PaginationFilter filter)
         {
             var response = await _menuService.GetAll(filter);
@@ -32,8 +31,7 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(MenuResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto<MenuResponseDto>), (int)HttpStatusCode.OK)]
 
         public async Task<IActionResult> Get(int id)
         {
@@ -41,11 +39,9 @@ namespace Clicco.WebAPI.Controllers
             return Ok(response);
         }
 
-        // v1/api/controller/action/clicco-e-commerce-menu-url
         [HttpGet("GetByUrl/{url}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<MenuResponseDto>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ResponseDto<List<MenuResponseDto>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenuByUrl(string url)
         {
             var response = await _menuService.GetByUrl(url);
@@ -54,7 +50,6 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpPost("Create")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateMenuDto dto)
         {
             var response = await _menuService.Create(dto);
@@ -63,7 +58,6 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpPut("Update")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateMenuDto dto)
         {
             var response = await _menuService.Update(dto);
@@ -72,7 +66,6 @@ namespace Clicco.WebAPI.Controllers
 
         [HttpDelete("Delete")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(DynamicResponseModel), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _menuService.Delete(id);

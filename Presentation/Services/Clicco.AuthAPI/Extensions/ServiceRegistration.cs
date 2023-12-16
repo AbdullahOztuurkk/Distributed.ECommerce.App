@@ -56,7 +56,7 @@ namespace Clicco.AuthAPI.Extensions
 
             services.AddScoped<IResetCodeRepository, ResetCodeRepository>();
 
-            services.AddScoped<ITokenHandler<User>, AuthServiceAPI.Services.Concrete.TokenHandler>();
+            services.AddScoped<ITokenService, AuthServiceAPI.Services.Concrete.TokenService>();
 
             return services;
         }

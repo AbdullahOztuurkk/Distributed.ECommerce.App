@@ -7,10 +7,10 @@ using System.Text;
 
 namespace Clicco.AuthServiceAPI.Services.Concrete
 {
-    public class TokenHandler : ITokenHandler
+    public class TokenService : ITokenService
     {
         public IConfiguration Configuration { get; set; }
-        public TokenHandler(IConfiguration configuration)
+        public TokenService(IConfiguration configuration)
         {
             Configuration = configuration;
         }

@@ -18,7 +18,8 @@ namespace Clicco.Domain.Model
 
         public bool IsValid()
         {
-            return IsActive && IsDeleted && ExpirationDate > DateTime.UtcNow.AddHours(3);
+            var now = DateTime.UtcNow.AddHours(3);
+            return IsActive && !IsDeleted && ExpirationDate > now;
         }
     }
 }

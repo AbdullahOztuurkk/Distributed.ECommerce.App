@@ -1,6 +1,6 @@
 ﻿version: '3.4'
-# sql tarafı ve testting tarafı kaldı 
 services:
+  
   web.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development 
@@ -16,6 +16,7 @@ services:
       - s_redis
       - s_sqlserver
     mem_limit: 1g
+  
   web.api.gateway:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -25,6 +26,7 @@ services:
     networks:
       - net_apigateway
     mem_limit: 512m
+  
   email.service.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -41,6 +43,7 @@ services:
     labels:
         Names: email.service.api
     mem_limit: 512m
+  
   invoice.service.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -56,6 +59,7 @@ services:
       - s_rabbitmq
       - s_mongo
     mem_limit: 512m
+  
   payment.service.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -69,6 +73,7 @@ services:
       - web.api.gateway
       - s_rabbitmq
     mem_limit: 512m
+  
   auth.service.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -82,10 +87,12 @@ services:
       - s_rabbitmq
       - s_sqlserver
     mem_limit: 512m
+    
   test.project:
    environment:
     - ASPNETCORE_ENVIRONMENT=Development
    mem_limit: 1g
+  
   s_sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: mssql2019
@@ -102,6 +109,7 @@ services:
     networks:
       - net_backendservices
     mem_limit: 2g
+    
   s_rabbitmq:
     ports:
       - 5672:5672
@@ -114,6 +122,7 @@ services:
     labels:
      Names: s_rabbitmq
     mem_limit: 1g
+  
   s_redis:
     ports:
       - 6379:6379
@@ -123,6 +132,7 @@ services:
       - net_backendservices
       - net_apigateway
     mem_limit: 1g
+  
   s_mongo:
     image: mongo
     ports:

@@ -31,7 +31,12 @@ namespace Clicco.Persistence.Repositories
 
         public async Task<List<TEntity>> GetManyAsync(Expression<Func<TEntity, bool>> filter = null, params Expression<Func<TEntity, object>>[] includes)
         {
-            return Get(filter, null, includes);
+            IQueryable<TEntity> query = Query;
+            foreach (Expression<Func<TEntity, object>> include in includes)
+            {
+                query = query.Include(include);
+            }
+            return query.Where(filter).ToList();
         }
 
         public async Task<TEntity> GetByIdAsync(int id)
