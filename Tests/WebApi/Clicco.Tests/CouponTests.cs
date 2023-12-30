@@ -1,6 +1,6 @@
 using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Helpers;
-using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.Interfaces.UnitOfWork;
 using Clicco.Domain.Core;
 using Clicco.Domain.Core.Exceptions;
 using Clicco.Domain.Model;
@@ -13,7 +13,7 @@ namespace Clicco.Persistence.Tests
 {
     public class CouponTests
     {
-        private ITransactionRepository mockTransactionRepository;
+        private IUnitOfWork _unitOfWork;
         private ICacheManager mockCacheManager;
         private ICouponManagementHelper couponManagementHelper;
         private Transaction transaction { get; set; }
@@ -21,11 +21,11 @@ namespace Clicco.Persistence.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            mockTransactionRepository = Substitute.For<ITransactionRepository>();
+            _unitOfWork = Substitute.For<IUnitOfWork>();
             mockCacheManager = Substitute.For<ICacheManager>();
 
             couponManagementHelper = new CouponManagementHelper(
-                mockTransactionRepository,
+                _unitOfWork,
                 mockCacheManager);
 
             transaction = new Transaction();

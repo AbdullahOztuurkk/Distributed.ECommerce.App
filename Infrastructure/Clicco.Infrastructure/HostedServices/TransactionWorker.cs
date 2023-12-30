@@ -1,6 +1,7 @@
-﻿using Clicco.Application.Interfaces.Repositories;
+﻿using Clicco.Application.Interfaces.UnitOfWork;
 using Clicco.Application.Services.Abstract.External;
 using Clicco.Domain.Core;
+using Clicco.Domain.Model;
 using Clicco.Domain.Shared.Models.Email;
 using Clicco.Domain.Shared.Models.Payment;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,12 +13,12 @@ namespace Clicco.Infrastructure.HostedServices
     internal class TransactionWorker : BackgroundService
     {
         private readonly IQueueService _bus;
-        private readonly ITransactionRepository transactionRepository;
+        private readonly IUnitOfWork _unitOfWork;
         public TransactionWorker(IServiceProvider serviceProvider)
         {
             var scope = serviceProvider.CreateScope().ServiceProvider;
             _bus = scope.GetRequiredService<IQueueService>();
-            transactionRepository = scope.GetRequiredService<ITransactionRepository>();
+            _unitOfWork = scope.GetRequiredService<IUnitOfWork>();
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -26,7 +27,7 @@ namespace Clicco.Infrastructure.HostedServices
                 //Send email for success transaction to buyer
                 _bus.ReceiveMessages<PaymentBankResponse>(ExchangeNames.EventExchange, QueueNames.PaidSucceedTransactionsQueue, EventNames.PaymentSucceed, async (model) =>
                 {
-                    var transaction = await transactionRepository.GetByIdAsync(model.TransactionId);
+                    var transaction = await _unitOfWork.GetRepository<Transaction>().GetByIdAsync(model.TransactionId);
 
                     transaction.TransactionStatus = TransactionStatus.Success;
 
@@ -48,7 +49,7 @@ namespace Clicco.Infrastructure.HostedServices
                 //Send email for failed transaction to buyer
                 _bus.ReceiveMessages<PaymentBankResponse>(ExchangeNames.EventExchange, QueueNames.PaidFailedTransactionsQueue, EventNames.PaymentFailed, async (model) =>
                 {
-                    var transaction = await transactionRepository.GetByIdAsync(model.TransactionId);
+                    var transaction = await _unitOfWork.GetRepository<Transaction>().GetByIdAsync(model.TransactionId);
 
                     transaction.TransactionStatus = TransactionStatus.Failed;
 

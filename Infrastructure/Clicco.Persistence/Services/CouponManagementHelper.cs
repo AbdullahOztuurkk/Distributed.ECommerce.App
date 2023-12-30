@@ -1,6 +1,6 @@
 ﻿using Clicco.Application.Interfaces.CacheManager;
 using Clicco.Application.Interfaces.Helpers;
-using Clicco.Application.Interfaces.Repositories;
+using Clicco.Application.Interfaces.UnitOfWork;
 using Clicco.Domain.Core;
 using Clicco.Domain.Core.Exceptions;
 using Clicco.Domain.Core.ResponseModel;
@@ -11,13 +11,13 @@ namespace Clicco.Persistence.Services
     public class CouponManagementHelper : ICouponManagementHelper
     {
         private readonly ICacheManager cacheManager;
-        private readonly ITransactionRepository transactionRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
         public CouponManagementHelper(
-            ITransactionRepository transactionRepository,
+            IUnitOfWork unitOfWork,
             ICacheManager cacheManager)
         {
-            this.transactionRepository = transactionRepository;
+            this._unitOfWork = unitOfWork;
             this.cacheManager = cacheManager;
         }
 
@@ -59,8 +59,8 @@ namespace Clicco.Persistence.Services
 
             transaction.CouponId = coupon.Id;
             transaction.Coupon = coupon;
-            transactionRepository.Update(transaction);
-            await transactionRepository.SaveChangesAsync();
+            _unitOfWork.GetRepository<Transaction>().Update(transaction);
+            await _unitOfWork.GetRepository<Transaction>().SaveChangesAsync();
         }
 
         public bool CanBeAppliedTo(Coupon coupon, Product product)

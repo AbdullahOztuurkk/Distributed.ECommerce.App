@@ -8,13 +8,9 @@ namespace Clicco.Application.Services.Concrete
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IProductRepository _productRepository;
-        public ProductService(
-            IUnitOfWork unitOfWork,
-            IProductRepository productRepository)
+        public ProductService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _productRepository = productRepository;
         }
         public async Task<ResponseDto> Create(CreateProductDto dto)
         {
@@ -41,8 +37,8 @@ namespace Clicco.Application.Services.Concrete
                 CreatedDate = DateTime.UtcNow.AddHours(3),
             };
 
-            await _productRepository.AddAsync(product);
-            await _productRepository.SaveChangesAsync();
+            await _unitOfWork.GetRepository<Product>().AddAsync(product);
+            await _unitOfWork.GetRepository<Product>().SaveChangesAsync();
 
             return response;
         }
@@ -139,8 +135,8 @@ namespace Clicco.Application.Services.Concrete
             product.Code = dto.Code;
             product.UpdatedDate = DateTime.UtcNow.AddHours(3);
 
-            _productRepository.Update(product);
-            await _productRepository.SaveChangesAsync();
+            _unitOfWork.GetRepository<Product>().Update(product);
+            await _unitOfWork.GetRepository<Product>().SaveChangesAsync();
 
             response.Data = new ProductResponseDto().Map(product);
             return response;
