@@ -3,7 +3,7 @@ services:
   
   web.api:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development 
+      - ASPNETCORE_ENVIRONMENT=Production 
     ports:
       - "5000:5000"
     networks:
@@ -19,9 +19,9 @@ services:
   
   web.api.gateway:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
     ports:
-      - "5010:5010"
+      - "5010:80"
     restart: always
     networks:
       - net_apigateway
@@ -29,7 +29,7 @@ services:
   
   email.service.api:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - "5002:5002"
     networks:
@@ -46,7 +46,7 @@ services:
   
   invoice.service.api:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - "MongoDbSettings:ConnectionString=mongodb://catalogdb:27017"
     ports:
       - "5004:5004"
@@ -62,7 +62,7 @@ services:
   
   payment.service.api:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - "5003:5003"
     restart: always
@@ -76,7 +76,7 @@ services:
   
   auth.service.api:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - "5001:5001"
     networks:
@@ -88,32 +88,32 @@ services:
       - s_sqlserver
     mem_limit: 512m
     
-  test.project:
-   environment:
-    - ASPNETCORE_ENVIRONMENT=Development
-   mem_limit: 1g
+  # test.project:
+  #  environment:
+  #   - ASPNETCORE_ENVIRONMENT=Production
+  #  mem_limit: 1g
   
   s_sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: mssql2019
     restart: always
     environment:
-      SA_PASSWORD: "sqlsa"
+      SA_PASSWORD: "T4ckJvEOKXGT^GAe"
       ACCEPT_EULA: "Y" 
     ports:
       - "1433:1433"
     labels:
       NAME: "s_sqlserver"
     volumes:
-      - ./mssql_volume:/var/opt/mssql
+      - mssql-data:/var/opt/mssql
     networks:
       - net_backendservices
     mem_limit: 2g
     
   s_rabbitmq:
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672" 
+      - "15672:15672" 
     volumes:
       - rabbitmq:/var/lib/rabbitmq
     networks:
@@ -153,3 +153,4 @@ volumes:
     rabbitmq:
     sqlserver_data:
     sqlserver_log:
+    mssql-data:

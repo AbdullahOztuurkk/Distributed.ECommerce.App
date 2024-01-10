@@ -2,12 +2,20 @@ using Clicco.AuthAPI.Data.Validators;
 using Clicco.AuthAPI.Extensions;
 using Clicco.AuthServiceAPI.Configurations;
 using Clicco.AuthServiceAPI.Filters;
+using Clicco.Domain.Core.Extensions;
 using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
+
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile("appsettings" + EnvironmentExtensions.Env + ".json", true, true)
+    .Build();
+
+builder.Configuration.AddConfiguration(configuration);
 
 builder.Services.AddControllers(opt =>
 {
@@ -20,7 +28,6 @@ builder.Services.AddControllers(opt =>
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Configuration.AddEnvironmentVariables();
-
 builder.Services.AddFundamentalServices(builder.Configuration);
 
 builder.Services.AddSwaggerGen(c =>

@@ -2,6 +2,7 @@
 using Clicco.AuthAPI.Models;
 using Clicco.AuthServiceAPI.Data.EntityConfigurations;
 using Clicco.AuthServiceAPI.Models;
+using Clicco.Domain.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Clicco.AuthAPI.Data.Context
@@ -11,6 +12,7 @@ namespace Clicco.AuthAPI.Data.Context
         public IConfiguration Configuration => new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json")
+                    .AddJsonFile("appsettings" + EnvironmentExtensions.Env + ".json", true, true)
                     .Build();
 
         public AuthContext(DbContextOptions<AuthContext> options) : base(options) { }

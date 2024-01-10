@@ -1,4 +1,5 @@
 using Clicco.Application.Extensions;
+using Clicco.Domain.Core.Extensions;
 using Clicco.Infrastructure.Extensions;
 using Clicco.Persistence.Extensions;
 using Clicco.WebAPI.Filters;
@@ -8,6 +9,13 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile("appsettings" + EnvironmentExtensions.Env + ".json", true, true)
+    .Build();
+
+builder.Configuration.AddConfiguration(configuration);
 // Add services to the container.
 
 builder.Services.AddControllers(opt =>

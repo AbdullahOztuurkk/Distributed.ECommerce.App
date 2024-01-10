@@ -1,3 +1,4 @@
+using Clicco.Domain.Core.Extensions;
 using Clicco.PaymentServiceAPI;
 using Clicco.PaymentServiceAPI.Configurations;
 using Clicco.PaymentServiceAPI.Services.Contracts;
@@ -5,6 +6,14 @@ using Clicco.PaymentServiceAPI.Services.External;
 using Clicco.PaymentServiceAPI.Services.Factory;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile("appsettings" + EnvironmentExtensions.Env + ".json", true, true)
+    .Build();
+
+builder.Configuration.AddConfiguration(configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

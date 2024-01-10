@@ -1,8 +1,17 @@
+using Clicco.Domain.Core.Extensions;
 using Clicco.EmailServiceAPI;
 using Clicco.EmailServiceAPI.Configurations;
 using Clicco.EmailServiceAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile("appsettings" + EnvironmentExtensions.Env + ".json", true, true)
+    .Build();
+
+builder.Configuration.AddConfiguration(configuration);
 
 // Add services to the container.
 

@@ -2,11 +2,13 @@ using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+var env = "." + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
 // Add services to the container.
 var configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("ocelot.json")
+    .AddJsonFile("ocelot" + env + " .json", true, true)
     .AddEnvironmentVariables()
     .Build();
 
