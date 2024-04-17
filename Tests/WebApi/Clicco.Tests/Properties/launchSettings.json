@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Clicco.Tests": {
+    "CommerceService.Tests": {
       "commandName": "Project"
     },
     "Docker": {
