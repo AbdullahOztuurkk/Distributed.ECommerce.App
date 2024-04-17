@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />
-    <ProjectReference Include="..\Domain\Domain.Core\CommerceService.Domain.csproj" />
+    <ProjectReference Include="..\Domain\CommerceService.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
