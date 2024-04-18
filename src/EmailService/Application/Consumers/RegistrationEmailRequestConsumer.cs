@@ -1,4 +1,6 @@
-﻿namespace EmailWorkerService.Application.Consumers;
+﻿using Shared.Events.Mail;
+
+namespace EmailWorkerService.Application.Consumers;
 
 public class RegistrationEmailRequestConsumer : GenericEmailRequestConsumer<RegistrationEmailRequestEvent, RegistrationEmailTemplateModel>
 {

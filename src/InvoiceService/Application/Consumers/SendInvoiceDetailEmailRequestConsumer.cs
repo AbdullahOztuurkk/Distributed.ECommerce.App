@@ -1,4 +1,5 @@
-﻿using Shared.Events.Mail;
+﻿using Shared.Domain.Constant;
+using Shared.Events.Mail;
 
 namespace InvoiceWorkerService.Application.Consumers;
 

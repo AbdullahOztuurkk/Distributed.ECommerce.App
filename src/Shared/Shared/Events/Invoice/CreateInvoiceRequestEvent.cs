@@ -1,4 +1,4 @@
-﻿using Shared.Entity;
+﻿using Shared.Domain.Entity;
 
 namespace Shared.Events.Invoice;
 

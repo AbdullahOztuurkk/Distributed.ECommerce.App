@@ -1,4 +1,6 @@
-﻿namespace InvoiceWorkerService.Domain.Concrete;
+﻿using Shared.Domain.Entity;
+
+namespace InvoiceWorkerService.Domain.Concrete;
 
 public class Invoice : MongoDbEntity
 {

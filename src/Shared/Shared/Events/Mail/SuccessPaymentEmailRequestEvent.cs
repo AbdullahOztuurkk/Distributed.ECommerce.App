@@ -1,7 +1,6 @@
-﻿using Shared.Constant;
-using Shared.Events.Mail.Base;
+﻿using Shared.Events.Mail.Base;
 
-namespace Shared.Event.Mail;
+namespace Shared.Events.Mail;
 
 public class SuccessPaymentEmailRequestEvent : EmailRequestEvent
 {

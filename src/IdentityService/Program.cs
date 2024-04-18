@@ -5,7 +5,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Shared.Constant;
+using Shared.Domain.Constant;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

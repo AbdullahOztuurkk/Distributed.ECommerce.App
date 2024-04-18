@@ -1,4 +1,4 @@
-﻿using Shared.Constant;
+﻿using Shared.Domain.Constant;
 using Shared.Utils.Attributes;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;

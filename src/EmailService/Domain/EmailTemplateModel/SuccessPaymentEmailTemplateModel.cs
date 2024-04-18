@@ -1,5 +1,5 @@
-﻿using Shared.Constant;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using Shared.Domain.Constant;
 
 namespace EmailWorkerService.Domain.EmailTemplateModel;
 

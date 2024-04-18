@@ -1,5 +1,5 @@
-﻿using Shared.Constant;
-using Shared.Entity;
+﻿using Shared.Domain.Constant;
+using Shared.Domain.Entity;
 using Shared.Utils.Attributes;
 
 namespace EmailWorkerService.Domain.EmailTemplateModel;

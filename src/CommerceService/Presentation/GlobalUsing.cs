@@ -14,7 +14,6 @@ global using CommerceService.Domain.Dtos.Transaction;
 global using CommerceService.Domain.Dtos.Vendor;
 global using CoreLib.MapConfiguration;
 global using CoreLib.ResponseModel;
-global using FluentValidation.AspNetCore;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.OpenApi.Models;

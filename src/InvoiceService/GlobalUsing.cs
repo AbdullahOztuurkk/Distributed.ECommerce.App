@@ -8,6 +8,4 @@ global using InvoiceWorkerService.Persistence.Extensions;
 global using InvoiceWorkerService.Persistence.Repositories;
 global using InvoiceWorkerService.Persistence.Repositories.Contracts;
 global using MassTransit;
-global using Shared.Constant;
-global using Shared.Entity;
 global using Shared.Events.Invoice;

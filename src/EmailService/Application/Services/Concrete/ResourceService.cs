@@ -1,4 +1,6 @@
-﻿namespace EmailWorkerService.Application.Services.Concrete;
+﻿using Shared.Domain.Constant;
+
+namespace EmailWorkerService.Application.Services.Concrete;
 
 public class ResourceService : IResourceService
 {

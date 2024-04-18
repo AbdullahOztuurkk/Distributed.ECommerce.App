@@ -1,4 +1,6 @@
-﻿namespace EmailWorkerService.Application.Extensions;
+﻿using Shared.Domain.Constant;
+
+namespace EmailWorkerService.Application.Extensions;
 
 public static class ServiceExtension
 {

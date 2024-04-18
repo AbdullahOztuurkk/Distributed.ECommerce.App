@@ -1,4 +1,6 @@
-﻿namespace EmailWorkerService.Application.Services.Contracts;
+﻿using Shared.Domain.Constant;
+
+namespace EmailWorkerService.Application.Services.Contracts;
 
 public interface IResourceService
 {

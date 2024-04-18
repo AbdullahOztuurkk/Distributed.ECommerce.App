@@ -1,5 +1,4 @@
-﻿using Shared.Constant;
-using Shared.Events.Mail.Base;
+﻿using Shared.Events.Mail.Base;
 
 namespace Shared.Events.Mail;
 

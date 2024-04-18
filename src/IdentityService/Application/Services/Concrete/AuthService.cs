@@ -6,8 +6,8 @@ using IdentityService.API.Domain.Concrete;
 using IdentityService.API.Domain.Constant;
 using IdentityService.API.Domain.Dtos;
 using MassTransit;
-using Shared.Constant;
-using Shared.Event.Mail;
+using Shared.Domain.Constant;
+using Shared.Events.Mail;
 using Shared.Events.Mail.Base;
 using System.Text;
 

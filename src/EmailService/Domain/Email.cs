@@ -1,4 +1,6 @@
-﻿namespace EmailWorkerService.Domain;
+﻿using Shared.Domain.Constant;
+
+namespace EmailWorkerService.Domain;
 
 public class Email : AuditEntity
 {

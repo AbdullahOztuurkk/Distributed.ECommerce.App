@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="Abdullah.Ozturk.CoreLib" Version="1.0.5" />
+    <PackageReference Include="MassTransit" Version="8.2.1" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />

@@ -17,8 +17,4 @@
     <ProjectReference Include="..\Domain\CommerceService.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Concrete\External\" />
-  </ItemGroup>
-
 </Project>

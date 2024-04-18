@@ -1,6 +1,6 @@
 ﻿using CommerceService.Application.Services.Concrete;
 using MassTransit;
-using Shared.Constant;
+using Shared.Domain.Constant;
 using Shared.Events.Mail;
 
 namespace CommerceService.Application.Consumers;

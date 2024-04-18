@@ -1,3 +1,5 @@
+using Shared.Domain.Constant;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

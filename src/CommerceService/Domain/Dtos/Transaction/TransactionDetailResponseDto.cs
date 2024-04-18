@@ -35,7 +35,6 @@ public class TransactionDetailResponseDto
             Code = transaction.Product.Code,
             Name = transaction.Product.Name,
             Description = transaction.Product.Description,
-            Quantity = transaction.Product.Quantity,
             SlugUrl = transaction.Product.SlugUrl,
             UnitPrice = transaction.Product.UnitPrice,
         };

@@ -1,9 +1,19 @@
 ﻿using CommerceService.Application.Services.Abstract;
+using MassTransit;
+using Shared.Domain.Constant;
+using Shared.Events.Stock;
 
 namespace CommerceService.Application.Services.Concrete;
 
 public class ProductService : BaseService, IProductService
 {
+    private readonly ISendEndpointProvider _sendEndpointProvider;
+
+    public ProductService(ISendEndpointProvider sendEndpointProvider)
+    {
+        this._sendEndpointProvider = sendEndpointProvider;
+    }
+
     public async Task<BaseResponse> Create(CreateProductRequestDto dto)
     {
         BaseResponse response = new();
@@ -21,7 +31,6 @@ public class ProductService : BaseService, IProductService
             CategoryId = dto.CategoryId,
             VendorId = dto.VendorId,
             Description = dto.Description,
-            Quantity = dto.Quantity,
             UnitPrice = dto.UnitPrice,
             Code = dto.Code,
             SlugUrl = dto.Name.AsSlug(),
@@ -30,6 +39,10 @@ public class ProductService : BaseService, IProductService
 
         await Db.GetDefaultRepo<Product>().InsertAsync(product);
         await Db.GetDefaultRepo<Product>().SaveChanges();
+        Db.Commit();
+
+        var stockEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{QueueNames.CreateProductStockQueue}"));
+        await stockEndpoint.Send(new CreateProductStockEvent(ProductId: product.Id, Count: dto.Quantity));
 
         return response;
     }
@@ -46,6 +59,10 @@ public class ProductService : BaseService, IProductService
         product.Status = StatusType.PASSIVE;
 
         await Db.GetDefaultRepo<Product>().SaveChanges();
+
+        var stockEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{QueueNames.DeleteProductStockQueue}"));
+        await stockEndpoint.Send(new DeleteProductStockEvent(ProductId: product.Id));
+
         return response;
     }
 
@@ -136,7 +153,6 @@ public class ProductService : BaseService, IProductService
         product.SlugUrl = dto.Name.AsSlug();
         product.Description = dto.Description;
         product.UnitPrice = dto.UnitPrice;
-        product.Quantity = dto.Quantity;
         product.Code = dto.Code;
 
         await Db.GetDefaultRepo<Product>().SaveChanges();
