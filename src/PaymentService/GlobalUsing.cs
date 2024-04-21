@@ -1,5 +1,7 @@
 ﻿global using CoreLib.ResponseModel;
 global using MassTransit;
+global using PaymentService.API.Application;
+global using PaymentService.API.Application.Extensions;
 global using PaymentService.API.Application.Services.Concrete;
 global using PaymentService.API.Domain.Adapters;
 global using Shared.Domain.Constant;
