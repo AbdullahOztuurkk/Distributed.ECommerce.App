@@ -1,3 +1,5 @@
+using StockWorkerService.Application.Extensions;
+
 IHost host = Host.CreateDefaultBuilder(args)
     .UseServiceProviderFactory(new AutofacServiceProviderFactory())
     .ConfigureContainer<ContainerBuilder>((hostcontext ,services) =>

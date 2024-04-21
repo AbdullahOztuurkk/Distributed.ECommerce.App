@@ -1,4 +1,5 @@
-﻿global using CommerceService.Application.Services.Abstract.External;
+﻿global using CommerceService.Application.Consumers;
+global using CommerceService.Application.Services.Abstract.External;
 global using CommerceService.Domain.Concrete;
 global using CommerceService.Domain.Constant;
 global using CommerceService.Domain.Dtos.Address;
@@ -14,5 +15,11 @@ global using CoreLib.Entity.Enums;
 global using CoreLib.ResponseModel;
 global using CoreLib.Security.CurrentUser;
 global using CoreLib.Utilities.Cache;
+global using MassTransit;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.IdentityModel.Tokens;
+global using Shared.Domain.Constant;
 global using Shared.Events.Payment;
 global using System.Text;

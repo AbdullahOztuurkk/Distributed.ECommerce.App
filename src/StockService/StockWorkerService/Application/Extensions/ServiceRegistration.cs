@@ -1,4 +1,4 @@
-﻿namespace StockWorkerService.Application;
+﻿namespace StockWorkerService.Application.Extensions;
 public static class ServiceRegistration
 {
     public static void AddMasstransitWithConsumers(this IServiceCollection services)

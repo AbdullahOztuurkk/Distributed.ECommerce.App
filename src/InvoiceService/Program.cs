@@ -1,5 +1,3 @@
-using Shared.Domain.Constant;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -12,29 +10,7 @@ builder.Services.AddMongoDb();
 
 builder.Services.AddHostedService<InvoiceWorker>();
 
-builder.Services.AddMassTransit(conf =>
-{
-    conf.AddConsumer<CreateInvoiceRequestConsumer>();
-    conf.AddConsumer<SendInvoiceDetailEmailRequestConsumer>();
-    conf.UsingRabbitMq((context, busConf) =>
-    {
-        busConf.Host(RabbitMqConstant.Host, RabbitMqConstant.Port, h =>
-        {
-            h.Username(RabbitMqConstant.Username);
-            h.Password(RabbitMqConstant.Password);
-        });
-
-        busConf.ReceiveEndpoint(QueueNames.SendInvoiceDetailEmailRequestQueue, h =>
-        {
-            h.ConfigureConsumer<SendInvoiceDetailEmailRequestConsumer>(context);
-        });
-
-        busConf.ReceiveEndpoint(QueueNames.CreateInvoiceRequestQueue, h =>
-        {
-            h.ConfigureConsumer<CreateInvoiceRequestConsumer>(context);
-        });
-    });
-});
+builder.Services.AddMassTransitWithConsumers();
 
 var app = builder.Build();
 

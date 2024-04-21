@@ -1,8 +1,10 @@
 ﻿using CommerceService.Application.Services.Abstract;
 using MassTransit;
 using Shared.Domain.Constant;
+using Shared.Domain.ValueObject;
 using Shared.Events.Mail;
 using Shared.Events.Mail.Base;
+using Shared.Events.Order;
 
 namespace CommerceService.Application.Services.Concrete;
 
@@ -23,37 +25,41 @@ public class TransactionService : BaseService, ITransactionService
         this._userSessionService = _userSessionService;
         this._sendEndpointProvider = sendEndpointProvider;
     }
-    public async Task<BaseResponse> Create(CreateTransactionRequestDto dto)
+    public async Task<BaseResponse> Create(CreateTransactionRequestDto request)
     {
         BaseResponse response = new();
-        var product = await Db.GetDefaultRepo<Product>().GetByIdAsync(dto.ProductId);
+        var product = await Db.GetDefaultRepo<Product>().GetByIdAsync(request.ProductId);
         if (product == null)
             return response.Fail(Error.E_0000);
 
-        var address = await Db.GetDefaultRepo<Address>().GetByIdAsync(dto.AddressId);
+        var productVendor = await Db.GetDefaultRepo<Vendor>().GetByIdAsync(product.VendorId);
+        if (productVendor == null)
+            return response.Fail(Error.E_0000);
+
+        var address = await Db.GetDefaultRepo<Address>().GetByIdAsync(request.AddressId);
         if (address == null)
             return response.Fail(Error.E_0000);
 
         Transaction transaction = new();
 
         transaction.Code = GetUniqueCode();
-        transaction.AddressId = dto.AddressId;
-        transaction.Dealer = product.Vendor.Name;
+        transaction.AddressId = request.AddressId;
+        transaction.Dealer = productVendor.Name;
         transaction.DeliveryDate = DateTime.UtcNow.AddDays(7);
-        transaction.TotalAmount = product.UnitPrice * dto.Quantity;
+        transaction.TotalAmount = product.UnitPrice * request.Quantity;
         transaction.DiscountedAmount = transaction.TotalAmount;
         transaction.UserId = CurrentUser.Id;
-        transaction.ProductId = dto.ProductId;
+        transaction.ProductId = request.ProductId;
         transaction.Product = product;
 
         await Db.GetDefaultRepo<Transaction>().InsertAsync(transaction);
         await Db.GetDefaultRepo<Transaction>().SaveChanges();
 
-        var cacheKey = string.Format(CacheKeys.ActiveCoupon,dto.CouponId.Value);
+        var cacheKey = string.Format(CacheKeys.ActiveCoupon,request.CouponId.Value);
         Coupon coupon = null;
-        if (dto.CouponId.HasValue)
+        if (request.CouponId.HasValue)
         {
-            coupon = await Db.GetDefaultRepo<Coupon>().GetByIdAsync(dto.CouponId.Value);
+            coupon = await Db.GetDefaultRepo<Coupon>().GetByIdAsync(request.CouponId.Value);
             var availability = await _couponService.CanBeAppliable(coupon,product);
 
             if (!availability.IsSuccess)
@@ -67,42 +73,35 @@ public class TransactionService : BaseService, ITransactionService
             await CacheService.SetAsync(cacheKey, coupon);
         }
 
-        //var bankRequest = new PaymentBankRequestDto
-        //{
-        //    BankId = dto.BankId,
-        //    TransactionId = transaction.Id,
-        //    CardInformation = dto.CardInformation,
-        //    DealerName = product.Vendor.Name,
-        //    ProductName = product.Name,
-        //    FullName = _userSessionService.GetUserName(),
-        //    OrderNumber = transaction.Code,
-        //    To = dto.BuyerEmail,
-        //    PaymentMethod = "Credit / Bank Card",
-        //    TotalAmount = (int)(transaction.DiscountedAmount < transaction.TotalAmount
-        //    ? transaction.DiscountedAmount
-        //            : transaction.TotalAmount),
-        //};
+        var orderCreatedEvent = new OrderCreatedStockCheckRequestEvent
+        {
+            BuyerEmail = _userSessionService.GetUserEmail(),
+            FullName = _userSessionService.GetUserName(),
+            Payment = new PaymentMessage
+            {
+                CardExpireMonth = request.CardInformation.CardExpireMonth,
+                CardExpireYear = request.CardInformation.CardExpireYear,
+                CardNumber = request.CardInformation.CardNumber,
+                CardOwner = request.CardInformation.CardOwner,
+                CVV = request.CardInformation.CVV,
+                TotalPrice =  transaction.DiscountedAmount,
+                BankCode = request.BankCode
+            },
+            OrderItem = new OrderItemMessage
+            {
+                ProductId = request.ProductId,
+                Count = request.Quantity,
+                Name = product.Name,
+            },
+            TransactionId = transaction.Id
+        };
 
-        //TODO: OrderCreated publish
+        var orderEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{QueueNames.OrderCreatedStockCheckQueue}"));
 
-        if (dto.CouponId.HasValue)
+        await orderEndpoint.Send(orderCreatedEvent);
+
+        if (request.CouponId.HasValue)
             await CacheService.RemoveAsync(cacheKey);
-
-        //var paymentEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{QueueNames.BankPaymentRequestQueue}"));
-        //var invoiceEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{QueueNames.CreateInvoiceRequestQueue}"));
-        //await paymentEndpoint.Send(bankRequest);
-
-        //var createInvoiceEvent = new CreateInvoiceRequestEvent()
-        //{
-        //    Transaction = Mapper.Map<Shared.Domain.Entity.Transaction>(transaction),
-        //    Product = Mapper.Map<Shared.Domain.Entity.Product>(product),
-        //    Vendor = Mapper.Map<Shared.Domain.Entity.Vendor>(product.Vendor),
-        //    Coupon = coupon != null ? Mapper.Map<Shared.Domain.Entity.Coupon>(coupon) : null,
-        //    Address = Mapper.Map<Shared.Domain.Entity.Address>(address),
-        //    BuyerEmail = dto.BuyerEmail,
-        //};
-
-        //await invoiceEndpoint.Send(createInvoiceEvent);
 
         return response;
     }

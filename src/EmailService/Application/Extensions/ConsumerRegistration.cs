@@ -2,7 +2,7 @@
 
 namespace EmailWorkerService.Application.Extensions;
 
-public static class ServiceExtension
+public static class ConsumerRegistration
 {
     public static void AddMasstransitWithConsumers(this IServiceCollection services)
     {

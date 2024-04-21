@@ -16,6 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.ConfigureAuth(builder.Configuration);
 builder.Services.AddCustomMapster(typeof(Address).Assembly);
+builder.Services.AddMassTransitWithConsumers();
 
 builder.Services.AddSwaggerGen(c =>
 {

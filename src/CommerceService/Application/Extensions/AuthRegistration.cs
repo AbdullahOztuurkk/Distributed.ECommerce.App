@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-
-namespace CommerceService.Application.Extensions;
+﻿namespace CommerceService.Application.Extensions;
 
 public static class AuthRegistration
 {

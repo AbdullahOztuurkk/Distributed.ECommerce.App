@@ -1,7 +1,7 @@
 ﻿using Shared.Domain.ValueObject;
 
-namespace Shared.Events.Order;
-public class OrderCreatedStockCheckRequestEvent
+namespace Shared.Events.Stock;
+public class StockReservedEvent
 {
     public long TransactionId { get; set; }
     public string BuyerEmail { get; set; }

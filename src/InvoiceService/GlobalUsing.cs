@@ -1,5 +1,6 @@
 ﻿global using InvoiceWorkerService.Application;
 global using InvoiceWorkerService.Application.Consumers;
+global using InvoiceWorkerService.Application.Extensions;
 global using InvoiceWorkerService.Configurations;
 global using InvoiceWorkerService.Domain.Concrete;
 global using InvoiceWorkerService.Entity.Abstract;

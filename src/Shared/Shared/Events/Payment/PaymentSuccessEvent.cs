@@ -2,6 +2,8 @@
 
 public class PaymentSuccessEvent
 {
-    public long OrderId { get; set; }
-    public string BuyerId { get; set; }
+    public long TransactionId { get; set; }
+    public string BuyerEmail { get; set; }
+    public string ProductName { get; set; }
+    public string FullName { get; set; }
 }

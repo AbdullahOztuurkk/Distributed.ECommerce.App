@@ -1,4 +1,4 @@
-namespace StockWorkerService;
+namespace StockWorkerService.Application;
 
 public class StockWorker : BackgroundService
 {

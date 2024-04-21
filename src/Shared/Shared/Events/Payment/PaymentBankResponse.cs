@@ -7,7 +7,8 @@ public class PaymentBankResponse
     public string FullName { get; set; }
     public string OrderNumber { get; set; }
     public string PaymentMethod { get; set; }
-    public int TotalAmount { get; set; }
+    public decimal TotalAmount { get; set; }
     public string ProductName { get; set; }
     public string ErrorMessage { get; set; }
+    public bool IsSuccess { get; set; }
 }

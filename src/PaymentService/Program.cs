@@ -1,4 +1,4 @@
-using PaymentService.API;
+using PaymentService.API.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 

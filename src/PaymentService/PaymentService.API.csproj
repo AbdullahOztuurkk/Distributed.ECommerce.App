@@ -10,6 +10,14 @@
     <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;CS8006;CS0472</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;CS8006;CS0472</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Abdullah.Ozturk.CoreLib" Version="1.0.5" />
     <PackageReference Include="MassTransit" Version="8.2.1" />
@@ -25,6 +33,14 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Extensions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared\Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,4 @@
-﻿using MassTransit;
-using Shared.Events.Payment;
-using StockWorkerService.Application.Services.Abstract;
+﻿using Shared.Events.Payment;
 
 namespace StockWorkerService.Application.Consumers;
 public class PaymentFailedUnStockConsumer : IConsumer<PaymentFailedEvent>
@@ -18,14 +16,12 @@ public class PaymentFailedUnStockConsumer : IConsumer<PaymentFailedEvent>
     public async Task Consume(ConsumeContext<PaymentFailedEvent> context)
     {
         var @event = context.Message;
-        for (int index = 0; index < @event.OrderItems.Count; index++)
+
+        var stock = (await _stockService.GetByProductId(@event.OrderItem.ProductId)).Data;
+        if (stock != null)
         {
-            var stock = (await _stockService.GetByProductId(@event.OrderItems[index].ProductId)).Data;
-            if (stock != null)
-            {
-                stock.Count += @event.OrderItems[index].Count;
-                await _stockService.Update(new() { Count = stock.Count, ProductId = @event.OrderItems[index].ProductId });
-            }
+            stock.Count += @event.OrderItem.Count;
+            await _stockService.Update(new() { Count = stock.Count, ProductId = @event.OrderItem.ProductId });
         }
 
         _logger.LogInformation($"Stock was released for Order Id ({@event.TransactionId})");
