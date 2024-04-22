@@ -1,6 +1,4 @@
-﻿using Shared.Domain.Constant;
-
-namespace InvoiceWorkerService.Application.Extensions;
+﻿namespace Invoice.Service.Application.Extensions;
 
 public static class ConsumerRegistration
 {

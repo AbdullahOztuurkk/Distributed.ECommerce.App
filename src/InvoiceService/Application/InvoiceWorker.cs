@@ -1,5 +1,4 @@
-﻿
-namespace InvoiceWorkerService.Application;
+﻿namespace Invoice.Service.Application;
 
 public class InvoiceWorker : BackgroundService
 {

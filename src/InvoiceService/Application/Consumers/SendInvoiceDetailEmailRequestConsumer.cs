@@ -1,19 +1,22 @@
-﻿using Shared.Domain.Constant;
+﻿using Invoice.Service.Persistence.Context.Abstract;
+using MongoDB.Driver;
+using Shared.Domain.Constant;
+using Shared.Events.Invoice;
 using Shared.Events.Mail;
 
-namespace InvoiceWorkerService.Application.Consumers;
+namespace Invoice.Service.Application.Consumers;
 
 public class SendInvoiceDetailEmailRequestConsumer : IConsumer<SendInvoiceAsEmailRequestEvent>
 {
-    private readonly IInvoiceRepository _invoiceRepository;
+    private readonly IMongoDbContext _dbContext;
     private readonly ISendEndpointProvider _sendEndpointProvider;
     private readonly ILogger<SendInvoiceDetailEmailRequestConsumer> _logger;
 
-    public SendInvoiceDetailEmailRequestConsumer(IInvoiceRepository invoiceRepository,
+    public SendInvoiceDetailEmailRequestConsumer(IMongoDbContext dbContext,
                                                  ISendEndpointProvider sendEndpointProvider,
                                                  ILogger<SendInvoiceDetailEmailRequestConsumer> logger)
     {
-        this._invoiceRepository = invoiceRepository;
+        this._dbContext = dbContext;
         this._sendEndpointProvider = sendEndpointProvider;
         this._logger = logger;
     }
@@ -21,8 +24,8 @@ public class SendInvoiceDetailEmailRequestConsumer : IConsumer<SendInvoiceAsEmai
     public async Task Consume(ConsumeContext<SendInvoiceAsEmailRequestEvent> context)
     {
         var @event = context.Message;
-        Invoice result = await _invoiceRepository.FindOneAsync(x => x.Transaction.Id == @event.TransactionId);
-        
+        Domain.Concrete.Invoice result = await _dbContext.Invoices.Find(x => x.Transaction.Id == @event.TransactionId).FirstOrDefaultAsync();
+
         if (result == null)
         {
             _logger.LogError($"Transaction not Found. Transaction.Id : {@event.TransactionId}");

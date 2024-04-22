@@ -33,13 +33,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommerceService.API", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.Gateway", "src\API.Gateway\API.Gateway.csproj", "{561B8860-C7B0-41E2-ADAB-840BEB93749C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailWorkerService", "src\EmailService\EmailWorkerService.csproj", "{7A4B5571-23E3-47D9-BEFA-2AE575A3C878}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Email.Service", "src\EmailService\Email.Service.csproj", "{7A4B5571-23E3-47D9-BEFA-2AE575A3C878}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityService.API", "src\IdentityService\IdentityService.API.csproj", "{C220B02F-697C-41A9-9F65-4636AB6AC5F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Service", "src\IdentityService\Identity.Service.csproj", "{C220B02F-697C-41A9-9F65-4636AB6AC5F4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvoiceWorkerService", "src\InvoiceService\InvoiceWorkerService.csproj", "{4278FDA8-5964-4C14-AF00-F57E26BDF134}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Invoice.Service", "src\InvoiceService\Invoice.Service.csproj", "{4278FDA8-5964-4C14-AF00-F57E26BDF134}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentService.API", "src\PaymentService\PaymentService.API.csproj", "{D0FE25F7-949F-41CA-855B-6ECC1504DA02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.Service", "src\PaymentService\Payment.Service.csproj", "{D0FE25F7-949F-41CA-855B-6ECC1504DA02}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedLib", "SharedLib", "{CF7FEBB4-FC0C-41A5-8E62-D2AB9C1755EA}"
 EndProject
@@ -49,7 +49,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommerceService.Domain", "s
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StockService", "StockService", "{0CAE7560-664D-4BAC-A2E7-2431F50EFC56}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockWorkerService", "src\StockService\StockWorkerService\StockWorkerService.csproj", "{CFF30ADC-6D44-444A-92D5-0F4E27CC9E98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stock.Service", "src\StockService\StockWorkerService\Stock.Service.csproj", "{CFF30ADC-6D44-444A-92D5-0F4E27CC9E98}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B18C844A-4FA5-4BFE-97D8-588182BFF522}"
+	ProjectSection(SolutionItems) = preProject
+		ServiceUrls.md = ServiceUrls.md
+	EndProjectSection
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{561EB479-A84F-4F47-A512-9E69E4219D9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +108,10 @@ Global
 		{CFF30ADC-6D44-444A-92D5-0F4E27CC9E98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFF30ADC-6D44-444A-92D5-0F4E27CC9E98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFF30ADC-6D44-444A-92D5-0F4E27CC9E98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{561EB479-A84F-4F47-A512-9E69E4219D9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{561EB479-A84F-4F47-A512-9E69E4219D9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{561EB479-A84F-4F47-A512-9E69E4219D9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{561EB479-A84F-4F47-A512-9E69E4219D9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

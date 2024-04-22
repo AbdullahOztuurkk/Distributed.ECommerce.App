@@ -5,7 +5,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddApplicationDependencies(builder.Configuration);
 builder.Services.AddMongoDb();
 
 builder.Services.AddHostedService<InvoiceWorker>();

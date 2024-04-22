@@ -10,7 +10,14 @@
         "clicco.emailserviceapi": "StartDebugging",
         "clicco.authserviceapi": "StartDebugging",
         "clicco.web.apigateway": "StartDebugging",
-        "clicco.tests": "StartDebugging"
+        "clicco.tests": "StartDebugging",
+        "api.gateway": "StartDebugging",
+        "commerceservice.api": "StartDebugging",
+        "email.service": "StartDebugging",
+        "identity.service": "StartDebugging",
+        "invoice.service": "StartDebugging",
+        "payment.service": "StartDebugging",
+        "stock.service": "StartDebugging"
       }
     }
   }

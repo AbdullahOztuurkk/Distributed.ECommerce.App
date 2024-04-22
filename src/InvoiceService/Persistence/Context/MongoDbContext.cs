@@ -1,22 +1,17 @@
-﻿using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+﻿namespace Invoice.Service.Persistence.Context;
 
-namespace InvoiceWorkerService.Persistence.Context;
-
-public class MongoDbContext : IDbContext
+public class MongoDbContext : IMongoDbContext
 {
-    public override IDbCollection<Invoice> Invoices { get; }
-
-    private readonly MongoClient client;
+    private readonly IConfiguration _configuration;
     private readonly IMongoDatabase database;
-    private readonly MongoDbSettings settings;
-    public MongoDbContext(IOptions<MongoDbSettings> options)
+    public MongoDbContext(IConfiguration configuration)
     {
-        settings = options.Value;
-        var mongoUrl = new MongoUrl(settings.ConnectionString);
+        _configuration = configuration;
+        var connectionString = _configuration.GetValue<string>("MongoDbConfiguration:ConnectionString");
+        var db = _configuration.GetValue<string>("MongoDbConfiguration:Database");
 
-        client = new MongoClient(mongoUrl);
-        database = client.GetDatabase(settings.DatabaseName);
-        Invoices = new InvoiceCollection(database.GetCollection<Invoice>(settings.InvoiceCollectionName));
+        var client = new MongoClient(connectionString);
+        database = client.GetDatabase(db);
     }
+    public IMongoCollection<Domain.Concrete.Invoice> Invoices => database.GetCollection<Domain.Concrete.Invoice>(nameof(Invoices));
 }

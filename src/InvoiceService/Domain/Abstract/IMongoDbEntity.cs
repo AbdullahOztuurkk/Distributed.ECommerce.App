@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace InvoiceWorkerService.Entity.Abstract;
+namespace Invoice.Service.Domain.Abstract;
 
 public class MongoDbEntity
 {

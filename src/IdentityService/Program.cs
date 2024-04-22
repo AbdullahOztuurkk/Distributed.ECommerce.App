@@ -15,6 +15,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new IdentityModule(builder.Configuration)));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthentication(x =>
 {

@@ -1,0 +1,138 @@
+version: '3.4'
+
+services:
+  api.gateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5010:80"
+    networks:
+      - net_backend
+    restart: no
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+    mem_limit: 1g
+  
+  commerceservice.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:80"
+    networks:
+      - net_backend
+    restart: no
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+      - s_redis 
+    mem_limit: 1g
+
+  email.service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5002:80"
+    networks:
+      - net_backend
+    restart: no
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+    mem_limit: 1g
+
+  identity.service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5003:80"
+    networks:
+      - net_backend
+    restart: no
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+    mem_limit: 1g
+
+  invoice.service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5004:80"
+    networks:
+      - net_backend
+    restart: no
+    depends_on:
+      - s_mongo
+      - s_rabbitmq
+    mem_limit: 1g
+
+  payment.service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5005:80"
+    networks:
+      - net_backend
+    restart: no
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+    mem_limit: 1g
+
+  stock.service:
+    environment:
+      - DOTNET_ENVIRONMENT=Development
+    ports:
+      - "5006:80"
+    networks:
+      - net_backend
+    restart: no
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+    mem_limit: 1g
+
+  s_sqlserver:
+     user: root
+     environment:
+         ACCEPT_EULA: Y
+         MSSQL_SA_PASSWORD: Test123!_
+     ports:
+     - "1433:1433"
+     volumes:
+     - sqlserver_data:/var/opt/mssql/data
+     - sqlserver_log:/var/opt/mssql/log
+     networks:
+     - net_backend
+     mem_limit: 2g
+    
+  s_rabbitmq:
+    ports:
+    - 5672:5672
+    - 15672:15672
+    volumes:
+    - rabbitmq:/var/lib/rabbitmq
+    networks:
+    - net_backend
+    restart: on-failure
+    environment:
+        RABBITMQ_HOST: localhost
+        RABBITMQ_DEFAULT_USER: guest
+        RABBITMQ_DEFAULT_PASS: guest
+
+  s_mongo:
+    restart: always
+
+  s_redis:
+    restart: always 
+
+
+networks:
+    net_backend:
+        driver: bridge
+
+volumes:
+    rabbitmq:
+    sqlserver_data:
+    sqlserver_log:

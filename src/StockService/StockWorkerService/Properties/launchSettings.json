@@ -1,11 +1,15 @@
-﻿{
+{
   "profiles": {
     "StockWorkerService": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
-      }
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5006"
+    },
+    "Docker": {
+      "commandName": "Docker"
     }
   }
 }

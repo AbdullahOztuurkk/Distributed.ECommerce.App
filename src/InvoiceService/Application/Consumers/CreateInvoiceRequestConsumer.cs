@@ -1,18 +1,19 @@
-﻿namespace InvoiceWorkerService.Application.Consumers;
+﻿using Invoice.Service.Persistence.Context.Abstract;
+namespace Invoice.Service.Application.Consumers;
 
 public class CreateInvoiceRequestConsumer : IConsumer<CreateInvoiceRequestEvent>
 {
-    private readonly IInvoiceRepository _invoiceRepository;
+    private readonly IMongoDbContext _dbContext;
 
-    public CreateInvoiceRequestConsumer(IInvoiceRepository invoiceRepository)
+    public CreateInvoiceRequestConsumer(IMongoDbContext dbContext)
     {
-        this._invoiceRepository = invoiceRepository;
+        this._dbContext = dbContext;
     }
 
     public async Task Consume(ConsumeContext<CreateInvoiceRequestEvent> context)
     {
         var @event = context.Message;
-        var invoiceModel = new Invoice
+        var invoiceModel = new Domain.Concrete.Invoice
         {
             Address = @event.Address,
             Coupon = @event.Coupon,
@@ -22,6 +23,6 @@ public class CreateInvoiceRequestConsumer : IConsumer<CreateInvoiceRequestEvent>
             BuyerEmail = @event.BuyerEmail,
         };
 
-        await _invoiceRepository.CreateAsync(invoiceModel);
+        await _dbContext.Invoices.InsertOneAsync(invoiceModel);
     }
 }

@@ -1,0 +1,78 @@
+version: '3.4'
+
+services:
+  api.gateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: src/API.Gateway/Dockerfile
+
+  commerceservice.api:
+    image: ${DOCKER_REGISTRY-}commerceserviceapi
+    build:
+      context: .
+      dockerfile: src/CommerceService/Presentation/Dockerfile
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+
+  email.service:
+    image: ${DOCKER_REGISTRY-}emailservice
+    build:
+      context: .
+      dockerfile: src/EmailService/Dockerfile
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+
+  identity.service:
+    image: ${DOCKER_REGISTRY-}identityservice
+    build:
+      context: .
+      dockerfile: src/IdentityService/Dockerfile
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+
+  invoice.service:
+    image: ${DOCKER_REGISTRY-}invoiceservice
+    build:
+      context: .
+      dockerfile: src/InvoiceService/Dockerfile
+    depends_on:
+      - s_rabbitmq
+      - s_mongo
+
+  payment.service:
+    image: ${DOCKER_REGISTRY-}paymentservice
+    build:
+      context: .
+      dockerfile: src/PaymentService/Dockerfile
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+
+
+  stock.service:
+    image: ${DOCKER_REGISTRY-}stockservice
+    build:
+      context: .
+      dockerfile: src/StockService/StockWorkerService/Dockerfile
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+
+  s_sqlserver:
+    container_name: c_sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-latest
+
+  s_rabbitmq:
+    container_name: c_rabbitmq
+    image: rabbitmq:3-management
+
+  s_mongo:
+    container_name: c_mongo
+    image: mongo
+  
+  s_redis:
+    image: "redis:alpine" 

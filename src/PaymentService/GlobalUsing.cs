@@ -2,7 +2,9 @@
 global using MassTransit;
 global using PaymentService.API.Application;
 global using PaymentService.API.Application.Extensions;
+global using PaymentService.API.Application.Services.Abstract;
 global using PaymentService.API.Application.Services.Concrete;
+global using PaymentService.API.Application.Services.Factory;
 global using PaymentService.API.Domain.Adapters;
 global using Shared.Domain.Constant;
 global using Shared.Events.Payment;

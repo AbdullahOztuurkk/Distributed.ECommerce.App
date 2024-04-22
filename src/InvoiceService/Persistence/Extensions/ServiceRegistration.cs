@@ -1,18 +1,9 @@
-﻿namespace InvoiceWorkerService.Persistence.Extensions;
+﻿namespace Invoice.Service.Persistence.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddMongoDb(this IServiceCollection services)
+    public static void AddMongoDb(this IServiceCollection services)
     {
-        return services.AddSingleton<IDbContext, MongoDbContext>();
-    }
-
-    public static IServiceCollection AddApplicationDependencies(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.Configure<MongoDbSettings>(configuration.GetSection(nameof(MongoDbSettings)));
-
-        services.AddScoped<IInvoiceRepository, InvoiceRepository>();
-
-        return services;
+        services.AddSingleton<IMongoDbContext, MongoDbContext>();
     }
 }

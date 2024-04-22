@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMassTransitWithConsumers();
 
-//builder.Services.AddScoped<IBankServiceFactory, BankServiceFactory>();
+builder.Services.AddScoped<IBankServiceFactory, BankServiceFactory>();
 builder.Services.AddHostedService<PaymentWorker>();
 
 var app = builder.Build();

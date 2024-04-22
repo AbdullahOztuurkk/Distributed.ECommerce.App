@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>3e4ae49a-d113-42a3-bd38-b7e6d4def5dd</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..\..</DockerfileContext>
+    <DockerfileContext>..\..</DockerfileContext>
     <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
