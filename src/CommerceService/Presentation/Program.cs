@@ -36,7 +36,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.ConfigureTechBuddyExceptionHandling();
+await app.ConfigureTechBuddyExceptionHandling();
 
 app.UseHttpsRedirection();
 

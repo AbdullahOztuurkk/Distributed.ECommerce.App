@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: src/API.Gateway/Dockerfile
 
-  commerceservice.api:
+  commerce.service:
     image: ${DOCKER_REGISTRY-}commerceserviceapi
     build:
       context: .

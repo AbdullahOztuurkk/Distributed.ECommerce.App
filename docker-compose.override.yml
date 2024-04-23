@@ -14,7 +14,7 @@ services:
       - s_rabbitmq
     mem_limit: 1g
   
-  commerceservice.api:
+  commerce.service:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
