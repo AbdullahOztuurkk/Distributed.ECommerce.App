@@ -1,156 +1,138 @@
-﻿version: '3.4'
+version: '3.4'
+
 services:
-  
-  web.api:
+  api.gateway:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production 
-    ports:
-      - "5000:5000"
-    networks:
-      - net_backendservices
-      - net_apigateway
-    restart: always
-    depends_on:
-      - web.api.gateway
-      - s_rabbitmq
-      - s_redis
-      - s_sqlserver
-    mem_limit: 1g
-  
-  web.api.gateway:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "5010:80"
-    restart: always
     networks:
-      - net_apigateway
-    mem_limit: 512m
-  
-  email.service.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-    ports:
-      - "5002:5002"
-    networks:
-      - net_backendservices
-      - net_apigateway
-    restart: always
+      - net_backend
+    restart: no
     depends_on:
-      - web.api.gateway
-      - s_rabbitmq
       - s_sqlserver
-    labels:
-        Names: email.service.api
-    mem_limit: 512m
-  
-  invoice.service.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - "MongoDbSettings:ConnectionString=mongodb://catalogdb:27017"
-    ports:
-      - "5004:5004"
-    restart: always
-    networks:
-      - net_backendservices
-      - net_apigateway
-    depends_on:
-      - web.api.gateway
       - s_rabbitmq
+    mem_limit: 1g
+  
+  commerce.service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:80"
+    networks:
+      - net_backend
+    restart: no
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+      - s_redis 
+    mem_limit: 1g
+
+  email.service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5002:80"
+    networks:
+      - net_backend
+    restart: no
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+    mem_limit: 1g
+
+  identity.service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5003:80"
+    networks:
+      - net_backend
+    restart: no
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+    mem_limit: 1g
+
+  invoice.service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5004:80"
+    networks:
+      - net_backend
+    restart: no
+    depends_on:
       - s_mongo
-    mem_limit: 512m
-  
-  payment.service.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-    ports:
-      - "5003:5003"
-    restart: always
-    networks:
-      - net_apigateway
-      - net_backendservices
-    depends_on:
-      - web.api.gateway
       - s_rabbitmq
-    mem_limit: 512m
-  
-  auth.service.api:
+    mem_limit: 1g
+
+  payment.service:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "5001:5001"
+      - "5005:80"
     networks:
-      - net_backendservices
-      - net_apigateway
+      - net_backend
+    restart: no
     depends_on:
-      - web.api.gateway
-      - s_rabbitmq
       - s_sqlserver
-    mem_limit: 512m
-    
-  # test.project:
-  #  environment:
-  #   - ASPNETCORE_ENVIRONMENT=Production
-  #  mem_limit: 1g
-  
-  s_sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: mssql2019
-    restart: always
+      - s_rabbitmq
+    mem_limit: 1g
+
+  stock.service:
     environment:
-      SA_PASSWORD: "T4ckJvEOKXGT^GAe"
-      ACCEPT_EULA: "Y" 
+      - DOTNET_ENVIRONMENT=Development
     ports:
-      - "1433:1433"
-    labels:
-      NAME: "s_sqlserver"
-    volumes:
-      - mssql-data:/var/opt/mssql
+      - "5006:80"
     networks:
-      - net_backendservices
-    mem_limit: 2g
+      - net_backend
+    restart: no
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
+    mem_limit: 1g
+
+  s_sqlserver:
+     user: root
+     environment:
+         ACCEPT_EULA: Y
+         MSSQL_SA_PASSWORD: Test123!_
+     ports:
+     - "1433:1433"
+     volumes:
+     - sqlserver_data:/var/opt/mssql/data
+     - sqlserver_log:/var/opt/mssql/log
+     networks:
+     - net_backend
+     mem_limit: 2g
     
   s_rabbitmq:
     ports:
-      - "5672:5672" 
-      - "15672:15672" 
+    - 5672:5672
+    - 15672:15672
     volumes:
-      - rabbitmq:/var/lib/rabbitmq
+    - rabbitmq:/var/lib/rabbitmq
     networks:
-      - net_backendservices
-      - net_apigateway
-    labels:
-     Names: s_rabbitmq
-    mem_limit: 1g
-  
-  s_redis:
-    ports:
-      - 6379:6379
-    volumes:
-      - /opt/app_data/redis/:/data
-    networks:
-      - net_backendservices
-      - net_apigateway
-    mem_limit: 1g
-  
+    - net_backend
+    restart: on-failure
+    environment:
+        RABBITMQ_HOST: localhost
+        RABBITMQ_DEFAULT_USER: guest
+        RABBITMQ_DEFAULT_PASS: guest
+
   s_mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
-    labels:
-      Names: s_mongo
-    mem_limit: 1g
+    restart: always
+
+  s_redis:
+    restart: always 
+
 
 networks:
-    net_apigateway:
+    net_backend:
         driver: bridge
-        #external: true
-    net_backendservices :
-        driver: bridge
-        #external: true
 
 volumes:
     rabbitmq:
     sqlserver_data:
     sqlserver_log:
-    mssql-data:

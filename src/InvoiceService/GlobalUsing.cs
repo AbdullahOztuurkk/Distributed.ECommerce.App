@@ -1,0 +1,10 @@
+﻿global using Invoice.Service.Application;
+global using Invoice.Service.Application.Consumers;
+global using Invoice.Service.Application.Extensions;
+global using Invoice.Service.Persistence.Context;
+global using Invoice.Service.Persistence.Context.Abstract;
+global using Invoice.Service.Persistence.Extensions;
+global using MassTransit;
+global using MongoDB.Driver;
+global using Shared.Domain.Constant;
+global using Shared.Events.Invoice;

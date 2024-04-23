@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "API.Gateway": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "applicationUrl": "https://localhost:5010",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+    }
+  }
+}

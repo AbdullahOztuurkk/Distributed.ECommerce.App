@@ -1,62 +1,78 @@
 version: '3.4'
 
 services:
-  web.api:
-    image: ${DOCKER_REGISTRY-}cliccowebapi
+  api.gateway:
+    image: ${DOCKER_REGISTRY-}apigateway
     build:
       context: .
-      dockerfile: Presentation/Clicco.WebAPI/Dockerfile
+      dockerfile: src/API.Gateway/Dockerfile
 
-  payment.service.api:
-    image: ${DOCKER_REGISTRY-}cliccopaymentserviceapi
+  commerce.service:
+    image: ${DOCKER_REGISTRY-}commerceserviceapi
     build:
       context: .
-      dockerfile: Presentation/Services/Clicco.PaymentServiceAPI/Dockerfile
+      dockerfile: src/CommerceService/Presentation/Dockerfile
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
 
-
-  invoice.service.api:
-    image: ${DOCKER_REGISTRY-}cliccoinvoiceserviceapi
+  email.service:
+    image: ${DOCKER_REGISTRY-}emailservice
     build:
       context: .
-      dockerfile: Presentation/Services/Clicco.InvoiceServiceAPI/Dockerfile
+      dockerfile: src/EmailService/Dockerfile
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
 
-
-  email.service.api:
-    image: ${DOCKER_REGISTRY-}cliccoemailserviceapi
+  identity.service:
+    image: ${DOCKER_REGISTRY-}identityservice
     build:
       context: .
-      dockerfile: Presentation/Services/Clicco.EmailServiceAPI/Dockerfile
+      dockerfile: src/IdentityService/Dockerfile
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
 
-
-  auth.service.api:
-    image: ${DOCKER_REGISTRY-}cliccoauthserviceapi
+  invoice.service:
+    image: ${DOCKER_REGISTRY-}invoiceservice
     build:
       context: .
-      dockerfile: Presentation/Services/Clicco.AuthAPI/Dockerfile
+      dockerfile: src/InvoiceService/Dockerfile
+    depends_on:
+      - s_rabbitmq
+      - s_mongo
 
-
-  web.api.gateway:
-    image: ${DOCKER_REGISTRY-}cliccowebapigateway
+  payment.service:
+    image: ${DOCKER_REGISTRY-}paymentservice
     build:
       context: .
-      dockerfile: Presentation/ApiGateways/Clicco.Web.ApiGateway/Dockerfile
+      dockerfile: src/PaymentService/Dockerfile
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
 
-  s_redis:
-    container_name: c_redis
-    image: redis
 
-  s_rabbitmq:
-    container_name: c_rabbitmq
-    image: rabbitmq:3-management
+  stock.service:
+    image: ${DOCKER_REGISTRY-}stockservice
+    build:
+      context: .
+      dockerfile: src/StockService/StockWorkerService/Dockerfile
+    depends_on:
+      - s_sqlserver
+      - s_rabbitmq
 
   s_sqlserver:
     container_name: c_sqlserver
     image: mcr.microsoft.com/mssql/server:2019-latest
 
-networks:
-    net_apiqateway:
-        driver: bridge
-        external: true
-    net_backendservices :
-        driver: bridge
-        external: true
+  s_rabbitmq:
+    container_name: c_rabbitmq
+    image: rabbitmq:3-management
+
+  s_mongo:
+    container_name: c_mongo
+    image: mongo
+  
+  s_redis:
+    image: "redis:alpine" 
