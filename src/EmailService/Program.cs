@@ -1,4 +1,6 @@
+using Email.Service.Extensions;
 using EmailWorkerService.Application;
+using EmailEntity = EmailWorkerService.Domain.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCustomMapster(typeof(Email).Assembly);
+builder.Services.AddServiceDiscovery(builder.Configuration);
+builder.Services.AddCustomMapster(typeof(EmailEntity).Assembly);
 builder.Services.AddHostedService<EmailWorker>();
 
 builder.Services.AddMasstransitWithConsumers();
@@ -29,5 +32,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.RegisterToConsul(app.Lifetime, app.Configuration);
 
 app.Run();

@@ -1,6 +1,6 @@
+using CommerceService.API.Extensions;
+using Consul;
 using CoreLib.Configurations;
-
-var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +17,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureAuth(builder.Configuration);
 builder.Services.AddCustomMapster(typeof(Address).Assembly);
 builder.Services.AddMassTransitWithConsumers();
+builder.Services.AddServiceDiscovery(builder.Configuration);
+builder.Services.AddSingleton(s => s.ConfigureRedis(builder.Configuration));
+
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -45,5 +48,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.RegisterToConsul(app.Lifetime, app.Configuration);
 
 app.Run();

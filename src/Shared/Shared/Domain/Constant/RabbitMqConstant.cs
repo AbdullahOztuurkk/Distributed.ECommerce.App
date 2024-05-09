@@ -3,7 +3,7 @@ public record RabbitMqConstant
 {
     public const string Username = "guest";
     public const string Password = "guest";
-    public const string Host = "localhost";
+    public const string Host = "s_rabbitmq";
     public const string Port = "5672";
 }
 

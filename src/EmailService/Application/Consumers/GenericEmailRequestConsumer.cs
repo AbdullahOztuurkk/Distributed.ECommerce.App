@@ -25,7 +25,7 @@ public class GenericEmailRequestConsumer<TEmailEvent, TEmailModel> : BaseService
             .AddSubject(subject)
             .Build(emailModel);
 
-        var emailRecord = new Email
+        var emailRecord = new Domain.Email
         {
             Body = body,
             Subject = subject,
@@ -34,9 +34,9 @@ public class GenericEmailRequestConsumer<TEmailEvent, TEmailModel> : BaseService
             To = emailModel.To,
         };
 
-        await Db.GetDefaultRepo<Email>().InsertAsync(emailRecord);
+        await Db.GetDefaultRepo<Domain.Email>().InsertAsync(emailRecord);
 
-        await Db.GetDefaultRepo<Email>().SaveChanges();
+        await Db.GetDefaultRepo<Domain.Email>().SaveChanges();
         Db.Commit();
 
         var result = await MailService.SendEmailAsync(new SendEmailRequestDto()
@@ -51,7 +51,7 @@ public class GenericEmailRequestConsumer<TEmailEvent, TEmailModel> : BaseService
         {
             emailRecord.Status = StatusType.FAIL;
 
-            await Db.GetDefaultRepo<Email>().SaveChanges();
+            await Db.GetDefaultRepo<Domain.Email>().SaveChanges();
         }
     }
 }
