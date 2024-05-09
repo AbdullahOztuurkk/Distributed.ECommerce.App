@@ -12,7 +12,7 @@ public class StockDbContext : DbContextBase
 
     }
 
-    public DbSet<Stock> Stocks { get; set; }
+    public DbSet<Domain.Entities.Stock> Stocks { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

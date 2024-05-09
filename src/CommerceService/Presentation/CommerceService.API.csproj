@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Abdullah.Ozturk.CoreLib" Version="1.0.5" />
+    <PackageReference Include="Consul" Version="1.7.14.3" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />

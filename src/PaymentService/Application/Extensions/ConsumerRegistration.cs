@@ -11,7 +11,7 @@ public static class ConsumerRegistration
             conf.AddConsumer<StockReservedEventConsumer>();
             conf.UsingRabbitMq((context, busConf) =>
             {
-                busConf.Host(RabbitMqConstant.Host, RabbitMqConstant.Port, h =>
+                busConf.Host(RabbitMqConstant.Host, h =>
                 {
                     h.Username(RabbitMqConstant.Username);
                     h.Password(RabbitMqConstant.Password);

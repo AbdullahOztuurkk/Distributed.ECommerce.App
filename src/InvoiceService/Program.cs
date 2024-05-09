@@ -1,3 +1,5 @@
+using Invoice.Service.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -6,10 +8,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddMongoDb();
-
 builder.Services.AddHostedService<InvoiceWorker>();
-
 builder.Services.AddMassTransitWithConsumers();
+builder.Services.AddServiceDiscovery(builder.Configuration);
 
 var app = builder.Build();
 
@@ -25,5 +26,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.RegisterToConsul(app.Lifetime, app.Configuration);
 
 app.Run();

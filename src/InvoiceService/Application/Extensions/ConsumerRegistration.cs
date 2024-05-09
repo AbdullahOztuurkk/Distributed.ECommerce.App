@@ -10,7 +10,7 @@ public static class ConsumerRegistration
             conf.AddConsumer<SendInvoiceDetailEmailRequestConsumer>();
             conf.UsingRabbitMq((context, busConf) =>
             {
-                busConf.Host(RabbitMqConstant.Host, RabbitMqConstant.Port, h =>
+                busConf.Host(RabbitMqConstant.Host, h =>
                 {
                     h.Username(RabbitMqConstant.Username);
                     h.Password(RabbitMqConstant.Password);

@@ -1,5 +1,6 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Identity.Service.Extensions;
 using IdentityService.API.Configurations;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,6 +18,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerB
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddServiceDiscovery(builder.Configuration);
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -39,7 +41,7 @@ builder.Services.AddMassTransit(conf =>
 { 
     conf.UsingRabbitMq((context,busConf) =>
     {
-        busConf.Host(RabbitMqConstant.Host, RabbitMqConstant.Port, h =>
+        busConf.Host(RabbitMqConstant.Host, h =>
         {
             h.Username(RabbitMqConstant.Username);
             h.Password(RabbitMqConstant.Password);
@@ -68,5 +70,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.RegisterToConsul(app.Lifetime, app.Configuration);
 
 app.Run();

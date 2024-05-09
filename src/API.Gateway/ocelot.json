@@ -1,28 +1,28 @@
 {
   "Routes": [
     {
+      "ServiceName": "Identity.Service",
       "DownstreamPathTemplate": "/api/auth/{everything}",
       "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "identity.service",
-          "Port": 5003
-        }
-      ],
       "UpstreamPathTemplate": "/auth/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
+      "ServiceName": "Commerce.Service",
       "DownstreamPathTemplate": "/api/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "commerce.service",
-          "Port": 5000
-        }
-      ],
+      "DownstreamScheme": "http",
+
       "UpstreamPathTemplate": "/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamScheme": "http"
     }
-  ]
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://api.gateway:5000",
+    "ServiceDiscoveryProvider": {
+      "Host": "c_consul",
+      "Port": 8500,
+      "Type": "Consul"
+    }
+  }
 }

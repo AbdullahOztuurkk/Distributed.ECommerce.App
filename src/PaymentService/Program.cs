@@ -1,22 +1,15 @@
+using Payment.Service.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
-
-var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json")
-    .AddJsonFile("appsettings" + env + ".json", true, true)
-    .Build();
-
-builder.Configuration.AddConfiguration(configuration);
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddMassTransitWithConsumers();
 
+builder.Services.AddMassTransitWithConsumers();
 builder.Services.AddScoped<IBankServiceFactory, BankServiceFactory>();
 builder.Services.AddHostedService<PaymentWorker>();
+builder.Services.AddServiceDiscovery(builder.Configuration);
 
 var app = builder.Build();
 
@@ -32,5 +25,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.RegisterToConsul(app.Lifetime, app.Configuration);
 
 app.Run();

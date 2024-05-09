@@ -24,6 +24,6 @@ public class CommerceModule : Module
 
         builder.AddUnitOfWorkContext<ECommerceContext>(_configuration.GetConnectionString("SqlConnection"));
 
-        builder.AddRedisCache(_configuration.GetConnectionString("Redis"));
+        //builder.AddRedisCache(_configuration.GetConnectionString("Redis"));
     }
 }

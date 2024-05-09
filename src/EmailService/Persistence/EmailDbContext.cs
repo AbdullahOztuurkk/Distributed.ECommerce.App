@@ -13,7 +13,7 @@ public class EmailDbContext : DbContextBase
 
     }
 
-    public DbSet<Email> Emails { get; set; }
+    public DbSet<Domain.Email> Emails { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
