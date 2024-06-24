@@ -6,7 +6,7 @@ public class ResourceService : IResourceService
 {
     public string GetContent(EmailType emailType)
     {
-        var template = emailType switch
+        var content = emailType switch
         {
             EmailType.Registration => File.ReadAllText("../../Files/RegistrationEmailTemplate.html"),
 
@@ -21,12 +21,12 @@ public class ResourceService : IResourceService
             EmailType.ResetPassword => File.ReadAllText("../../Files/ResetPasswordEmailTemplate.html"),
         };
 
-        return template;
+        return content;
     }
 
     public string GetSubject(EmailType emailType)
     {
-        var template = emailType switch
+        var subject = emailType switch
         {
             EmailType.Registration => "Welcome To Website!",
 
@@ -38,9 +38,9 @@ public class ResourceService : IResourceService
 
             EmailType.Invoice => "Website - Invoice",
 
-            EmailType.ResetPassword => "Website - Password Reset Completed",
+            EmailType.ResetPassword => "Website - Password Reset",
         };
 
-        return template;
+        return subject;
     }
 }
