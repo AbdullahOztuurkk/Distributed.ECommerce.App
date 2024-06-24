@@ -38,7 +38,7 @@ public class ResourceService : IResourceService
 
             EmailType.Invoice => "Website - Invoice",
 
-            EmailType.ResetPassword => "Website - Password Reset",
+            EmailType.ResetPassword => "Website - Password Reset Completed!",
         };
 
         return subject;
