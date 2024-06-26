@@ -3,6 +3,7 @@ version: '3.4'
 services:
     api.gateway:
         environment:
+            ASPNETCORE_ENVIRONMENT: Development
             ConsulConfig__Address: http://c_consul:8500
             ConsulConfig__ServiceAddress: http://localhost:5010
         ports:
@@ -14,6 +15,7 @@ services:
   
     commerce.service:
         environment:
+            ASPNETCORE_ENVIRONMENT: Development
             ConsulConfig__Address: http://c_consul:8500
             ConsulConfig__ServiceAddress: http://localhost:5000
         ports:
@@ -31,6 +33,7 @@ services:
 
     stock.service:
         environment:
+            ASPNETCORE_ENVIRONMENT: Development
             ConsulConfig__Address: http://c_consul:8500
             ConsulConfig__ServiceAddress: http://localhost:5001
         ports:
@@ -46,6 +49,7 @@ services:
 
     email.service:
         environment:
+            ASPNETCORE_ENVIRONMENT: Development
             ConsulConfig__Address: http://c_consul:8500
             ConsulConfig__ServiceAddress: http://localhost:5002
         ports:
@@ -61,6 +65,7 @@ services:
 
     identity.service:
         environment:
+            ASPNETCORE_ENVIRONMENT: Development
             ConsulConfig__Address: http://c_consul:8500
             ConsulConfig__ServiceAddress: http://localhost:5003
         ports:
@@ -77,6 +82,7 @@ services:
 
     invoice.service:
         environment:
+            ASPNETCORE_ENVIRONMENT: Development
             ConsulConfig__Address: http://c_consul:8500
             ConsulConfig__ServiceAddress: http://localhost:5004
         ports:
@@ -92,6 +98,7 @@ services:
 
     payment.service:
         environment:
+            ASPNETCORE_ENVIRONMENT: Development
             ConsulConfig__Address: http://c_consul:8500
             ConsulConfig__ServiceAddress: http://localhost:5005
         ports:

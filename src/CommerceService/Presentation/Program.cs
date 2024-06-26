@@ -41,8 +41,6 @@ if (app.Environment.IsDevelopment())
 
 await app.ConfigureTechBuddyExceptionHandling();
 
-app.UseHttpsRedirection();
-
 app.UseAuthentication();
 
 app.UseAuthorization();
